@@ -927,8 +927,9 @@ function renderCard(text,idx){
   return `
     <div class="order-card" style="animation-delay:${idx*30}ms">
       <div class="order-card-top">
-        <span class="order-badge">Bestellung</span>
-        <div style="display:flex;align-items:center;gap:7px">${tableBadge}${tag}</div>
+        <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+          <span class="order-badge">Bestellung</span>${tableBadge}${tag}
+        </div>
       </div>
       <div class="order-card-body">${html}</div>
     </div>`;
