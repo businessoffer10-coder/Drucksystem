@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="de" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Bestellverwaltung</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════
+   TOKENS
+═══════════════════════════════ */
+:root {
+  --bg:         #0b0d10;
+  --bg2:        #111318;
+  --bg3:        #171b22;
+  --bg4:        #1d2129;
+  --border:     #232830;
+  --border2:    #2c3340;
+  --border3:    #38404f;
+  --accent:     #f0c04a;
+  --accent2:    #d4a535;
+  --accent-dim: #1e1908;
+  --text:       #f0f2f6;
+  --text2:      #9099a8;
+  --text3:      #4e5663;
+  --green:      #52c98b;
+  --green-bg:   #0d1f17;
+  --red:        #e06464;
+  --red-bg:     #1e0f0f;
+  --r-sm:  6px;
+  --r-md:  10px;
+  --r-lg:  16px;
+  --topbar-h: 60px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Sora', sans-serif;
+  min-height: 100vh;
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ═══════════════════════════════
+   TOPBAR
+═══════════════════════════════ */
+.topbar {
+  position: sticky; top: 0; z-index: 200;
+  height: var(--topbar-h);
+  background: rgba(11,13,16,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 1.25rem;
+  gap: 10px;
+}
+
+.logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+.logo-icon {
+  width: 32px; height: 32px;
+  background: var(--accent);
+  border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+}
+
+.logo-name { font-size: 15px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.2; }
+.logo-tag  { font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); }
+
+.topbar-spacer { flex: 1; }
+
+.live-clock {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 6px 12px;
+  font-family: 'JetBrains Mono', monospace;
+  white-space: nowrap;
+}
+
+.clock-time { font-size: 15px; font-weight: 500; color: var(--accent); letter-spacing: 0.05em; min-width: 66px; }
+.clock-sep  { color: var(--border3); }
+.clock-date { font-size: 11px; color: var(--text2); }
+.clock-tz   {
+  font-size: 9px; color: var(--text3);
+  background: var(--bg4); border: 1px solid var(--border);
+  border-radius: 4px; padding: 2px 5px;
+  letter-spacing: 0.05em; text-transform: uppercase;
+}
+
+/* hide date on small screens */
+@media (max-width: 520px) {
+  .clock-date, .clock-sep, .clock-tz { display: none; }
+  .live-clock { padding: 6px 10px; }
+  .logo-tag { display: none; }
+}
+
+/* ═══════════════════════════════
+   LAYOUT
+═══════════════════════════════ */
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.75rem 1.25rem 5rem;
+}
+
+.page-head { margin-bottom: 1.5rem; }
+
+.page-title {
+  font-size: clamp(24px, 5vw, 36px);
+  font-weight: 700; letter-spacing: -0.04em; line-height: 1.1;
+  margin-bottom: 5px;
+}
+.page-title em { font-style: normal; color: var(--accent); }
+.page-sub { font-size: 14px; color: var(--text3); }
+
+/* ═══════════════════════════════
+   PANEL
+═══════════════════════════════ */
+.panel {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.panel-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--bg3); border-bottom: 1px solid var(--border);
+}
+
+.panel-title {
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.09em;
+  color: var(--text2); display: flex; align-items: center; gap: 7px;
+}
+
+.panel-title svg { opacity: 0.6; flex-shrink: 0; }
+
+.pill {
+  font-size: 10px; border-radius: 20px; padding: 2px 8px;
+  font-weight: 500; font-family: 'JetBrains Mono', monospace;
+}
+.pill-dim { background: var(--bg4); border: 1px solid var(--border); color: var(--text3); }
+
+/* ═══════════════════════════════
+   ORDER TYPE BAR
+═══════════════════════════════ */
+.type-bar {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  padding: 12px 16px 0;
+  background: var(--bg2);
+}
+
+.type-lbl {
+  font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--text3); white-space: nowrap;
+}
+
+.type-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 13px; font-size: 12px; font-weight: 600;
+  font-family: 'Sora', sans-serif;
+  border-radius: 20px; border: 1px solid var(--border2);
+  background: var(--bg3); color: var(--text3);
+  cursor: pointer; transition: all 0.15s; white-space: nowrap;
+}
+.type-btn:active { transform: scale(0.95); }
+
+.type-btn.t-hier { border-color: #1a3a5c; background: #0d1e30; color: #5599d4; }
+.type-btn.t-hier.active { background: #0f2540; border-color: #4080c0; color: #80b8f0; box-shadow: 0 0 12px rgba(64,128,192,0.2); }
+
+.type-btn.t-mit { border-color: #3a2a0a; background: #1e1608; color: #b87a30; }
+.type-btn.t-mit.active { background: #261c08; border-color: #d0882a; color: #f0a840; box-shadow: 0 0 12px rgba(208,136,42,0.2); }
+
+.type-btn.t-wa { border-color: #0f2e18; background: #091a0f; color: #3a9a52; }
+.type-btn.t-wa.active { background: #0c2014; border-color: #25d366; color: #25d366; box-shadow: 0 0 12px rgba(37,211,102,0.18); }
+
+/* ═══════════════════════════════
+   CUSTOM PAPER INPUT
+═══════════════════════════════ */
+.custom-paper-row {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+  animation: slideDown 0.18s ease;
+}
+.custom-paper-row.visible { display: flex; }
+
+.custom-paper-field {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: var(--r-sm);
+  padding: 7px 10px;
+  flex: 1; min-width: 110px;
+}
+.custom-paper-field label {
+  font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--text3); white-space: nowrap;
+}
+.custom-paper-field input[type=number] {
+  flex: 1; width: 52px;
+  background: transparent; border: none; outline: none;
+  color: var(--accent); font-size: 14px; font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+  text-align: center;
+  -webkit-appearance: none; -moz-appearance: textfield;
+}
+.custom-paper-field input[type=number]::-webkit-inner-spin-button,
+.custom-paper-field input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+.custom-paper-unit {
+  font-size: 10px; color: var(--text3);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ═══════════════════════════════
+   TABLE NUMBER
+═══════════════════════════════ */
+.table-row {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px 0;
+  background: var(--bg2);
+  animation: slideDown 0.2s ease;
+}
+.table-row.visible { display: flex; }
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.table-lbl {
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.09em;
+  color: #5599d4; white-space: nowrap;
+}
+
+.table-input-wrap {
+  display: flex; align-items: center; gap: 0;
+  background: #0d1e30;
+  border: 1px solid #4080c0;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+}
+
+.table-minus, .table-plus {
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent;
+  border: none; color: #80b8f0;
+  font-size: 18px; font-weight: 500;
+  cursor: pointer; font-family: 'Sora', sans-serif;
+  transition: background 0.12s;
+  touch-action: manipulation;
+  flex-shrink: 0;
+}
+.table-minus:hover, .table-plus:hover { background: #1a3a5c; }
+.table-minus:active, .table-plus:active { background: #254d78; transform: scale(0.93); }
+
+#table-num {
+  width: 52px; height: 34px;
+  text-align: center;
+  border: none; outline: none;
+  background: transparent;
+  color: #80b8f0;
+  font-size: 16px; font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  -webkit-appearance: none; appearance: none;
+  -moz-appearance: textfield;
+}
+#table-num::-webkit-inner-spin-button,
+#table-num::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+.table-clear {
+  font-size: 11px; color: var(--text3);
+  background: none; border: none;
+  cursor: pointer; font-family: 'Sora', sans-serif;
+  padding: 4px 6px; transition: color 0.12s;
+  touch-action: manipulation;
+}
+.table-clear:hover { color: var(--red); }
+
+/* table badge on card */
+.table-badge {
+  font-size: 12px; font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  color: #80b8f0; letter-spacing: 0.04em;
+  background: #0d1e30; border: 1px solid #4080c0;
+  border-radius: 5px; padding: 2px 9px;
+  white-space: nowrap;
+}
+
+/* ═══════════════════════════════
+   TEXTAREA
+═══════════════════════════════ */
+#order-input {
+  width: 100%; min-height: 220px; padding: 16px;
+  font-size: 15px; line-height: 1.95; font-weight: 600;
+  border: none; outline: none; resize: vertical;
+  background: var(--bg2); color: var(--text);
+  font-family: 'Sora', sans-serif;
+  caret-color: var(--accent);
+  -webkit-appearance: none;
+}
+#order-input::placeholder { color: var(--text3); line-height: 1.9; }
+#order-input:focus { background: #12151b; }
+
+/* ═══════════════════════════════
+   ACTION ROW
+═══════════════════════════════ */
+.action-row {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 10px 18px; font-size: 14px; font-weight: 600;
+  font-family: 'Sora', sans-serif;
+  border-radius: var(--r-sm); border: 1px solid var(--border2);
+  background: var(--bg3); color: var(--text2);
+  cursor: pointer; transition: all 0.15s; white-space: nowrap;
+  -webkit-appearance: none; touch-action: manipulation;
+}
+.btn:hover  { background: var(--bg4); color: var(--text); border-color: var(--border3); }
+.btn:active { transform: scale(0.97); }
+
+.btn-print {
+  background: var(--accent); color: #0b0d10;
+  border-color: var(--accent); font-weight: 700;
+  font-size: 15px; padding: 11px 26px;
+  box-shadow: 0 0 24px rgba(240,192,74,0.18);
+  flex: 1; justify-content: center;
+}
+.btn-print:hover { background: var(--accent2); border-color: var(--accent2); color: #0b0d10; }
+
+.btn-refresh { flex: 1; justify-content: center; }
+.btn-clear { color: var(--red); border-color: #2e1515; background: var(--red-bg); }
+.btn-clear:hover { background: #281010; border-color: #4a2020; color: #ff9090; }
+
+/* ═══════════════════════════════
+   PREVIEW
+═══════════════════════════════ */
+.preview-panel {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r-lg); overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.preview-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--bg3); border-bottom: 1px solid var(--border);
+}
+
+#preview-body { padding: 20px; min-height: 160px; }
+
+.empty-state {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 12px;
+  padding: 3rem 1rem; text-align: center;
+}
+.empty-icon {
+  width: 56px; height: 56px;
+  border: 2px dashed var(--border3); border-radius: var(--r-md);
+  display: flex; align-items: center; justify-content: center; color: var(--text3);
+}
+.empty-txt { font-size: 14px; color: var(--text3); }
+
+/* ═══════════════════════════════
+   DOC HEADER (in preview)
+═══════════════════════════════ */
+.doc-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  padding-bottom: 16px; margin-bottom: 20px;
+  border-bottom: 2px solid var(--border2);
+  gap: 12px;
+}
+.doc-title { font-size: 22px; font-weight: 700; letter-spacing: -0.03em; color: var(--text); margin-bottom: 5px; }
+.doc-meta {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  font-size: 12px; color: var(--text3); font-family: 'JetBrains Mono', monospace;
+}
+.doc-meta-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border3); }
+.doc-badge {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  background: var(--accent-dim); color: var(--accent);
+  border: 1px solid var(--accent2); border-radius: 4px;
+  padding: 3px 8px; margin-top: 7px; display: inline-block;
+}
+
+.doc-disclaimer {
+  font-size: 11px; color: var(--text3);
+  font-style: italic;
+  margin-top: 10px;
+  padding: 6px 10px;
+  border: 1px dashed var(--border2);
+  border-radius: var(--r-sm);
+  display: inline-block;
+}
+.doc-count-num { font-size: 32px; font-weight: 700; letter-spacing: -0.04em; color: var(--accent); line-height: 1; font-family: 'JetBrains Mono', monospace; }
+.doc-count-lbl { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; margin-top: 2px; }
+
+/* ═══════════════════════════════
+   ORDER CARDS
+═══════════════════════════════ */
+.order-grid { display: grid; gap: 10px; }
+.order-grid.cols-1 { grid-template-columns: 1fr; }
+.order-grid.cols-2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+.order-grid.cols-3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
+
+@media (max-width: 600px) {
+  .order-grid.cols-2,
+  .order-grid.cols-3 { grid-template-columns: 1fr; }
+}
+@media (min-width: 601px) and (max-width: 900px) {
+  .order-grid.cols-3 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+
+.order-card {
+  background: var(--bg3); border: none;
+  border-radius: var(--r-md); overflow: hidden;
+  page-break-inside: avoid; break-inside: avoid;
+  animation: fadeIn 0.2s ease both;
+}
+@keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+.order-card-top {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 14px 8px;
+  background: var(--bg4);
+}
+.order-badge   { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); font-family: 'JetBrains Mono', monospace; }
+.order-num-big { font-size: 10px; color: var(--text3); font-family: 'JetBrains Mono', monospace; }
+.order-card-body { padding: 13px 14px; }
+
+.order-title {
+  font-weight: 800; letter-spacing: -0.02em; line-height: 1.4;
+  color: var(--text); margin-bottom: 9px;
+}
+.order-item { display: flex; align-items: flex-start; gap: 0; padding: 3px 0; }
+.order-dot  { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); opacity: 0.5; margin-top: 7px; flex-shrink: 0; }
+.order-item-text { line-height: 1.65; color: var(--text); font-weight: 600; }
+
+.type-tag {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; border-radius: 6px;
+  padding: 3px 10px; white-space: nowrap;
+  font-family: 'Sora', sans-serif;
+}
+.type-tag.hier { background: #0f2540; color: #80b8f0; border: 1px solid #4080c0; }
+.type-tag.mit  { background: #261c08; color: #f0a840; border: 1px solid #d0882a; }
+.type-tag.wa   { background: #0c2014; color: #25d366; border: 1px solid #25d366; }
+
+/* ═══════════════════════════════
+   SETTINGS PANEL (bottom)
+═══════════════════════════════ */
+.settings-panel {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r-lg); overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.settings-body {
+  padding: 18px 16px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px 24px;
+}
+
+@media (max-width: 640px) {
+  .settings-body { grid-template-columns: 1fr; gap: 18px; }
+}
+
+.setting-row { display: flex; flex-direction: column; gap: 8px; }
+
+.setting-label {
+  font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3);
+}
+
+/* saved indicator */
+.saved-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 10px; color: var(--green);
+  font-family: 'JetBrains Mono', monospace;
+  opacity: 0; transition: opacity 0.3s;
+}
+.saved-badge.show { opacity: 1; }
+
+/* paper */
+.paper-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 7px; }
+.paper-btn {
+  display: flex; align-items: center; gap: 9px;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 9px 10px;
+  cursor: pointer; font-family: 'Sora', sans-serif;
+  transition: all 0.14s; text-align: left;
+  touch-action: manipulation;
+}
+.paper-btn:hover  { background: var(--bg4); border-color: var(--border3); }
+.paper-btn.active { background: var(--accent-dim); border-color: var(--accent2); }
+.paper-preview { flex-shrink: 0; border: 1.5px solid var(--border3); background: var(--bg4); border-radius: 2px; }
+.paper-btn.active .paper-preview { border-color: var(--accent2); background: #2a2208; }
+.paper-name { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.2; }
+.paper-dim  { font-size: 10px; color: var(--text3); font-family: 'JetBrains Mono', monospace; }
+.paper-btn.active .paper-name { color: var(--accent); }
+.paper-btn.active .paper-dim  { color: var(--accent2); }
+
+/* columns */
+.col-row { display: flex; gap: 7px; }
+.col-btn {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 9px 6px;
+  cursor: pointer; font-family: 'Sora', sans-serif;
+  font-size: 12px; font-weight: 500; color: var(--text2);
+  transition: all 0.14s; touch-action: manipulation;
+}
+.col-btn:hover  { background: var(--bg4); border-color: var(--border3); color: var(--text); }
+.col-btn.active { background: var(--accent-dim); border-color: var(--accent2); color: var(--accent); }
+
+/* separator */
+.sep-row { display: flex; gap: 7px; flex-wrap: wrap; }
+.sep-btn {
+  flex: 1; min-width: 80px; padding: 9px 6px;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: var(--r-sm); cursor: pointer;
+  font-family: 'Sora', sans-serif; font-size: 11px; font-weight: 500;
+  color: var(--text2); text-align: center; transition: all 0.14s;
+  touch-action: manipulation;
+}
+.sep-btn:hover  { background: var(--bg4); border-color: var(--border3); color: var(--text); }
+.sep-btn.active { background: var(--accent-dim); border-color: var(--accent2); color: var(--accent); }
+
+/* font size */
+.slider-row { display: flex; align-items: center; gap: 10px; }
+input[type=range] {
+  flex: 1; -webkit-appearance: none; appearance: none;
+  height: 4px; background: var(--border2); border-radius: 2px; outline: none; cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 20px; height: 20px;
+  border-radius: 50%; background: var(--accent); cursor: pointer; border: 2px solid var(--bg);
+}
+.slider-val { font-size: 12px; font-weight: 600; color: var(--accent); font-family: 'JetBrains Mono', monospace; min-width: 34px; text-align: right; }
+
+/* ═══════════════════════════════
+   PRINT
+═══════════════════════════════ */
+@media print {
+  body { background: #fff !important; color: #111 !important; }
+
+  .topbar, .page-head, .panel, .action-row,
+  .settings-panel { display: none !important; }
+
+  .wrap { padding: 0 !important; max-width: 100% !important; }
+
+  .preview-panel { border: none !important; border-radius: 0 !important; background: transparent !important; }
+  .preview-head  { display: none !important; }
+  #preview-body  { padding: 0 !important; }
+
+  .doc-header  { border-bottom: 1px solid #555 !important; padding-bottom: 6px !important; margin-bottom: 10px !important; }
+  .doc-title   { color: #111 !important; font-size: 13px !important; margin-bottom: 2px !important; }
+  .doc-meta    { color: #555 !important; font-size: 9px !important; gap: 5px !important; }
+  .doc-badge   { background: #f5f5f5 !important; color: #333 !important; border-color: #ccc !important; font-size: 8px !important; padding: 1px 5px !important; margin-top: 3px !important; }
+  .doc-disclaimer {
+    color: #888 !important;
+    border-color: #bbb !important;
+    font-size: 8px !important;
+    padding: 2px 6px !important;
+    margin-top: 3px !important;
+  }
+  .doc-count-num { color: #111 !important; font-size: 28px !important; }
+  .doc-count-lbl { color: #888 !important; }
+
+  .order-grid { gap: 7px !important; }
+  .order-grid.cols-1 { grid-template-columns: 1fr !important; }
+  .order-grid.cols-2 { grid-template-columns: repeat(2,1fr) !important; }
+  .order-grid.cols-3 { grid-template-columns: repeat(3,1fr) !important; }
+  /* compact font sizes for print */
+  .order-title { font-size: 13px !important; }
+  .order-item-text { font-size: 12px !important; }
+
+  .order-card { background: #fff !important; border: 1px solid #ddd !important; border-radius: 4px !important; animation: none !important; }  
+  .order-card-body { padding: 6px 10px !important; }
+  .order-item { padding: 1px 0 !important; }
+  .order-card-top { background: #f5f5f5 !important; border-bottom: 1px solid #ddd !important; padding: 5px 10px !important; }
+  .order-badge    { color: #333 !important; }
+  .order-num-big  { color: #888 !important; }
+  .order-title    { color: #111 !important; border-bottom: none !important; }
+  .order-item-text { color: #111 !important; }
+  .order-dot      { display: none !important; }
+  .order-item     { padding-left: 0 !important; }
+  .type-tag {
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    padding: 4px 12px !important;
+    border-radius: 6px !important;
+    letter-spacing: 0.06em !important;
+  }
+  .type-tag.hier { background: #d6eaff !important; color: #0a3d7a !important; border: 2px solid #4080c0 !important; }
+  .type-tag.mit  { background: #fff0cc !important; color: #6b3a00 !important; border: 2px solid #d0882a !important; }
+  .type-tag.wa   { background: #ccf5dc !important; color: #0a5c28 !important; border: 2px solid #25d366 !important; }
+  .table-row { display: none !important; }
+  .table-badge {
+    font-size: 13px !important; font-weight: 800 !important;
+    background: #d6eaff !important; color: #0a3d7a !important;
+    border: 2px solid #4080c0 !important;
+    padding: 3px 10px !important;
+  }
+
+
+}
+
+@page {
+  margin: 6mm;
+  size: auto;
+}
+
+/* Force single page on small screens / mobile print */
+@media print and (max-width: 600px) {
+  html, body {
+    width: 100% !important;
+    height: auto !important;
+  }
+  .order-grid.cols-2,
+  .order-grid.cols-3 {
+    grid-template-columns: 1fr !important;
+  }
+  .order-title { font-size: 12px !important; }
+  .order-item-text { font-size: 11px !important; }
+  .order-card-body { padding: 4px 8px !important; }
+  .order-card-top  { padding: 4px 8px !important; }
+  .type-tag { font-size: 10px !important; padding: 2px 7px !important; }
+  .table-badge { font-size: 10px !important; padding: 2px 7px !important; }
+  .doc-title { font-size: 11px !important; }
+  .doc-meta  { font-size: 8px !important; }
+  .doc-header { margin-bottom: 6px !important; padding-bottom: 4px !important; }
+  .doc-disclaimer { font-size: 7px !important; }
+  .order-grid { gap: 4px !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ TOPBAR ═══ -->
+<header class="topbar">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
+        <rect x="2" y="2" width="6" height="6" rx="1.2" fill="#0b0d10"/>
+        <rect x="10" y="2" width="6" height="6" rx="1.2" fill="#0b0d10"/>
+        <rect x="2" y="10" width="6" height="6" rx="1.2" fill="#0b0d10"/>
+        <rect x="10" y="10" width="6" height="6" rx="1.2" fill="#0b0d10" opacity="0.3"/>
+      </svg>
+    </div>
+    <div>
+      <div class="logo-name">Bestellverwaltung</div>
+      <div class="logo-tag">Drucksystem</div>
+    </div>
+  </div>
+  <div class="topbar-spacer"></div>
+  <div class="live-clock">
+    <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+      <circle cx="8" cy="8" r="6.5" stroke="#4e5663" stroke-width="1.3"/>
+      <path d="M8 5v3.5l2.2 1.3" stroke="#f0c04a" stroke-width="1.4" stroke-linecap="round"/>
+    </svg>
+    <span class="clock-time" id="clock-time">--:--:--</span>
+    <span class="clock-sep">·</span>
+    <span class="clock-date" id="clock-date">---, -- ---</span>
+  </div>
+</header>
+
+<!-- ═══ MAIN ═══ -->
+<main class="wrap">
+
+  <div class="page-head">
+    <h1 class="page-title">Bestellungen <em>drucken</em></h1>
+    <p class="page-sub">Einfügen · bearbeiten · professionell drucken</p>
+  </div>
+
+  <!-- INPUT PANEL -->
+  <div class="panel">
+    <div class="panel-head">
+      <span class="panel-title">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <rect x="2" y="3" width="12" height="10" rx="2" stroke="currentColor" stroke-width="1.3"/>
+          <path d="M5 7h6M5 10h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        Bestelleingabe
+      </span>
+      <span class="pill pill-dim">bearbeitbar</span>
+    </div>
+
+    <!-- TYPE SELECTOR -->
+    <div class="type-bar">
+      <span class="type-lbl">Art:</span>
+      <button class="type-btn t-hier active" id="tb-hier" onclick="setType('hier',this)">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+          <path d="M3 13V7.5L8 3l5 4.5V13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="6" y="9" width="4" height="4" rx="0.5" fill="currentColor" opacity="0.6"/>
+        </svg>
+        Hier essen
+      </button>
+      <button class="type-btn t-mit" id="tb-mit" onclick="setType('mitnehmen',this)">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+          <path d="M5 4h6l1 8H4L5 4z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+          <path d="M6 4V3a2 2 0 014 0v1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        Mitnehmen
+      </button>
+      <button class="type-btn t-wa" id="tb-wa" onclick="setType('whatsapp',this)">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/>
+          <path d="M5.5 10.5c1 .5 4 1 5.5-1.5s0-5-3-5c-2 0-3.5 1.5-3.5 3.5 0 .8.2 1.5.5 2l-.5 2 2-.5z" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        WhatsApp
+      </button>
+    </div>
+
+    <!-- TABLE NUMBER ROW -->
+    <div class="table-row" id="table-row">
+      <span class="table-lbl">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="vertical-align:-1px">
+          <rect x="1" y="5" width="14" height="8" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
+          <path d="M5 5V3M11 5V3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        Tisch Nr.
+      </span>
+      <div class="table-input-wrap">
+        <button class="table-minus" onclick="changeTable(-1)">−</button>
+        <input type="number" id="table-num" value="" min="1" max="99" placeholder="—" oninput="liveUpdate()">
+        <button class="table-plus" onclick="changeTable(1)">+</button>
+      </div>
+      <button class="table-clear" onclick="clearTable()">✕ löschen</button>
+    </div>
+
+    <textarea id="order-input"
+      placeholder="Bestellungen hier einfügen …" oninput="liveUpdate()"></textarea>
+  </div>
+
+  <!-- ACTION ROW -->
+  <div class="action-row">
+    <button class="btn btn-print" onclick="printOrders()">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+        <rect x="3" y="1" width="10" height="7" rx="1.2" stroke="currentColor" stroke-width="1.5"/>
+        <rect x="2" y="5.5" width="12" height="8" rx="1.2" stroke="currentColor" stroke-width="1.5"/>
+        <rect x="5" y="9.5" width="6" height="3.5" rx="0.5" fill="currentColor"/>
+        <circle cx="12.5" cy="8" r="0.9" fill="currentColor"/>
+      </svg>
+      Jetzt drucken
+    </button>
+    <button class="btn btn-refresh" onclick="liveUpdate()">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+        <path d="M2 8a6 6 0 1 1 1.5 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        <path d="M2 5v3h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Aktualisieren
+    </button>
+    <button class="btn btn-clear" onclick="clearAll()">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+        <path d="M3 4h10M6 4V3h4v1M6 7v5M10 7v5M4 4l1 9h6l1-9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Leeren
+    </button>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="preview-panel">
+    <div class="preview-head">
+      <span class="panel-title">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+          <path d="M2 8s2.5-5 6-5 6 5 6 5-2.5 5-6 5-6-5-6-5z" stroke="currentColor" stroke-width="1.3"/>
+          <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/>
+        </svg>
+        Druckvorschau
+      </span>
+      <span class="pill pill-dim" id="preview-meta">— leer —</span>
+    </div>
+    <div id="preview-body">
+      <div class="empty-state">
+        <div class="empty-icon">
+          <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+            <rect x="4" y="3" width="18" height="20" rx="2.5" stroke="currentColor" stroke-width="1.4"/>
+            <path d="M8 9h10M8 13.5h7M8 18h5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="empty-txt">Bestellungen oben einfügen, um die Vorschau zu sehen</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS PANEL (bottom) -->
+  <div class="settings-panel">
+    <div class="panel-head">
+      <span class="panel-title">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.3"/>
+          <path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.42 1.42M11.53 11.53l1.42 1.42M3.05 12.95l1.42-1.42M11.53 4.47l1.42-1.42" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        Druckeinstellungen
+      </span>
+      <span class="saved-badge" id="saved-badge">
+        <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+          <path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Gespeichert
+      </span>
+    </div>
+
+    <div class="settings-body">
+
+      <!-- Paper format -->
+      <div class="setting-row">
+        <div class="setting-label">Papierformat</div>
+        <div class="paper-grid">
+          <button class="paper-btn active" id="pb-a4" onclick="setPaper('a4',this)">
+            <div class="paper-preview" style="width:16px;height:22px;"></div>
+            <div><div class="paper-name">A4</div><div class="paper-dim">210 × 297 mm</div></div>
+          </button>
+          <button class="paper-btn" id="pb-a3" onclick="setPaper('a3',this)">
+            <div class="paper-preview" style="width:20px;height:28px;"></div>
+            <div><div class="paper-name">A3</div><div class="paper-dim">297 × 420 mm</div></div>
+          </button>
+          <button class="paper-btn" id="pb-a5" onclick="setPaper('a5',this)">
+            <div class="paper-preview" style="width:13px;height:18px;"></div>
+            <div><div class="paper-name">A5</div><div class="paper-dim">148 × 210 mm</div></div>
+          </button>
+          <button class="paper-btn" id="pb-letter" onclick="setPaper('letter',this)">
+            <div class="paper-preview" style="width:16px;height:20px;"></div>
+            <div><div class="paper-name">Letter</div><div class="paper-dim">216 × 279 mm</div></div>
+          </button>
+          <button class="paper-btn" id="pb-custom" onclick="setPaper('custom',this)" style="grid-column:1/-1">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <div><div class="paper-name">Benutzerdefiniert</div><div class="paper-dim">Eigene Maße eingeben</div></div>
+          </button>
+        </div>
+        <!-- Custom size inputs -->
+        <div class="custom-paper-row" id="custom-paper-row">
+          <div class="custom-paper-field">
+            <label>Breite</label>
+            <input type="number" id="paper-w" min="50" max="1000" value="210" oninput="applyCustomPaper()">
+            <span class="custom-paper-unit">mm</span>
+          </div>
+          <div class="custom-paper-field">
+            <label>Höhe</label>
+            <input type="number" id="paper-h" min="50" max="1000" value="297" oninput="applyCustomPaper()">
+            <span class="custom-paper-unit">mm</span>
+          </div>
+        </div>
+      </div>
+
+
+
+      <!-- Font size -->
+      <div class="setting-row">
+        <div class="setting-label">Schriftgröße</div>
+        <div class="slider-row">
+          <span style="font-size:10px;color:var(--text3);font-weight:600;">A</span>
+          <input type="range" id="font-slider" min="11" max="19" value="14" step="1" oninput="setFontSize(this.value)">
+          <span style="font-size:15px;color:var(--text2);font-weight:600;">A</span>
+          <span class="slider-val" id="font-val">14px</span>
+        </div>
+      </div>
+
+
+
+    </div>
+  </div>
+
+</main>
+
+<script>
+/* ─── CONSTANTS ─── */
+const DAYS   = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+const MONTHS = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+const LS_KEY = 'bestell_settings_v1';
+
+/* ─── STATE ─── */
+const st = { sep:'empty', cols:2, paper:'a4', fontSize:14, orderType:'hier' };
+
+/* ─── LOCALSTORAGE ─── */
+function saveSettings(){
+  try { localStorage.setItem(LS_KEY, JSON.stringify({ sep:st.sep, cols:st.cols, paper:st.paper, fontSize:st.fontSize })); }
+  catch(e){}
+  const badge = document.getElementById('saved-badge');
+  badge.classList.add('show');
+  setTimeout(()=>badge.classList.remove('show'), 1800);
+}
+
+function loadSettings(){
+  try {
+    const s = JSON.parse(localStorage.getItem(LS_KEY)||'{}');
+    if(s.sep)      st.sep      = s.sep;
+    if(s.cols)     st.cols     = s.cols;
+    if(s.paper)    st.paper    = s.paper;
+    if(s.fontSize) st.fontSize = s.fontSize;
+  } catch(e){}
+}
+
+function applySettings(){
+  // paper
+  document.querySelectorAll('.paper-btn').forEach(b=>b.classList.remove('active'));
+  const pb = document.getElementById('pb-'+st.paper);
+  if(pb) pb.classList.add('active');
+  if(st.paper === 'custom'){
+    const cr = document.getElementById('custom-paper-row');
+    if(cr) cr.classList.add('visible');
+    applyCustomPaper();
+  } else {
+    document.body.className = 'paper-'+st.paper;
+  }
+
+  // cols
+  document.querySelectorAll('.col-btn').forEach(b=>b.classList.remove('active'));
+  const cb = document.getElementById('cb-'+st.cols);
+  if(cb) cb.classList.add('active');
+
+  // font
+  const slider = document.getElementById('font-slider');
+  if(slider){ slider.value = st.fontSize; }
+  document.getElementById('font-val').textContent = st.fontSize+'px';
+
+  // sep
+  document.querySelectorAll('.sep-btn').forEach(b=>b.classList.remove('active'));
+  const sepMap = { empty:'sb-empty', dash:'sb-dash', number:'sb-num' };
+  const sb = document.getElementById(sepMap[st.sep]);
+  if(sb) sb.classList.add('active');
+}
+
+/* ─── CLOCK ─── */
+function getDE(){ return new Date(new Date().toLocaleString('en-US',{timeZone:'Europe/Berlin'})); }
+function pad(n){ return String(n).padStart(2,'0'); }
+function fmtTime(d){ return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; }
+function fmtDate(d){ return `${DAYS[d.getDay()]}, ${d.getDate()}. ${MONTHS[d.getMonth()]} ${d.getFullYear()}`; }
+function fmtDateShort(d){ return `${DAYS[d.getDay()]}, ${d.getDate()}. ${MONTHS[d.getMonth()]}`; }
+
+function tickClock(){
+  const d = getDE();
+  document.getElementById('clock-time').textContent = fmtTime(d);
+  document.getElementById('clock-date').textContent = fmtDateShort(d);
+}
+tickClock(); setInterval(tickClock,1000);
+
+/* ─── CONTROLS ─── */
+function setType(t,el){
+  st.orderType = t;
+  document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  const row = document.getElementById('table-row');
+  if(t === 'hier'){
+    row.classList.add('visible');
+  } else {
+    row.classList.remove('visible');
+    document.getElementById('table-num').value = '';
+  }
+  liveUpdate();
+}
+
+function changeTable(delta){
+  const inp = document.getElementById('table-num');
+  const cur = parseInt(inp.value)||0;
+  const next = Math.max(1, cur + delta);
+  inp.value = next;
+  liveUpdate();
+}
+
+function clearTable(){
+  document.getElementById('table-num').value = '';
+  liveUpdate();
+}
+
+function setPaper(p,el){
+  st.paper = p;
+  document.querySelectorAll('.paper-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  const customRow = document.getElementById('custom-paper-row');
+  if(p === 'custom'){
+    customRow.classList.add('visible');
+    applyCustomPaper();
+  } else {
+    customRow.classList.remove('visible');
+    document.body.className = 'paper-'+p;
+    updatePrintPageSize(null);
+  }
+  saveSettings(); liveUpdate();
+}
+
+function applyCustomPaper(){
+  const w = parseInt(document.getElementById('paper-w').value) || 210;
+  const h = parseInt(document.getElementById('paper-h').value) || 297;
+  updatePrintPageSize(w, h);
+  liveUpdate();
+}
+
+function updatePrintPageSize(w, h){
+  let style = document.getElementById('dynamic-page-size');
+  if(!style){
+    style = document.createElement('style');
+    style.id = 'dynamic-page-size';
+    document.head.appendChild(style);
+  }
+  if(w && h){
+    style.textContent = `@page { size: ${w}mm ${h}mm; margin: 6mm; }`;
+  } else {
+    style.textContent = '';
+  }
+}
+
+function setCols(n,el){
+  st.cols = n;
+  document.querySelectorAll('.col-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  saveSettings(); liveUpdate();
+}
+
+function setSep(s,el){
+  st.sep = s;
+  document.querySelectorAll('.sep-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  saveSettings(); liveUpdate();
+}
+
+function setFontSize(v){
+  st.fontSize = parseInt(v);
+  document.getElementById('font-val').textContent = v+'px';
+  saveSettings(); liveUpdate();
+}
+
+/* ─── PARSE ─── */
+function splitOrders(text){
+  if(!text.trim()) return [];
+  let p;
+  if(st.sep==='dash'){
+    p = text.split(/\n-{2,}\n/).map(s=>s.trim()).filter(Boolean);
+    if(p.length<=1) p = text.split(/\n\s*\n+/).map(s=>s.trim()).filter(Boolean);
+  } else if(st.sep==='number'){
+    p = text.split(/\n(?=\d+[\.\-\)]\s)/).map(s=>s.trim()).filter(Boolean);
+    if(p.length<=1) p = text.split(/\n\s*\n+/).map(s=>s.trim()).filter(Boolean);
+  } else {
+    p = text.split(/\n\s*\n+/).map(s=>s.trim()).filter(Boolean);
+  }
+  return p;
+}
+
+/* ─── RENDER ─── */
+function renderCard(text,idx){
+  const lines = text.split('\n').filter(l=>l.trim());
+  let html = '';
+  lines.forEach((line,i)=>{
+    const bullet = /^[-*•]\s/.test(line.trim());
+    const num    = /^\d+[\.\-\)]\s/.test(line.trim());
+    if(i===0 && !bullet && !num){
+      html += `<div class="order-title" style="font-size:${st.fontSize}px;font-weight:800">${line}</div>`;
+    } else {
+      const clean = line.replace(/^[-*•\d\.\-\)]+\s*/,'');
+      html += `<div class="order-item"><span class="order-item-text" style="font-size:${st.fontSize}px;font-weight:600">${clean}</span></div>`;
+    }
+  });
+  const tLabels = { hier:'Hier essen', mitnehmen:'Mitnehmen', whatsapp:'WhatsApp' };
+  const tCls    = { hier:'hier', mitnehmen:'mit', whatsapp:'wa' };
+  const tag = `<span class="type-tag ${tCls[st.orderType]}">${tLabels[st.orderType]}</span>`;
+  const tableVal = document.getElementById('table-num') ? document.getElementById('table-num').value : '';
+  const tableBadge = (st.orderType === 'hier' && tableVal)
+    ? `<span class="table-badge">Tisch ${tableVal}</span>`
+    : '';
+  return `
+    <div class="order-card" style="animation-delay:${idx*30}ms">
+      <div class="order-card-top">
+        <span class="order-badge">Bestellung</span>
+        <div style="display:flex;align-items:center;gap:7px">${tableBadge}${tag}</div>
+      </div>
+      <div class="order-card-body">${html}</div>
+    </div>`;
+}
+
+/* ─── UPDATE ─── */
+function liveUpdate(){
+  const text   = document.getElementById('order-input').value;
+  const orders = splitOrders(text);
+  const body   = document.getElementById('preview-body');
+  const meta   = document.getElementById('preview-meta');
+
+  if(!orders.length){
+    body.innerHTML = `<div class="empty-state"><div class="empty-icon"><svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="4" y="3" width="18" height="20" rx="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 9h10M8 13.5h7M8 18h5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></div><div class="empty-txt">Bestellungen oben einfügen, um die Vorschau zu sehen</div></div>`;
+    meta.textContent = '— leer —'; return;
+  }
+
+  const d = getDE();
+  const totalLines = orders.reduce((a,o)=>a+o.split('\n').filter(l=>l.trim()).length,0);
+  const w = document.getElementById('paper-w') ? document.getElementById('paper-w').value : 210;
+  const h = document.getElementById('paper-h') ? document.getElementById('paper-h').value : 297;
+  const pNames = {a4:'A4',a3:'A3',a5:'A5',letter:'Letter',custom:`${w}×${h}mm`};
+
+  const hdr = `
+    <div class="doc-header">
+      <div>
+        <div class="doc-title">Bestellübersicht</div>
+        <div class="doc-meta">
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 2v2M11 2v2M2 7h12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          ${fmtDate(d)}
+          <span class="doc-meta-dot"></span>
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M8 5v3.5l2.5 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          ${fmtTime(d)} Uhr
+        </div>
+        <br><span class="doc-disclaimer">⚠ Kein Steuerbeleg — Diese Übersicht ist keine Rechnung und ersetzt keine ordentliche Rechnung.</span>
+      </div>
+
+    </div>`;
+
+  body.innerHTML = hdr + `<div class="order-grid cols-${st.cols}">${orders.map((o,i)=>renderCard(o,i)).join('')}</div>`;
+  meta.textContent = '';
+}
+
+function printOrders(){
+  if(!document.getElementById('order-input').value.trim()) return;
+  liveUpdate();
+  setTimeout(()=>window.print(),280);
+}
+
+function clearAll(){
+  document.getElementById('order-input').value='';
+  liveUpdate();
+}
+
+/* ─── INIT ─── */
+loadSettings();
+applySettings();
+if(st.orderType === 'hier'){
+  const row = document.getElementById('table-row');
+  if(row) row.classList.add('visible');
+}
+liveUpdate();
+</script>
+</body>
+</html>
