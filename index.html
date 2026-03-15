@@ -188,47 +188,6 @@ body {
 .type-btn.t-wa.active { background: #0c2014; border-color: #25d366; color: #25d366; box-shadow: 0 0 12px rgba(37,211,102,0.18); }
 
 /* ═══════════════════════════════
-   CUSTOM PAPER INPUT
-═══════════════════════════════ */
-.custom-paper-row {
-  display: none;
-  align-items: center;
-  gap: 8px;
-  margin-top: 8px;
-  flex-wrap: wrap;
-  animation: slideDown 0.18s ease;
-}
-.custom-paper-row.visible { display: flex; }
-
-.custom-paper-field {
-  display: flex; align-items: center; gap: 6px;
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  border-radius: var(--r-sm);
-  padding: 7px 10px;
-  flex: 1; min-width: 110px;
-}
-.custom-paper-field label {
-  font-size: 10px; font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.08em;
-  color: var(--text3); white-space: nowrap;
-}
-.custom-paper-field input[type=number] {
-  flex: 1; width: 52px;
-  background: transparent; border: none; outline: none;
-  color: var(--accent); font-size: 14px; font-weight: 600;
-  font-family: 'JetBrains Mono', monospace;
-  text-align: center;
-  -webkit-appearance: none; -moz-appearance: textfield;
-}
-.custom-paper-field input[type=number]::-webkit-inner-spin-button,
-.custom-paper-field input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
-.custom-paper-unit {
-  font-size: 10px; color: var(--text3);
-  font-family: 'JetBrains Mono', monospace;
-}
-
-/* ═══════════════════════════════
    TABLE NUMBER
 ═══════════════════════════════ */
 .table-row {
@@ -505,24 +464,7 @@ body {
 }
 .saved-badge.show { opacity: 1; }
 
-/* paper */
-.paper-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 7px; }
-.paper-btn {
-  display: flex; align-items: center; gap: 9px;
-  background: var(--bg3); border: 1px solid var(--border);
-  border-radius: var(--r-sm); padding: 9px 10px;
-  cursor: pointer; font-family: 'Sora', sans-serif;
-  transition: all 0.14s; text-align: left;
-  touch-action: manipulation;
-}
-.paper-btn:hover  { background: var(--bg4); border-color: var(--border3); }
-.paper-btn.active { background: var(--accent-dim); border-color: var(--accent2); }
-.paper-preview { flex-shrink: 0; border: 1.5px solid var(--border3); background: var(--bg4); border-radius: 2px; }
-.paper-btn.active .paper-preview { border-color: var(--accent2); background: #2a2208; }
-.paper-name { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.2; }
-.paper-dim  { font-size: 10px; color: var(--text3); font-family: 'JetBrains Mono', monospace; }
-.paper-btn.active .paper-name { color: var(--accent); }
-.paper-btn.active .paper-dim  { color: var(--accent2); }
+
 
 /* columns */
 .col-row { display: flex; gap: 7px; }
@@ -627,44 +569,6 @@ input[type=range]::-webkit-slider-thumb {
     padding: 3px 10px !important;
   }
 
-
-}
-
-@page {
-  margin: 6mm;
-  size: auto;
-}
-
-/* A4 ÷ 6 print mode */
-@media print {
-  body.paper-a4_6 .order-grid { grid-template-columns: 1fr !important; gap: 3px !important; }
-  body.paper-a4_6 .order-title { font-size: 11px !important; margin-bottom: 3px !important; }
-  body.paper-a4_6 .order-item-text { font-size: 10px !important; }
-  body.paper-a4_6 .order-item { padding: 1px 0 !important; }
-  body.paper-a4_6 .order-card-body { padding: 3px 7px !important; }
-  body.paper-a4_6 .order-card-top { padding: 3px 7px !important; }
-  body.paper-a4_6 .type-tag { font-size: 9px !important; padding: 1px 6px !important; }
-  body.paper-a4_6 .table-badge { font-size: 9px !important; padding: 1px 6px !important; }
-  body.paper-a4_6 .doc-header { margin-bottom: 4px !important; padding-bottom: 3px !important; }
-  body.paper-a4_6 .doc-title { font-size: 10px !important; }
-  body.paper-a4_6 .doc-meta { font-size: 7px !important; }
-  body.paper-a4_6 .doc-disclaimer { font-size: 6px !important; padding: 1px 4px !important; }
-}
-
-/* A4 ÷ 4 print mode */
-@media print {
-  body.paper-a4_4 .order-grid { grid-template-columns: 1fr !important; gap: 5px !important; }
-  body.paper-a4_4 .order-title { font-size: 13px !important; margin-bottom: 4px !important; }
-  body.paper-a4_4 .order-item-text { font-size: 12px !important; }
-  body.paper-a4_4 .order-item { padding: 2px 0 !important; }
-  body.paper-a4_4 .order-card-body { padding: 5px 9px !important; }
-  body.paper-a4_4 .order-card-top { padding: 4px 9px !important; }
-  body.paper-a4_4 .type-tag { font-size: 10px !important; padding: 2px 8px !important; }
-  body.paper-a4_4 .table-badge { font-size: 10px !important; padding: 2px 8px !important; }
-  body.paper-a4_4 .doc-header { margin-bottom: 6px !important; padding-bottom: 4px !important; }
-  body.paper-a4_4 .doc-title { font-size: 12px !important; }
-  body.paper-a4_4 .doc-meta { font-size: 8px !important; }
-  body.paper-a4_4 .doc-disclaimer { font-size: 7px !important; padding: 2px 5px !important; }
 }
 
 /* Force single page on small screens / mobile print */
@@ -860,55 +764,8 @@ input[type=range]::-webkit-slider-thumb {
 
     <div class="settings-body">
 
-      <!-- Paper format -->
-      <div class="setting-row">
-        <div class="setting-label">Papierformat</div>
-        <div class="paper-grid">
-          <button class="paper-btn active" id="pb-a4" onclick="setPaper('a4',this)">
-            <div class="paper-preview" style="width:16px;height:22px;"></div>
-            <div><div class="paper-name">A4</div><div class="paper-dim">210 × 297 mm</div></div>
-          </button>
-          <button class="paper-btn" id="pb-a3" onclick="setPaper('a3',this)">
-            <div class="paper-preview" style="width:20px;height:28px;"></div>
-            <div><div class="paper-name">A3</div><div class="paper-dim">297 × 420 mm</div></div>
-          </button>
-          <button class="paper-btn" id="pb-a5" onclick="setPaper('a5',this)">
-            <div class="paper-preview" style="width:13px;height:18px;"></div>
-            <div><div class="paper-name">A5</div><div class="paper-dim">148 × 210 mm</div></div>
-          </button>
-          <button class="paper-btn" id="pb-letter" onclick="setPaper('letter',this)">
-            <div class="paper-preview" style="width:16px;height:20px;"></div>
-            <div><div class="paper-name">Letter</div><div class="paper-dim">216 × 279 mm</div></div>
-          </button>
-          <button class="paper-btn" id="pb-a4_6" onclick="setPaper('a4_6',this)" style="grid-column:1/-1">
-            <div class="paper-preview" style="width:16px;height:15px;"></div>
-            <div><div class="paper-name">A4 ÷ 6</div><div class="paper-dim">105 × 99 mm — 6 Abschnitte pro Blatt</div></div>
-          </button>
-          <button class="paper-btn" id="pb-a4_4" onclick="setPaper('a4_4',this)" style="grid-column:1/-1">
-            <div class="paper-preview" style="width:16px;height:20px;"></div>
-            <div><div class="paper-name">A4 ÷ 4</div><div class="paper-dim">105 × 148 mm — 4 Abschnitte pro Blatt (= A5)</div></div>
-          </button>
-          <button class="paper-btn" id="pb-custom" onclick="setPaper('custom',this)" style="grid-column:1/-1">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-            <div><div class="paper-name">Benutzerdefiniert</div><div class="paper-dim">Eigene Maße eingeben</div></div>
-          </button>
-        </div>
-        <!-- Custom size inputs -->
-        <div class="custom-paper-row" id="custom-paper-row">
-          <div class="custom-paper-field">
-            <label>Breite</label>
-            <input type="number" id="paper-w" min="50" max="1000" value="210" oninput="applyCustomPaper()">
-            <span class="custom-paper-unit">mm</span>
-          </div>
-          <div class="custom-paper-field">
-            <label>Höhe</label>
-            <input type="number" id="paper-h" min="50" max="1000" value="297" oninput="applyCustomPaper()">
-            <span class="custom-paper-unit">mm</span>
-          </div>
-        </div>
-      </div>
 
-
+      
 
       <!-- Font size -->
       <div class="setting-row">
@@ -920,8 +777,6 @@ input[type=range]::-webkit-slider-thumb {
           <span class="slider-val" id="font-val">14px</span>
         </div>
       </div>
-
-
 
     </div>
   </div>
@@ -935,11 +790,11 @@ const MONTHS = ['Januar','Februar','März','April','Mai','Juni','Juli','August',
 const LS_KEY = 'bestell_settings_v1';
 
 /* ─── STATE ─── */
-const st = { sep:'empty', cols:2, paper:'a4', fontSize:14, orderType:'hier' };
+const st = { sep:'empty', cols:2, fontSize:14, orderType:'hier' };
 
 /* ─── LOCALSTORAGE ─── */
 function saveSettings(){
-  try { localStorage.setItem(LS_KEY, JSON.stringify({ sep:st.sep, cols:st.cols, paper:st.paper, fontSize:st.fontSize })); }
+  try { localStorage.setItem(LS_KEY, JSON.stringify({ sep:st.sep, cols:st.cols, fontSize:st.fontSize })); }
   catch(e){}
   const badge = document.getElementById('saved-badge');
   badge.classList.add('show');
@@ -951,29 +806,12 @@ function loadSettings(){
     const s = JSON.parse(localStorage.getItem(LS_KEY)||'{}');
     if(s.sep)      st.sep      = s.sep;
     if(s.cols)     st.cols     = s.cols;
-    if(s.paper)    st.paper    = s.paper;
+
     if(s.fontSize) st.fontSize = s.fontSize;
   } catch(e){}
 }
 
 function applySettings(){
-  // paper
-  document.querySelectorAll('.paper-btn').forEach(b=>b.classList.remove('active'));
-  const pb = document.getElementById('pb-'+st.paper);
-  if(pb) pb.classList.add('active');
-  if(st.paper === 'custom'){
-    const cr = document.getElementById('custom-paper-row');
-    if(cr) cr.classList.add('visible');
-    applyCustomPaper();
-  } else if(st.paper === 'a4_6'){
-    document.body.className = 'paper-a4_6';
-    updatePrintPageSize(105, 99);
-  } else if(st.paper === 'a4_4'){
-    document.body.className = 'paper-a4_4';
-    updatePrintPageSize(105, 148);
-  } else {
-    document.body.className = 'paper-'+st.paper;
-  }
 
   // cols
   document.querySelectorAll('.col-btn').forEach(b=>b.classList.remove('active'));
@@ -1034,50 +872,6 @@ function clearTable(){
   liveUpdate();
 }
 
-function setPaper(p,el){
-  st.paper = p;
-  document.querySelectorAll('.paper-btn').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
-  const customRow = document.getElementById('custom-paper-row');
-  if(p === 'custom'){
-    customRow.classList.add('visible');
-    applyCustomPaper();
-  } else if(p === 'a4_6'){
-    customRow.classList.remove('visible');
-    document.body.className = 'paper-a4_6';
-    updatePrintPageSize(105, 99);
-  } else if(p === 'a4_4'){
-    customRow.classList.remove('visible');
-    document.body.className = 'paper-a4_4';
-    updatePrintPageSize(105, 148);
-  } else {
-    customRow.classList.remove('visible');
-    document.body.className = 'paper-'+p;
-    updatePrintPageSize(null);
-  }
-  saveSettings(); liveUpdate();
-}
-
-function applyCustomPaper(){
-  const w = parseInt(document.getElementById('paper-w').value) || 210;
-  const h = parseInt(document.getElementById('paper-h').value) || 297;
-  updatePrintPageSize(w, h);
-  liveUpdate();
-}
-
-function updatePrintPageSize(w, h){
-  let style = document.getElementById('dynamic-page-size');
-  if(!style){
-    style = document.createElement('style');
-    style.id = 'dynamic-page-size';
-    document.head.appendChild(style);
-  }
-  if(w && h){
-    style.textContent = `@page { size: ${w}mm ${h}mm; margin: 6mm; }`;
-  } else {
-    style.textContent = '';
-  }
-}
 
 function setCols(n,el){
   st.cols = n;
@@ -1160,9 +954,6 @@ function liveUpdate(){
 
   const d = getDE();
   const totalLines = orders.reduce((a,o)=>a+o.split('\n').filter(l=>l.trim()).length,0);
-  const w = document.getElementById('paper-w') ? document.getElementById('paper-w').value : 210;
-  const h = document.getElementById('paper-h') ? document.getElementById('paper-h').value : 297;
-  const pNames = {a4:'A4',a3:'A3',a5:'A5',letter:'Letter',a4_6:'A4÷6',a4_4:'A4÷4',custom:`${w}×${h}mm`};
 
   const hdr = `
     <div class="doc-header">
