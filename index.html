@@ -651,6 +651,22 @@ input[type=range]::-webkit-slider-thumb {
   body.paper-a4_6 .doc-disclaimer { font-size: 6px !important; padding: 1px 4px !important; }
 }
 
+/* A4 ÷ 4 print mode */
+@media print {
+  body.paper-a4_4 .order-grid { grid-template-columns: 1fr !important; gap: 5px !important; }
+  body.paper-a4_4 .order-title { font-size: 13px !important; margin-bottom: 4px !important; }
+  body.paper-a4_4 .order-item-text { font-size: 12px !important; }
+  body.paper-a4_4 .order-item { padding: 2px 0 !important; }
+  body.paper-a4_4 .order-card-body { padding: 5px 9px !important; }
+  body.paper-a4_4 .order-card-top { padding: 4px 9px !important; }
+  body.paper-a4_4 .type-tag { font-size: 10px !important; padding: 2px 8px !important; }
+  body.paper-a4_4 .table-badge { font-size: 10px !important; padding: 2px 8px !important; }
+  body.paper-a4_4 .doc-header { margin-bottom: 6px !important; padding-bottom: 4px !important; }
+  body.paper-a4_4 .doc-title { font-size: 12px !important; }
+  body.paper-a4_4 .doc-meta { font-size: 8px !important; }
+  body.paper-a4_4 .doc-disclaimer { font-size: 7px !important; padding: 2px 5px !important; }
+}
+
 /* Force single page on small screens / mobile print */
 @media print and (max-width: 600px) {
   html, body {
@@ -868,6 +884,10 @@ input[type=range]::-webkit-slider-thumb {
             <div class="paper-preview" style="width:16px;height:15px;"></div>
             <div><div class="paper-name">A4 ÷ 6</div><div class="paper-dim">105 × 99 mm — 6 Abschnitte pro Blatt</div></div>
           </button>
+          <button class="paper-btn" id="pb-a4_4" onclick="setPaper('a4_4',this)" style="grid-column:1/-1">
+            <div class="paper-preview" style="width:16px;height:20px;"></div>
+            <div><div class="paper-name">A4 ÷ 4</div><div class="paper-dim">105 × 148 mm — 4 Abschnitte pro Blatt (= A5)</div></div>
+          </button>
           <button class="paper-btn" id="pb-custom" onclick="setPaper('custom',this)" style="grid-column:1/-1">
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
             <div><div class="paper-name">Benutzerdefiniert</div><div class="paper-dim">Eigene Maße eingeben</div></div>
@@ -948,6 +968,9 @@ function applySettings(){
   } else if(st.paper === 'a4_6'){
     document.body.className = 'paper-a4_6';
     updatePrintPageSize(105, 99);
+  } else if(st.paper === 'a4_4'){
+    document.body.className = 'paper-a4_4';
+    updatePrintPageSize(105, 148);
   } else {
     document.body.className = 'paper-'+st.paper;
   }
@@ -1023,6 +1046,10 @@ function setPaper(p,el){
     customRow.classList.remove('visible');
     document.body.className = 'paper-a4_6';
     updatePrintPageSize(105, 99);
+  } else if(p === 'a4_4'){
+    customRow.classList.remove('visible');
+    document.body.className = 'paper-a4_4';
+    updatePrintPageSize(105, 148);
   } else {
     customRow.classList.remove('visible');
     document.body.className = 'paper-'+p;
@@ -1135,7 +1162,7 @@ function liveUpdate(){
   const totalLines = orders.reduce((a,o)=>a+o.split('\n').filter(l=>l.trim()).length,0);
   const w = document.getElementById('paper-w') ? document.getElementById('paper-w').value : 210;
   const h = document.getElementById('paper-h') ? document.getElementById('paper-h').value : 297;
-  const pNames = {a4:'A4',a3:'A3',a5:'A5',letter:'Letter',a4_6:'A4÷6',custom:`${w}×${h}mm`};
+  const pNames = {a4:'A4',a3:'A3',a5:'A5',letter:'Letter',a4_6:'A4÷6',a4_4:'A4÷4',custom:`${w}×${h}mm`};
 
   const hdr = `
     <div class="doc-header">
