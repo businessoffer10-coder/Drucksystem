@@ -896,24 +896,18 @@ function setFontSize(v){
 /* ─── PARSE ─── */
 function splitOrders(text){
   if(!text.trim()) return [];
-  let p;
-  if(st.sep==='dash'){
-    p = text.split(/\n-{2,}\n/).map(s=>s.trim()).filter(Boolean);
-    if(p.length<=1) p = text.split(/\n\s*\n+/).map(s=>s.trim()).filter(Boolean);
-  } else if(st.sep==='number'){
-    p = text.split(/\n(?=\d+[\.\-\)]\s)/).map(s=>s.trim()).filter(Boolean);
-    if(p.length<=1) p = text.split(/\n\s*\n+/).map(s=>s.trim()).filter(Boolean);
-  } else {
-    p = text.split(/\n\s*\n+/).map(s=>s.trim()).filter(Boolean);
-  }
-  return p;
+  return [text.trim()];
 }
 
 /* ─── RENDER ─── */
 function renderCard(text,idx){
-  const lines = text.split('\n').filter(l=>l.trim());
+  const lines = text.split('\n');
   let html = '';
   lines.forEach((line,i)=>{
+    if(!line.trim()){
+      html += `<div style="height:6px"></div>`;
+      return;
+    }
     const bullet = /^[-*•]\s/.test(line.trim());
     const num    = /^\d+[\.\-\)]\s/.test(line.trim());
     if(i===0 && !bullet && !num){
