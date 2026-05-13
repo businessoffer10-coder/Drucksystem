@@ -667,86 +667,149 @@
     .two-col { display: block; }
     .cart-card { position: relative; top: 0; }
   }
-  /* ===== QUICK ACCESS ===== */
-  .quick-access-bar {
-    position: sticky;
-    top: 0;
-    z-index: 60;
-    margin-bottom: 16px;
-    padding: 10px 8px 12px;
-    border-bottom: 2px solid var(--border-light);
-    background: rgba(240, 242, 245, 0.92);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-radius: 0 0 var(--radius) var(--radius);
-    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  /* ===== FLOATING BOTTOM NAVIGATION ===== */
+  .float-nav-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    pointer-events: none;
+    padding: 0 12px 16px;
+    display: flex;
+    justify-content: center;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease;
     transform: translateY(0);
     opacity: 1;
   }
-  .quick-access-bar.scroll-hidden {
-    transform: translateY(-120%);
+  .float-nav-container.hidden {
+    transform: translateY(120%);
     opacity: 0;
-    pointer-events: none;
   }
-  .quick-chips {
+  .float-nav-inner {
+    pointer-events: all;
+    background: rgba(26, 37, 47, 0.92);
+    backdrop-filter: blur(20px) saturate(1.5);
+    -webkit-backdrop-filter: blur(20px) saturate(1.5);
+    border-radius: 24px;
+    padding: 8px 12px;
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    padding: 4px 2px;
-    justify-content: center;
-    max-height: 120px;
-    overflow-y: auto;
-    scrollbar-width: thin;
+    gap: 4px;
+    align-items: center;
+    box-shadow: 0 -8px 40px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.08) inset;
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
   }
-  .quick-chips::-webkit-scrollbar { height: 4px; width: 4px; }
-  .quick-chips::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
-  .quick-chip {
-    flex: 1 1 auto;
-    min-width: 120px;
-    max-width: 200px;
-    background: #fff;
-    border: 2px solid var(--border);
-    border-radius: 50px;
-    padding: 8px 14px;
-    font-size: 0.82rem;
+  .float-nav-inner::-webkit-scrollbar { display: none; }
+
+  .float-nav-btn {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    min-width: 56px;
+    max-width: 72px;
+    padding: 8px 6px;
+    border-radius: 16px;
+    border: none;
+    background: transparent;
+    color: rgba(255,255,255,0.55);
+    font-family: inherit;
+    font-size: 0.65rem;
     font-weight: 700;
     cursor: pointer;
-    transition: var(--transition);
-    color: var(--text-light);
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    white-space: nowrap;
+    letter-spacing: 0.2px;
+  }
+  .float-nav-btn .icon {
+    font-size: 1.3rem;
+    line-height: 1;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    filter: grayscale(0.3);
+  }
+  .float-nav-btn .label {
+    font-size: 0.6rem;
+    max-width: 60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+  }
+  .float-nav-btn .count {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: var(--primary);
+    color: #fff;
+    font-size: 0.55rem;
+    font-weight: 900;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    white-space: nowrap;
+    padding: 0 3px;
+    box-shadow: 0 2px 6px rgba(230,126,34,0.4);
+    transform: scale(0);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-  .quick-chip:hover {
-    border-color: var(--primary);
-    background: var(--primary-light);
+  .float-nav-btn .count.show {
+    transform: scale(1);
+  }
+  .float-nav-btn:hover {
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.85);
+  }
+  .float-nav-btn:hover .icon {
+    transform: translateY(-3px) scale(1.15);
+    filter: grayscale(0);
+  }
+  .float-nav-btn.active {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(230,126,34,0.35);
+  }
+  .float-nav-btn.active .icon {
+    transform: translateY(-2px) scale(1.1);
+    filter: grayscale(0);
+  }
+  .float-nav-btn.active .count {
+    background: #fff;
     color: var(--primary-dark);
-    transform: translateY(-1px);
   }
-  .quick-chip.active {
-    background: var(--primary);
-    color: #fff;
-    border-color: var(--primary-dark);
-    box-shadow: 0 4px 12px rgba(230,126,34,0.3);
-  }
-  .quick-chip .icon { font-size: 1rem; }
-  .quick-chip .count {
-    background: rgba(255,255,255,0.3);
-    padding: 2px 8px;
-    border-radius: 20px;
-    font-size: 0.7rem;
-  }
-  .quick-chip.active .count { background: rgba(255,255,255,0.25); }
 
-  .quick-badge {
+  /* Scroll indicator dots */
+  .float-nav-scroll-hint {
+    display: none;
+  }
+
+  /* Active indicator pill */
+  .float-nav-indicator {
+    position: absolute;
+    bottom: 3px;
+    left: 0;
+    width: 20px;
+    height: 3px;
     background: var(--primary);
-    color: #fff;
-    padding: 4px 14px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 800;
+    border-radius: 3px;
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    opacity: 0;
+  }
+  .float-nav-btn.active .float-nav-indicator {
+    opacity: 1;
+  }
+
+  /* Hide old quick access elements */
+  .quick-access-bar, .quick-chips, .quick-chip, .quick-badge {
+    display: none !important;
   }
 
   /* ===== STICKY SEARCH ===== */
@@ -852,6 +915,63 @@
     .quick-chip { padding: 6px 10px; font-size: 0.75rem; flex: 1 1 calc(50% - 8px); }
     .search-sticky { padding: 6px; }
     .scroll-top-btn { width: 38px; height: 38px; }
+  }
+
+  /* ===== FLOATING NAV RESPONSIVE ===== */
+  @media (max-width: 480px) {
+    .float-nav-container {
+      padding: 0 8px 12px;
+    }
+    .float-nav-inner {
+      border-radius: 20px;
+      padding: 6px 8px;
+      gap: 2px;
+    }
+    .float-nav-btn {
+      min-width: 48px;
+      max-width: 60px;
+      padding: 6px 4px;
+      border-radius: 14px;
+    }
+    .float-nav-btn .icon {
+      font-size: 1.15rem;
+    }
+    .float-nav-btn .label {
+      font-size: 0.55rem;
+      max-width: 52px;
+    }
+    .float-nav-btn .count {
+      min-width: 14px;
+      height: 14px;
+      font-size: 0.5rem;
+      top: 2px;
+      right: 2px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .float-nav-container {
+      padding: 0 24px 20px;
+    }
+    .float-nav-inner {
+      border-radius: 28px;
+      padding: 10px 16px;
+      gap: 6px;
+    }
+    .float-nav-btn {
+      min-width: 64px;
+      max-width: 80px;
+      padding: 10px 8px;
+      border-radius: 18px;
+      font-size: 0.7rem;
+    }
+    .float-nav-btn .icon {
+      font-size: 1.4rem;
+    }
+    .float-nav-btn .label {
+      font-size: 0.65rem;
+      max-width: 70px;
+    }
   }
 
   @media print {
@@ -1082,6 +1202,7 @@
 <base target="_blank">
 <base target="_blank">
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
 
@@ -1230,9 +1351,11 @@
         <div class="quick-badge" id="menuItemCount">0 Artikel</div>
       </div>
 
-      <!-- Quick Access Bar -->
-      <div class="quick-access-bar">
-        <div class="quick-chips" id="quickChips"></div>
+      <!-- Floating Bottom Navigation -->
+      <div class="float-nav-container" id="floatNavContainer">
+        <div class="float-nav-inner" id="floatNavInner">
+          <!-- Buttons will be rendered by JS -->
+        </div>
       </div>
 
       <!-- Sticky Search -->
@@ -1529,36 +1652,10 @@ function init() {
   updatePreview();
   document.getElementById('printDate').textContent = new Date().toLocaleString('de-DE');
   updateStreetCount();
-  setupQuickBarScroll();
+  setupFloatingNavScroll();
 }
 
-// ===================== SMART QUICK BAR (hide on scroll down, show on scroll up) =====================
-let lastScrollY = 0;
-let quickBarTicking = false;
-function setupQuickBarScroll() {
-  window.addEventListener('scroll', function() {
-    if (!quickBarTicking) {
-      window.requestAnimationFrame(function() {
-        const bar = document.querySelector('.quick-access-bar');
-        if (!bar) { quickBarTicking = false; return; }
-        const currentScroll = window.scrollY || document.documentElement.scrollTop;
-        // Show when scrolling up or near top, hide when scrolling down
-        if (currentScroll <= 50) {
-          bar.classList.remove('scroll-hidden');
-        } else if (currentScroll > lastScrollY) {
-          // Scrolling down → hide
-          bar.classList.add('scroll-hidden');
-        } else {
-          // Scrolling up → show
-          bar.classList.remove('scroll-hidden');
-        }
-        lastScrollY = currentScroll;
-        quickBarTicking = false;
-      });
-      quickBarTicking = true;
-    }
-  });
-}
+
 
 function toggleManualAddress() {
   const isManual = document.getElementById('manualAddressCheck').checked;
@@ -1941,37 +2038,133 @@ function scrollToTop() {
   document.getElementById('menuCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+/* ===================== FLOATING BOTTOM NAVIGATION ===================== */
 function renderQuickChips() {
-  const chips = document.getElementById('quickChips');
+  const navInner = document.getElementById('floatNavInner');
+  if (!navInner) return;
+
   let totalAll = 0;
   Object.keys(menuData).forEach(k => totalAll += menuData[k].items.length);
 
-  let html = `<div class="quick-chip active" onclick="jumpToSection('all')">
-    <span class="icon">📋</span>Alle<span class="count">${totalAll}</span>
-  </div>`;
+  let html = `<button class="float-nav-btn active" data-key="all" onclick="jumpToSection('all', this)">
+    <span class="icon">📋</span>
+    <span class="label">Alle</span>
+    <span class="count show">${totalAll}</span>
+  </button>`;
 
-  Object.keys(menuData).forEach((key, idx) => {
+  Object.keys(menuData).forEach((key) => {
     const cat = menuData[key];
-    html += `<div class="quick-chip" onclick="jumpToSection('${key}')">
-      <span class="icon">${cat.icon}</span>${cat.title}<span class="count">${cat.items.length}</span>
-    </div>`;
+    html += `<button class="float-nav-btn" data-key="${key}" onclick="jumpToSection('${key}', this)">
+      <span class="icon">${cat.icon}</span>
+      <span class="label">${cat.title}</span>
+      <span class="count show">${cat.items.length}</span>
+    </button>`;
   });
 
-  chips.innerHTML = html;
+  navInner.innerHTML = html;
 }
 
-function jumpToSection(key) {
-  // Update active chip
-  document.querySelectorAll('.quick-chip').forEach(c => c.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+let activeNavKey = 'all';
 
+function jumpToSection(key, btnElement) {
+  activeNavKey = key;
+
+  // Update active state
+  document.querySelectorAll('.float-nav-btn').forEach(b => b.classList.remove('active'));
+  if (btnElement) {
+    btnElement.classList.add('active');
+  } else {
+    const targetBtn = document.querySelector(`.float-nav-btn[data-key="${key}"]`);
+    if (targetBtn) targetBtn.classList.add('active');
+  }
+
+  // Scroll to section
   if (key === 'all') {
     scrollToTop();
     return;
   }
   const el = document.getElementById('sec-' + key);
   if (el) {
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Offset for floating nav height + padding
+    const navHeight = document.getElementById('floatNavContainer')?.offsetHeight || 80;
+    const rect = el.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const targetY = scrollTop + rect.top - navHeight - 20;
+    window.scrollTo({ top: targetY, behavior: 'smooth' });
+  }
+}
+
+// ===================== FLOATING NAV SCROLL BEHAVIOR =====================
+let floatNavLastScrollY = 0;
+let floatNavTicking = false;
+let floatNavVisible = true;
+
+function setupFloatingNavScroll() {
+  const floatNav = document.getElementById('floatNavContainer');
+  if (!floatNav) return;
+
+  window.addEventListener('scroll', function() {
+    if (!floatNavTicking) {
+      window.requestAnimationFrame(function() {
+        const currentScroll = window.scrollY || document.documentElement.scrollTop;
+        const menuCard = document.getElementById('menuCard');
+
+        // Only show when menu card is visible
+        let menuVisible = true;
+        if (menuCard) {
+          const menuRect = menuCard.getBoundingClientRect();
+          menuVisible = menuRect.top < window.innerHeight && menuRect.bottom > 0;
+        }
+
+        // Show/hide logic
+        if (!menuVisible || currentScroll < 200) {
+          floatNav.classList.add('hidden');
+          floatNavVisible = false;
+        } else if (currentScroll > floatNavLastScrollY && currentScroll > 400) {
+          // Scrolling down → hide
+          floatNav.classList.add('hidden');
+          floatNavVisible = false;
+        } else {
+          // Scrolling up or near top → show
+          floatNav.classList.remove('hidden');
+          floatNavVisible = true;
+        }
+
+        floatNavLastScrollY = currentScroll;
+        floatNavTicking = false;
+      });
+      floatNavTicking = true;
+    }
+  });
+
+  // Also update active button based on visible section
+  window.addEventListener('scroll', updateActiveNavOnScroll, { passive: true });
+}
+
+function updateActiveNavOnScroll() {
+  const sections = Object.keys(menuData);
+  const scrollPos = window.scrollY + 200;
+  let currentSection = 'all';
+
+  for (const key of sections) {
+    const el = document.getElementById('sec-' + key);
+    if (el) {
+      const top = el.offsetTop;
+      if (scrollPos >= top) {
+        currentSection = key;
+      }
+    }
+  }
+
+  if (currentSection !== activeNavKey) {
+    activeNavKey = currentSection;
+    document.querySelectorAll('.float-nav-btn').forEach(b => b.classList.remove('active'));
+    const activeBtn = document.querySelector(`.float-nav-btn[data-key="${currentSection}"]`);
+    if (activeBtn) {
+      activeBtn.classList.add('active');
+      // Scroll button into view within the nav
+      activeBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
   }
 }
 
