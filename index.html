@@ -2923,40 +2923,21 @@ function printFreitextNow() {
   var text = document.getElementById('ftTextarea').value;
   if (!text.trim()) { showToast('Bitte Text eingeben.'); return; }
 
-  if (ftItems.length === 0) ftItems = parseFreitextItems(text);
-
-  var total = 0;
-  var itemsHtml = ftItems.map(function(it) {
-    var lineTotal = it.qty * (it.price || 0);
-    total += lineTotal;
-    return '<tr>' +
-      '<td style="padding:6px 0;border-bottom:1px solid #ddd;">' + it.qty + 'x</td>' +
-      '<td style="padding:6px 0;border-bottom:1px solid #ddd;">' + escapeHtml(it.name) + '</td>' +
-      '<td style="padding:6px 0;border-bottom:1px solid #ddd;text-align:right;">' + (it.price !== null ? '€' + it.price.toFixed(2).replace('.', ',') : '—') + '</td>' +
-      '<td style="padding:6px 0;border-bottom:1px solid #ddd;text-align:right;font-weight:bold;">' + (it.price !== null ? '€' + lineTotal.toFixed(2).replace('.', ',') : '—') + '</td>' +
-    '</tr>';
-  }).join('');
-
   var printWindow = window.open('', '_blank');
   printWindow.document.write('<html><head><title>Freitext Bestellung</title>');
   printWindow.document.write('<style>');
-  printWindow.document.write('body{font-family:Arial,sans-serif;padding:30px;max-width:600px;margin:0 auto;color:#333;}');
-  printWindow.document.write('h1{text-align:center;font-size:22px;margin-bottom:5px;}');
-  printWindow.document.write('.date{text-align:center;color:#888;font-size:13px;margin-bottom:25px;}');
-  printWindow.document.write('table{width:100%;border-collapse:collapse;margin-top:15px;}');
-  printWindow.document.write('th{text-align:left;padding:8px 0;border-bottom:2px solid #333;font-size:13px;color:#666;}');
-  printWindow.document.write('.total-row td{padding-top:15px;font-size:18px;font-weight:bold;border-top:2px solid #333;}');
-  printWindow.document.write('.footer{margin-top:40px;text-align:center;color:#999;font-size:12px;}');
+  printWindow.document.write('body{font-family:"Segoe UI",Arial,sans-serif;padding:40px;max-width:500px;margin:0 auto;color:#1a252f;line-height:1.6;}');
+  printWindow.document.write('h1{text-align:center;font-size:24px;font-weight:800;margin-bottom:8px;color:#1a252f;}');
+  printWindow.document.write('.divider{border:none;border-top:2px dashed #1a252f;margin:20px 0;}');
+  printWindow.document.write('.content{white-space:pre-wrap;font-size:15px;}');
+  printWindow.document.write('.footer{margin-top:40px;text-align:center;color:#888;font-size:12px;}');
+  printWindow.document.write('@media print{body{padding:20px;}}');
   printWindow.document.write('</style></head><body>');
   printWindow.document.write('<h1>📝 Freitext Bestellung</h1>');
-  printWindow.document.write('<div class="date">' + new Date().toLocaleString('de-DE') + '</div>');
-  printWindow.document.write('<table>');
-  printWindow.document.write('<thead><tr><th>Anz.</th><th>Artikel</th><th style="text-align:right">Preis</th><th style="text-align:right">Gesamt</th></tr></thead>');
-  printWindow.document.write('<tbody>' + itemsHtml + '</tbody>');
-  if (total > 0) {
-    printWindow.document.write('<tr class="total-row"><td colspan="3" style="text-align:right">Gesamtsumme:</td><td style="text-align:right">€' + total.toFixed(2).replace('.', ',') + '</td></tr>');
-  }
-  printWindow.document.write('</table>');
+  printWindow.document.write('<div style="text-align:center;color:#888;font-size:13px;margin-bottom:20px;">' + new Date().toLocaleString('de-DE') + '</div>');
+  printWindow.document.write('<hr class="divider">');
+  printWindow.document.write('<div class="content">' + escapeHtml(text) + '</div>');
+  printWindow.document.write('<hr class="divider">');
   printWindow.document.write('<div class="footer">Restaurant Bestellsystem</div>');
   printWindow.document.write('</body></html>');
   printWindow.document.close();
