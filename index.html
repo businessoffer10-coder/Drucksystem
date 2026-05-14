@@ -2828,7 +2828,6 @@ function addEntry(item, catKey, size, price, extArr, remArr, extrasObj, removedO
 let ftItems = [];
 
 function openFreitextBox() {
-  console.log('openFreitextBox called');
   var ta = document.getElementById('ftTextarea');
   var pv = document.getElementById('ftPreview');
   var ov = document.getElementById('ftOverlay');
@@ -2920,60 +2919,53 @@ function previewFreitextItems() {
   previewDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-function addFreitextToCart() {
+function printFreitextNow() {
   var text = document.getElementById('ftTextarea').value;
   if (!text.trim()) { showToast('Bitte Text eingeben.'); return; }
 
   if (ftItems.length === 0) ftItems = parseFreitextItems(text);
-  if (ftItems.length === 0) { showToast('Keine Artikel erkannt.'); return; }
 
-  var added = 0;
-  ftItems.forEach(function(it) {
-    var price = it.price !== null ? it.price : 0;
-    cart.push({
-      catKey: 'custom',
-      itemId: 'custom_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
-      name: it.name,
-      size: null,
-      price: price,
-      qty: it.qty,
-      extArr: [],
-      remArr: [],
-      note: it.note || '',
-      extrasObj: {},
-      removedObj: {},
-      freeSauce: null,
-      freeSauceLabel: null,
-      freeDressing: null,
-      freeDressingLabel: null
-    });
-    added++;
-  });
+  var total = 0;
+  var itemsHtml = ftItems.map(function(it) {
+    var lineTotal = it.qty * (it.price || 0);
+    total += lineTotal;
+    return '<tr>' +
+      '<td style="padding:6px 0;border-bottom:1px solid #ddd;">' + it.qty + 'x</td>' +
+      '<td style="padding:6px 0;border-bottom:1px solid #ddd;">' + escapeHtml(it.name) + '</td>' +
+      '<td style="padding:6px 0;border-bottom:1px solid #ddd;text-align:right;">' + (it.price !== null ? '€' + it.price.toFixed(2).replace('.', ',') : '—') + '</td>' +
+      '<td style="padding:6px 0;border-bottom:1px solid #ddd;text-align:right;font-weight:bold;">' + (it.price !== null ? '€' + lineTotal.toFixed(2).replace('.', ',') : '—') + '</td>' +
+    '</tr>';
+  }).join('');
+
+  var printWindow = window.open('', '_blank');
+  printWindow.document.write('<html><head><title>Freitext Bestellung</title>');
+  printWindow.document.write('<style>');
+  printWindow.document.write('body{font-family:Arial,sans-serif;padding:30px;max-width:600px;margin:0 auto;color:#333;}');
+  printWindow.document.write('h1{text-align:center;font-size:22px;margin-bottom:5px;}');
+  printWindow.document.write('.date{text-align:center;color:#888;font-size:13px;margin-bottom:25px;}');
+  printWindow.document.write('table{width:100%;border-collapse:collapse;margin-top:15px;}');
+  printWindow.document.write('th{text-align:left;padding:8px 0;border-bottom:2px solid #333;font-size:13px;color:#666;}');
+  printWindow.document.write('.total-row td{padding-top:15px;font-size:18px;font-weight:bold;border-top:2px solid #333;}');
+  printWindow.document.write('.footer{margin-top:40px;text-align:center;color:#999;font-size:12px;}');
+  printWindow.document.write('</style></head><body>');
+  printWindow.document.write('<h1>📝 Freitext Bestellung</h1>');
+  printWindow.document.write('<div class="date">' + new Date().toLocaleString('de-DE') + '</div>');
+  printWindow.document.write('<table>');
+  printWindow.document.write('<thead><tr><th>Anz.</th><th>Artikel</th><th style="text-align:right">Preis</th><th style="text-align:right">Gesamt</th></tr></thead>');
+  printWindow.document.write('<tbody>' + itemsHtml + '</tbody>');
+  if (total > 0) {
+    printWindow.document.write('<tr class="total-row"><td colspan="3" style="text-align:right">Gesamtsumme:</td><td style="text-align:right">€' + total.toFixed(2).replace('.', ',') + '</td></tr>');
+  }
+  printWindow.document.write('</table>');
+  printWindow.document.write('<div class="footer">Restaurant Bestellsystem</div>');
+  printWindow.document.write('</body></html>');
+  printWindow.document.close();
+
+  setTimeout(function() {
+    printWindow.print();
+  }, 300);
 
   closeFreitextBox();
-
-  var orderArea = document.getElementById('orderArea');
-  if (orderArea && orderArea.style.display === 'none') {
-    orderArea.style.display = 'block';
-    renderFullMenu();
-  }
-
-  updatePreview();
-  showToast(added + ' Artikel hinzugefügt');
-
-  setTimeout(function() {
-    var previewCard = document.getElementById('previewCard');
-    if (previewCard) previewCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }, 300);
-}
-
-function addFreitextAndPrintNow() {
-  addFreitextToCart();
-  setTimeout(function() {
-    if (cart.length > 0) {
-      printOrder();
-    }
-  }, 500);
 }
 
 </script>
@@ -3025,9 +3017,8 @@ function addFreitextAndPrintNow() {
     </div>
     <div class="ft-footer">
       <button class="btn btn-secondary" onclick="previewFreitextItems()">👁 Vorschau</button>
-      <button class="btn btn-primary" onclick="addFreitextToCart()">➕ Zur Bestellung</button>
-      <button class="btn btn-success" onclick="addFreitextAndPrintNow()">🖨️ Hinzufügen & Drucken</button>
-      <button class="btn" style="background:var(--border);color:var(--text-light);" onclick="closeFreitextBox()">Abbrechen</button>
+      <button class="btn btn-success" onclick="printFreitextNow()">🖨️ Direkt Drucken</button>
+      <button class="btn" style="background:var(--border);color:var(--text-light);" onclick="closeFreitextBox()">Schließen</button>
     </div>
   </div>
 </div>
