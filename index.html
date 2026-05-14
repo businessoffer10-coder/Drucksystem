@@ -1292,9 +1292,6 @@
 </style>
 <base target="_blank">
 <base target="_blank">
-<base target="_blank">
-<base target="_blank">
-<base target="_blank">
 </head>
 <body>
 
@@ -1319,12 +1316,11 @@
     <div class="mode-btn" data-mode="lieferung" onclick="setMode('lieferung')">
       <span class="icon">🚚</span>
       <span>Lieferung</span>
-    
+    </div>
     <div class="mode-btn" data-mode="freetext" onclick="setMode('freetext')">
       <span class="icon">📝</span>
       <span>Freitext-Box</span>
     </div>
-</div>
     <div class="mode-btn" data-mode="abholen" onclick="setMode('abholen')">
       <span class="icon">🛍️</span>
       <span>Abholen</span>
@@ -1792,6 +1788,18 @@ function init() {
 }
 
 
+function checkTableAndProceed() {
+  // Auto-check table availability or proceed
+  const tableNum = document.getElementById('tableNum').value.trim();
+  if (tableNum) {
+    // Could add validation here
+    console.log('Tisch ' + tableNum + ' ausgewählt');
+  }
+}
+
+
+
+
 
 function toggleManualAddress() {
   const isManual = document.getElementById('manualAddressCheck').checked;
@@ -1805,11 +1813,6 @@ function updateStreetCount() {
   let total = 0;
   for (let c in streetsData) total += streetsData[c].length;
   document.getElementById('streetCountBadge').textContent = total + ' Straßen';
-}
-
-function escapeHtml(str) {
-  if (!str) return '';
-  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 }
 
 // ===================== STEP 1: MODE =====================
@@ -1845,7 +1848,6 @@ function setMode(mode) {
   const phoneG = document.getElementById('phone').parentElement;
   const manualToggleG = document.getElementById('manualToggleGroup');
   const manualAddressG = document.getElementById('manualAddressGroup');
-  const notesG = document.getElementById('notesGroup');
 
   // Reset all fields visibility
   cityG.style.display = 'block';
@@ -1857,7 +1859,6 @@ function setMode(mode) {
   phoneG.style.display = 'block';
   manualToggleG.style.display = 'block';
   manualAddressG.style.display = 'none';
-  notesG.style.display = 'block';
 
   // Reset manual address checkbox
   document.getElementById('manualAddressCheck').checked = false;
@@ -2151,6 +2152,22 @@ function toggleCustomer() {
   }
 }
 
+
+function toggleCart() {
+  const body = document.getElementById('cartBody');
+  const text = document.getElementById('cartToggleText');
+  cartCollapsed = !cartCollapsed;
+  if (cartCollapsed) {
+    body.classList.add('collapsed');
+    text.textContent = '▼';
+  } else {
+    body.classList.remove('collapsed');
+    text.textContent = '▲';
+  }
+}
+
+
+
 function updateCustomerSummary() {
   const name = document.getElementById('customerName').value.trim();
   const phone = document.getElementById('phone').value.trim();
@@ -2384,7 +2401,7 @@ function renderItemCard(catKey, item) {
       </div>
     </div>`;
 }
-function changeQty(catKey, itemId, size, delta) {
+function changeMenuQty(catKey, itemId, size, delta) {
   const item = menuData[catKey].items.find(i => i.id === itemId);
   if (!item) return;
   const sizeKey = size || 'default';
@@ -2408,6 +2425,18 @@ function changeQty(catKey, itemId, size, delta) {
   renderFullMenu();
   updatePreview();
 }
+
+function changeQty(index, delta) {
+  if (index < 0 || index >= cart.length) return;
+  cart[index].qty += delta;
+  if (cart[index].qty <= 0) {
+    cart.splice(index, 1);
+  }
+  renderFullMenu();
+  updatePreview();
+}
+
+
 function filterMenu() {
   menuFilter = document.getElementById('menuSearch').value;
   const clearBtn = document.getElementById('searchClear');
@@ -2969,12 +2998,14 @@ function isFamilie() {
 }
 
 function getExtraPrice(key) {
-  const ex = EXTRAS[key]; if (!ex) return 0;
+  if (!ms || !ms.item) return 0;
+  const ex = EXTRAS[key]; 
+  if (!ex) return 0;
   if (isFamilie()) {
     return ex.cat === 'meat' ? 4.00 : 2.00;
   }
   // Tasche / Teller: Saucen kosten €2,00
-  if (ms.item?.saucePriceOverride && ex.cat === 'sauce') {
+  if (ms.item.saucePriceOverride && ex.cat === 'sauce') {
     return ms.item.saucePriceOverride;
   }
   return ex.price;
