@@ -1198,7 +1198,99 @@
   .modal-add-btn { width: 100%; padding: 14px; font-size: 15px; text-align: center; }
 }
 
+
+
+  /* ===== FREETEXT BOX SECTION ===== */
+  .freetext-section {
+    background: var(--card); border-radius: var(--radius-lg); padding: 22px;
+    margin-bottom: 20px; box-shadow: var(--shadow); border: 1px solid var(--border-light);
+    transition: var(--transition);
+  }
+  .freetext-section:hover { box-shadow: var(--shadow-lg); }
+  .freetext-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 18px; padding-bottom: 14px; border-bottom: 2px solid var(--border-light);
+  }
+  .freetext-title {
+    font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; gap: 10px;
+    color: var(--secondary);
+  }
+  .freetext-area {
+    width: 100%; min-height: 200px; padding: 16px;
+    border: 2px solid var(--border); border-radius: var(--radius);
+    font-size: 1rem; font-family: inherit; transition: var(--transition);
+    background: #fff; color: var(--text); resize: vertical; line-height: 1.6;
+  }
+  .freetext-area:focus {
+    outline: none; border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(230,126,34,0.1);
+  }
+  .freetext-area::placeholder { color: #c0c8d0; }
+  .freetext-actions {
+    display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap;
+  }
+  .freetext-preview {
+    background: var(--bg); border-radius: var(--radius); padding: 16px;
+    margin-top: 16px; border: 1px solid var(--border-light);
+    white-space: pre-wrap; font-size: 0.95rem; line-height: 1.6;
+    max-height: 300px; overflow-y: auto;
+  }
+  .freetext-preview-label {
+    font-size: 0.75rem; font-weight: 800; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;
+  }
+  .freetext-print-header {
+    text-align: center;
+    border-bottom: 3px double #000;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+  }
+  .freetext-print-header h1 {
+    font-size: 1.8rem;
+    font-weight: 900;
+    margin: 0 0 8px 0;
+    color: #000;
+  }
+  .freetext-print-header .subtitle {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 4px;
+  }
+  .freetext-print-header .datetime {
+    font-size: 0.85rem;
+    color: #777;
+  }
+  .freetext-print-content {
+    font-size: 1rem;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fafafa;
+  }
+  .freetext-print-footer {
+    margin-top: 30px;
+    padding-top: 15px;
+    border-top: 1px solid #ccc;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #888;
+  }
+  .freetext-print-section {
+    margin-bottom: 25px;
+  }
+  .freetext-print-section-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--primary-dark);
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid var(--primary);
+  }
 </style>
+<base target="_blank">
 <base target="_blank">
 <base target="_blank">
 <base target="_blank">
@@ -1208,7 +1300,7 @@
 
 <header>
   <h1>🍽️ Restaurant Bestellsystem</h1>
-  <p>Bestellung aufnehmen – Lieferung · Abholen · Hier Essen</p>
+  <p>Bestellung aufnehmen – Lieferung · Abholen · Hier Essen · Freitext</p>
 </header>
 
 <div class="container">
@@ -1227,7 +1319,12 @@
     <div class="mode-btn" data-mode="lieferung" onclick="setMode('lieferung')">
       <span class="icon">🚚</span>
       <span>Lieferung</span>
+    
+    <div class="mode-btn" data-mode="freetext" onclick="setMode('freetext')">
+      <span class="icon">📝</span>
+      <span>Freitext-Box</span>
     </div>
+</div>
     <div class="mode-btn" data-mode="abholen" onclick="setMode('abholen')">
       <span class="icon">🛍️</span>
       <span>Abholen</span>
@@ -1305,6 +1402,45 @@
     </div>
     <div class="summary-bar hidden" id="customerSummary"></div>
   </div>
+
+  <!-- FREETEXT BOX SECTION -->
+  <div class="freetext-section no-print" id="freetextSection" style="display:none;">
+    <div class="freetext-header">
+      <div class="freetext-title">📝 Freitext-Box</div>
+      <div class="stats-badge">Freie Eingabe</div>
+    </div>
+    <div class="form-group">
+      <label for="freetextName">Kundenname</label>
+      <input type="text" id="freetextName" placeholder="Name eingeben..." autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label for="freetextPhone">Telefon</label>
+      <input type="tel" id="freetextPhone" placeholder="Telefonnummer..." autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label for="freetextContent">Bestellung (Freitext) *</label>
+      <textarea id="freetextContent" class="freetext-area" placeholder="Hier können Sie die Bestellung frei eingeben...&#10;&#10;Beispiel:&#10;2x Döner Kebap groß&#10;1x Pommes frites mit Mayo&#10;1x Cola 0,33l&#10;&#10;Sonderwünsche: Ohne Zwiebeln, extra scharf"></textarea>
+    </div>
+    <div class="freetext-actions">
+      <button class="btn btn-primary" onclick="printFreetext()">
+        <span>🖨️</span> Drucken
+      </button>
+      <button class="btn btn-secondary" onclick="previewFreetext()">
+        <span>👁️</span> Vorschau
+      </button>
+      <button class="btn btn-success" onclick="saveFreetext()">
+        <span>💾</span> Speichern
+      </button>
+      <button class="btn btn-warning" onclick="clearFreetext()">
+        <span>🗑️</span> Leeren
+      </button>
+    </div>
+    <div id="freetextPreview" style="display:none;">
+      <div class="freetext-preview-label">Vorschau</div>
+      <div class="freetext-preview" id="freetextPreviewContent"></div>
+    </div>
+  </div>
+
 
   <!-- STEP 3: FULL MENU + CART -->
   <div class="two-col" id="orderArea" style="display:none;">
@@ -1681,7 +1817,17 @@ function setMode(mode) {
   currentMode = mode;
   document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
 
-  // Show customer card
+  // Hide freetext section by default
+  hideFreetextSection();
+
+  // Handle freetext mode specially
+  if (mode === 'freetext') {
+    showFreetextSection();
+    showToast('✅ Freitext-Box aktiviert – Geben Sie die Bestellung frei ein');
+    return;
+  }
+
+  // Show customer card for other modes
   document.getElementById('customerCard').style.display = 'block';
   document.getElementById('customerBody').classList.remove('collapsed');
   document.getElementById('customerSummary').classList.add('hidden');
@@ -1698,40 +1844,45 @@ function setMode(mode) {
   const nameG = document.getElementById('customerName').parentElement;
   const phoneG = document.getElementById('phone').parentElement;
   const manualToggleG = document.getElementById('manualToggleGroup');
-  const manualAddrG = document.getElementById('manualAddressGroup');
-  // Reset manual address when switching modes
+  const manualAddressG = document.getElementById('manualAddressGroup');
+  const notesG = document.getElementById('notesGroup');
+
+  // Reset all fields visibility
+  cityG.style.display = 'block';
+  streetG.style.display = 'block';
+  houseG.style.display = 'block';
+  tableG.style.display = 'none';
+  deliveryFeeG.style.display = 'none';
+  nameG.style.display = 'block';
+  phoneG.style.display = 'block';
+  manualToggleG.style.display = 'block';
+  manualAddressG.style.display = 'none';
+  notesG.style.display = 'block';
+
+  // Reset manual address checkbox
   document.getElementById('manualAddressCheck').checked = false;
-  toggleManualAddress();
+
   if (mode === 'lieferung') {
-    nameG.style.display = 'block';
-    phoneG.style.display = 'block';
     cityG.style.display = 'block';
     streetG.style.display = 'block';
     houseG.style.display = 'block';
     tableG.style.display = 'none';
-    manualToggleG.style.display = 'block';
     deliveryFeeG.style.display = 'block';
-    onCityChange(); // Set default delivery fee based on city
+    manualToggleG.style.display = 'block';
   } else if (mode === 'abholen') {
-    nameG.style.display = 'block';
-    phoneG.style.display = 'block';
     cityG.style.display = 'none';
     streetG.style.display = 'none';
     houseG.style.display = 'none';
     tableG.style.display = 'none';
-    manualToggleG.style.display = 'none';
-    manualAddrG.style.display = 'none';
     deliveryFeeG.style.display = 'none';
-  } else {
-    nameG.style.display = 'none';
-    phoneG.style.display = 'none';
+    manualToggleG.style.display = 'none';
+  } else if (mode === 'hier') {
     cityG.style.display = 'none';
     streetG.style.display = 'none';
     houseG.style.display = 'none';
     tableG.style.display = 'block';
-    manualToggleG.style.display = 'none';
-    manualAddrG.style.display = 'none';
     deliveryFeeG.style.display = 'none';
+    manualToggleG.style.display = 'none';
   }
 
   // Update step indicator
@@ -1739,12 +1890,249 @@ function setMode(mode) {
   document.getElementById('step1').classList.remove('active');
   document.getElementById('line1').classList.add('done');
   document.getElementById('step2').classList.add('active');
-
-  updatePreview();
-  showToast('✅ Modus gewählt – Bitte Kundendaten eingeben');
 }
 
-// ===================== STEP 2: CUSTOMER DATA =====================
+// ===================== FREETEXT BOX FUNCTIONS =====================
+function showFreetextSection() {
+  document.getElementById('freetextSection').style.display = 'block';
+  document.getElementById('customerCard').style.display = 'none';
+  document.getElementById('orderArea').style.display = 'none';
+
+  // Update steps for freetext mode
+  document.getElementById('step1').classList.add('done');
+  document.getElementById('step1').classList.remove('active');
+  document.getElementById('line1').classList.add('done');
+  document.getElementById('step2').classList.add('done');
+  document.getElementById('step2').classList.remove('active');
+  document.getElementById('line2').classList.add('done');
+  document.getElementById('step3').classList.add('active');
+}
+
+function hideFreetextSection() {
+  document.getElementById('freetextSection').style.display = 'none';
+}
+
+function printFreetext() {
+  const name = document.getElementById('freetextName').value.trim();
+  const phone = document.getElementById('freetextPhone').value.trim();
+  const content = document.getElementById('freetextContent').value.trim();
+
+  if (!content) {
+    showToast('❌ Bitte geben Sie eine Bestellung ein.');
+    return;
+  }
+
+  const now = new Date();
+  const dateStr = now.toLocaleString('de-DE', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  });
+
+  const printWindow = window.open('', '_blank');
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html lang="de">
+    <head>
+      <meta charset="UTF-8">
+      <title>Freitext-Bestellung</title>
+      <style>
+        @page { size: 80mm auto; margin: 5mm; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+          font-family: 'Courier New', monospace;
+          font-size: 12pt;
+          line-height: 1.4;
+          color: #000;
+          background: #fff;
+          padding: 10px;
+          max-width: 80mm;
+          margin: 0 auto;
+        }
+        .header {
+          text-align: center;
+          border-bottom: 2px dashed #000;
+          padding-bottom: 10px;
+          margin-bottom: 15px;
+        }
+        .header h1 {
+          font-size: 16pt;
+          font-weight: bold;
+          margin-bottom: 5px;
+        }
+        .header .subtitle {
+          font-size: 10pt;
+          color: #555;
+        }
+        .header .datetime {
+          font-size: 9pt;
+          color: #777;
+          margin-top: 5px;
+        }
+        .info-section {
+          margin-bottom: 15px;
+          padding: 8px;
+          background: #f5f5f5;
+          border-radius: 4px;
+        }
+        .info-section p {
+          margin: 3px 0;
+          font-size: 10pt;
+        }
+        .info-label {
+          font-weight: bold;
+          display: inline-block;
+          width: 80px;
+        }
+        .content-section {
+          margin-bottom: 15px;
+        }
+        .content-section h2 {
+          font-size: 12pt;
+          border-bottom: 1px solid #000;
+          padding-bottom: 5px;
+          margin-bottom: 10px;
+        }
+        .order-content {
+          white-space: pre-wrap;
+          word-wrap: break-word;
+          font-size: 11pt;
+          line-height: 1.6;
+          padding: 10px;
+          background: #fafafa;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+        }
+        .footer {
+          margin-top: 20px;
+          padding-top: 10px;
+          border-top: 1px solid #ccc;
+          text-align: center;
+          font-size: 8pt;
+          color: #888;
+        }
+        .mode-badge {
+          display: inline-block;
+          background: #e67e22;
+          color: #fff;
+          padding: 3px 10px;
+          border-radius: 12px;
+          font-size: 9pt;
+          font-weight: bold;
+          margin-bottom: 10px;
+        }
+        @media print {
+          body { padding: 0; }
+          .no-print { display: none !important; }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <div class="mode-badge">FREITEXT-BESTELLUNG</div>
+        <h1>🍽️ Restaurant Bestellsystem</h1>
+        <div class="subtitle">Freitext-Box</div>
+        <div class="datetime">${dateStr}</div>
+      </div>
+
+      <div class="info-section">
+        <p><span class="info-label">Modus:</span> Freitext-Box</p>
+        ${name ? `<p><span class="info-label">Name:</span> ${escapeHtml(name)}</p>` : ''}
+        ${phone ? `<p><span class="info-label">Telefon:</span> ${escapeHtml(phone)}</p>` : ''}
+      </div>
+
+      <div class="content-section">
+        <h2>📝 Bestellung</h2>
+        <div class="order-content">${escapeHtml(content)}</div>
+      </div>
+
+      <div class="footer">
+        <p>Freitext-Bestellung | Restaurant Bestellsystem</p>
+        <p>Gedruckt am ${dateStr}</p>
+      </div>
+
+      <div class="no-print" style="margin-top: 20px; text-align: center;">
+        <button onclick="window.print();" style="padding: 10px 20px; font-size: 12pt; cursor: pointer;">🖨️ Jetzt drucken</button>
+        <button onclick="window.close();" style="padding: 10px 20px; font-size: 12pt; cursor: pointer; margin-left: 10px;">❌ Schließen</button>
+      </div>
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
+
+  showToast('✅ Druckvorschau geöffnet');
+}
+
+function previewFreetext() {
+  const content = document.getElementById('freetextContent').value.trim();
+  const name = document.getElementById('freetextName').value.trim();
+  const phone = document.getElementById('freetextPhone').value.trim();
+
+  if (!content) {
+    showToast('❌ Bitte geben Sie eine Bestellung ein.');
+    return;
+  }
+
+  let previewHtml = '';
+  if (name) previewHtml += `<strong>👤 Name:</strong> ${escapeHtml(name)}
+`;
+  if (phone) previewHtml += `<strong>📞 Telefon:</strong> ${escapeHtml(phone)}
+`;
+  if (name || phone) previewHtml += '
+';
+  previewHtml += `<strong>📝 Bestellung:</strong>
+${escapeHtml(content)}`;
+
+  document.getElementById('freetextPreviewContent').innerHTML = previewHtml;
+  document.getElementById('freetextPreview').style.display = 'block';
+
+  showToast('👁️ Vorschau aktualisiert');
+}
+
+function saveFreetext() {
+  const name = document.getElementById('freetextName').value.trim();
+  const phone = document.getElementById('freetextPhone').value.trim();
+  const content = document.getElementById('freetextContent').value.trim();
+
+  if (!content) {
+    showToast('❌ Bitte geben Sie eine Bestellung ein.');
+    return;
+  }
+
+  const order = {
+    timestamp: new Date().toISOString(),
+    mode: 'Freitext-Box',
+    customerName: name || 'Unbekannt',
+    phone: phone || '',
+    freetextContent: content,
+    items: [{ name: 'Freitext-Bestellung', qty: 1, price: 0 }]
+  };
+
+  let history = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+  history.unshift(order);
+  if (history.length > 50) history = history.slice(0, 50);
+  localStorage.setItem('orderHistory', JSON.stringify(history));
+
+  renderHistory();
+  showToast('✅ Freitext-Bestellung gespeichert');
+}
+
+function clearFreetext() {
+  if (confirm('Möchten Sie wirklich alle Felder leeren?')) {
+    document.getElementById('freetextName').value = '';
+    document.getElementById('freetextPhone').value = '';
+    document.getElementById('freetextContent').value = '';
+    document.getElementById('freetextPreview').style.display = 'none';
+    showToast('🗑️ Felder geleert');
+  }
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// ===================== STEP 2: CUSTOMER DATA// ===================== STEP 2: CUSTOMER DATA =====================
 function toggleCustomer() {
   const body = document.getElementById('customerBody');
   const summary = document.getElementById('customerSummary');
