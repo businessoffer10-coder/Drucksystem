@@ -982,6 +982,7 @@
     .container { max-width: 100%; padding: 0; }
     #previewCard { display: block !important; }
     .collapse-body { max-height: none !important; opacity: 1 !important; }
+    .qr-section.print-only { display: block !important; }
   }
   .print-only { display: none; }
   .print-header {
@@ -993,6 +994,36 @@
   .print-header h2 { margin: 0; font-size: 1.4rem; }
   .print-header small { color: #555; font-size: 0.85rem; }
 
+
+  /* ===== QR CODE ON INVOICE ===== */
+  .qr-section {
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 15px;
+    border-top: 2px dashed var(--border);
+  }
+  .qr-section h3 {
+    font-size: 0.95rem;
+    color: var(--secondary);
+    margin-bottom: 12px;
+    font-weight: 800;
+  }
+  .qr-section p {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+  .qr-code-wrapper {
+    display: inline-block;
+    padding: 12px;
+    background: #fff;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+  }
+  #qrcode img, #qrcode canvas {
+    display: block;
+    margin: 0 auto;
+  }
 
 /* ===== MODAL ===== */
 .modal-overlay {
@@ -1335,6 +1366,8 @@
 }
 
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<base target="_blank">
 <base target="_blank">
 <base target="_blank">
 <base target="_blank">
@@ -1463,6 +1496,14 @@
           <div class="summary-line"><span>Zwischensumme:</span><span id="subtotal">0,00 €</span></div>
           <div class="summary-line" id="deliveryLine"><span>Liefergebühr:</span><span id="deliveryFee">0,00 €</span></div>
           <div class="summary-line grand"><span>Gesamtsumme:</span><span id="grandTotal">0,00 €</span></div>
+          <!-- QR CODE SECTION - Only visible in print for Lieferung -->
+          <div class="qr-section print-only" id="qrSection" style="display:none;">
+            <h3>📍 Lieferadresse scannen</h3>
+            <div class="qr-code-wrapper">
+              <div id="qrcode"></div>
+            </div>
+            <p>Scanne mit Google Maps oder Apple Maps</p>
+          </div>
         </div>
         <div class="print-only">
           <div class="print-header">
@@ -2446,9 +2487,65 @@ function renderHistory() {
   }).join('');
 }
 
+
+// ===================== QR CODE GENERATOR =====================
+function generateQRCode() {
+  const qrContainer = document.getElementById('qrcode');
+  const qrSection = document.getElementById('qrSection');
+
+  // Clear previous QR code
+  qrContainer.innerHTML = '';
+
+  // Only show for Lieferung mode
+  if (currentMode !== 'lieferung') {
+    qrSection.style.display = 'none';
+    return;
+  }
+
+  // Get address
+  let address = '';
+  const isManual = document.getElementById('manualAddressCheck').checked;
+
+  if (isManual) {
+    address = document.getElementById('manualAddress').value.trim();
+  } else {
+    const street = document.getElementById('street').value.trim();
+    const house = document.getElementById('house').value.trim();
+    const city = document.getElementById('city').value;
+
+    if (street && house) {
+      address = street + ' ' + house + ', ' + city;
+    }
+  }
+
+  if (!address) {
+    qrSection.style.display = 'none';
+    return;
+  }
+
+  // Create Google Maps search URL for QR code
+  const encodedAddress = encodeURIComponent(address);
+  const mapsUrl = 'https://www.google.com/maps/search/?api=1&query=' + encodedAddress;
+
+  // Generate QR Code using QRCode.js library
+  new QRCode(qrContainer, {
+    text: mapsUrl,
+    width: 150,
+    height: 150,
+    colorDark: "#1a252f",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.M
+  });
+
+  qrSection.style.display = 'block';
+}
+
 // ===================== PRINT =====================
 function printOrder() {
   if (cart.length === 0) { showToast('❌ Keine Artikel zum Drucken.'); return; }
+  
+  // Generate QR Code before printing (only for Lieferung)
+  generateQRCode();
   const name = escapeHtml(document.getElementById('customerName').value.trim() || '-');
   const phone = escapeHtml(document.getElementById('phone').value.trim() || '-');
   const city = escapeHtml(document.getElementById('city').value || '-');
