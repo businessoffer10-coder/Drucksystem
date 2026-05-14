@@ -113,7 +113,7 @@
   /* ===== MODE SELECTOR (STEP 1) ===== */
   .mode-selector {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 12px;
     margin-bottom: 20px;
   }
@@ -635,7 +635,7 @@
     .container { padding: 20px; }
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     .menu-grid { grid-template-columns: 1fr; }
-    .mode-selector { grid-template-columns: repeat(3, 1fr); }
+    .mode-selector { grid-template-columns: repeat(4, 1fr); }
     .btn-group { grid-template-columns: repeat(3, 1fr); }
     .card { padding: 24px; }
   }
@@ -643,7 +643,7 @@
     .container { padding: 24px; }
     .two-col { display: grid; grid-template-columns: 400px 1fr; gap: 24px; }
     .menu-grid { grid-template-columns: repeat(2, 1fr); }
-    .mode-selector { grid-template-columns: repeat(3, 1fr); }
+    .mode-selector { grid-template-columns: repeat(4, 1fr); }
     .btn-group { grid-template-columns: repeat(3, 1fr); }
     .card { padding: 26px; }
     header { padding: 28px 24px; }
@@ -654,7 +654,7 @@
   }
   @media (max-width: 767px) {
     .container { padding: 12px; }
-    .mode-selector { grid-template-columns: 1fr; gap: 8px; }
+    .mode-selector { grid-template-columns: 1fr 1fr; gap: 8px; }
     .mode-btn { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 14px; text-align: left; }
     .mode-btn .icon { margin-bottom: 0; font-size: 1.4rem; }
     .card { padding: 16px; border-radius: var(--radius); }
@@ -1200,96 +1200,144 @@
 
 
 
-  /* ===== FREETEXT BOX SECTION ===== */
-  .freetext-section {
-    background: var(--card); border-radius: var(--radius-lg); padding: 22px;
-    margin-bottom: 20px; box-shadow: var(--shadow); border: 1px solid var(--border-light);
-    transition: var(--transition);
-  }
-  .freetext-section:hover { box-shadow: var(--shadow-lg); }
-  .freetext-header {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 18px; padding-bottom: 14px; border-bottom: 2px solid var(--border-light);
-  }
-  .freetext-title {
-    font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; gap: 10px;
-    color: var(--secondary);
-  }
-  .freetext-area {
-    width: 100%; min-height: 200px; padding: 16px;
-    border: 2px solid var(--border); border-radius: var(--radius);
-    font-size: 1rem; font-family: inherit; transition: var(--transition);
-    background: #fff; color: var(--text); resize: vertical; line-height: 1.6;
-  }
-  .freetext-area:focus {
-    outline: none; border-color: var(--primary);
-    box-shadow: 0 0 0 4px rgba(230,126,34,0.1);
-  }
-  .freetext-area::placeholder { color: #c0c8d0; }
-  .freetext-actions {
-    display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap;
-  }
-  .freetext-preview {
-    background: var(--bg); border-radius: var(--radius); padding: 16px;
-    margin-top: 16px; border: 1px solid var(--border-light);
-    white-space: pre-wrap; font-size: 0.95rem; line-height: 1.6;
-    max-height: 300px; overflow-y: auto;
-  }
-  .freetext-preview-label {
-    font-size: 0.75rem; font-weight: 800; color: var(--muted);
-    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;
-  }
-  .freetext-print-header {
-    text-align: center;
-    border-bottom: 3px double #000;
-    padding-bottom: 20px;
-    margin-bottom: 20px;
-  }
-  .freetext-print-header h1 {
-    font-size: 1.8rem;
-    font-weight: 900;
-    margin: 0 0 8px 0;
-    color: #000;
-  }
-  .freetext-print-header .subtitle {
-    font-size: 1rem;
-    color: #555;
-    margin-bottom: 4px;
-  }
-  .freetext-print-header .datetime {
-    font-size: 0.85rem;
-    color: #777;
-  }
-  .freetext-print-content {
-    font-size: 1rem;
-    line-height: 1.8;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background: #fafafa;
-  }
-  .freetext-print-footer {
-    margin-top: 30px;
-    padding-top: 15px;
-    border-top: 1px solid #ccc;
-    text-align: center;
-    font-size: 0.8rem;
-    color: #888;
-  }
-  .freetext-print-section {
-    margin-bottom: 25px;
-  }
-  .freetext-print-section-title {
-    font-size: 1.1rem;
-    font-weight: 800;
-    color: var(--primary-dark);
-    margin-bottom: 10px;
-    padding-bottom: 5px;
-    border-bottom: 2px solid var(--primary);
-  }
+/* ===== FREITEXT MODAL ===== */
+.ft-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 300;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s;
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+}
+.ft-overlay.active { opacity: 1; pointer-events: all; }
+
+.ft-modal {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  width: 100%; max-width: 600px;
+  max-height: 90vh;
+  display: flex; flex-direction: column;
+  transform: scale(0.94) translateY(16px);
+  transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+.ft-overlay.active .ft-modal { transform: scale(1) translateY(0); }
+
+.ft-header {
+  padding: 18px 20px 14px;
+  border-bottom: 1.5px solid var(--border-light);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; background: var(--bg);
+}
+.ft-title {
+  font-size: 18px; font-weight: 800; color: var(--text);
+  display: flex; align-items: center; gap: 10px;
+}
+.ft-close {
+  background: var(--border-light); border: none; color: var(--text);
+  width: 36px; height: 36px; border-radius: 50%; font-size: 17px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s; flex-shrink: 0;
+}
+.ft-close:hover { background: var(--danger); color: #fff; }
+
+.ft-body {
+  flex: 1; overflow-y: auto; padding: 20px;
+  scrollbar-width: thin;
+}
+.ft-body::-webkit-scrollbar { width: 4px; }
+.ft-body::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 2px; }
+
+.ft-hint {
+  background: var(--primary-light);
+  border: 1.5px solid rgba(230,126,34,0.2);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--primary-dark);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+.ft-hint strong { font-weight: 800; }
+
+.ft-textarea {
+  width: 100%;
+  min-height: 200px;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--text);
+  resize: vertical;
+  line-height: 1.6;
+  transition: border-color 0.15s;
+}
+.ft-textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(230,126,34,0.1);
+}
+
+.ft-preview {
+  margin-top: 16px;
+  background: var(--bg);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius);
+  padding: 14px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.ft-preview-title {
+  font-size: 12px; font-weight: 900;
+  color: var(--muted);
+  letter-spacing: 1px; text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.ft-preview-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 14px;
+}
+.ft-preview-item:last-child { border-bottom: none; }
+.ft-preview-item .ft-name { font-weight: 700; color: var(--secondary); }
+.ft-preview-item .ft-price { font-weight: 800; color: var(--primary-dark); }
+.ft-preview-item .ft-note { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.ft-footer {
+  padding: 14px 20px;
+  border-top: 1.5px solid var(--border-light);
+  background: var(--bg);
+  display: flex; gap: 10px;
+  flex-wrap: wrap;
+}
+.ft-footer .btn {
+  flex: 1;
+  min-width: 140px;
+  padding: 14px 20px;
+  font-size: 15px;
+}
+
+.ft-empty { text-align: center; color: var(--muted); padding: 20px; font-size: 14px; }
+
+@media(max-width:600px){
+  .ft-overlay { align-items: flex-end; padding: 0; }
+  .ft-modal { max-width: 100%; max-height: 92vh; border-radius: 18px 18px 0 0; border-bottom: none; transform: translateY(100%); }
+  .ft-overlay.active .ft-modal { transform: translateY(0); }
+  .ft-footer { flex-direction: column; }
+  .ft-footer .btn { width: 100%; }
+}
+
 </style>
+<base target="_blank">
+<base target="_blank">
+<base target="_blank">
 <base target="_blank">
 <base target="_blank">
 </head>
@@ -1297,7 +1345,7 @@
 
 <header>
   <h1>🍽️ Restaurant Bestellsystem</h1>
-  <p>Bestellung aufnehmen – Lieferung · Abholen · Hier Essen · Freitext</p>
+  <p>Bestellung aufnehmen – Lieferung · Abholen · Hier Essen</p>
 </header>
 
 <div class="container">
@@ -1317,10 +1365,6 @@
       <span class="icon">🚚</span>
       <span>Lieferung</span>
     </div>
-    <div class="mode-btn" data-mode="freetext" onclick="setMode('freetext')">
-      <span class="icon">📝</span>
-      <span>Freitext-Box</span>
-    </div>
     <div class="mode-btn" data-mode="abholen" onclick="setMode('abholen')">
       <span class="icon">🛍️</span>
       <span>Abholen</span>
@@ -1328,6 +1372,10 @@
     <div class="mode-btn" data-mode="hier" onclick="setMode('hier')">
       <span class="icon">🍽️</span>
       <span>Hier Essen</span>
+    </div>
+    <div class="mode-btn mode-freitext" onclick="openFreitextBox()">
+      <span class="icon">📝</span>
+      <span>Freitext</span>
     </div>
   </div>
 
@@ -1398,45 +1446,6 @@
     </div>
     <div class="summary-bar hidden" id="customerSummary"></div>
   </div>
-
-  <!-- FREETEXT BOX SECTION -->
-  <div class="freetext-section no-print" id="freetextSection" style="display:none;">
-    <div class="freetext-header">
-      <div class="freetext-title">📝 Freitext-Box</div>
-      <div class="stats-badge">Freie Eingabe</div>
-    </div>
-    <div class="form-group">
-      <label for="freetextName">Kundenname</label>
-      <input type="text" id="freetextName" placeholder="Name eingeben..." autocomplete="off">
-    </div>
-    <div class="form-group">
-      <label for="freetextPhone">Telefon</label>
-      <input type="tel" id="freetextPhone" placeholder="Telefonnummer..." autocomplete="off">
-    </div>
-    <div class="form-group">
-      <label for="freetextContent">Bestellung (Freitext) *</label>
-      <textarea id="freetextContent" class="freetext-area" placeholder="Hier können Sie die Bestellung frei eingeben...&#10;&#10;Beispiel:&#10;2x Döner Kebap groß&#10;1x Pommes frites mit Mayo&#10;1x Cola 0,33l&#10;&#10;Sonderwünsche: Ohne Zwiebeln, extra scharf"></textarea>
-    </div>
-    <div class="freetext-actions">
-      <button class="btn btn-primary" onclick="printFreetext()">
-        <span>🖨️</span> Drucken
-      </button>
-      <button class="btn btn-secondary" onclick="previewFreetext()">
-        <span>👁️</span> Vorschau
-      </button>
-      <button class="btn btn-success" onclick="saveFreetext()">
-        <span>💾</span> Speichern
-      </button>
-      <button class="btn btn-warning" onclick="clearFreetext()">
-        <span>🗑️</span> Leeren
-      </button>
-    </div>
-    <div id="freetextPreview" style="display:none;">
-      <div class="freetext-preview-label">Vorschau</div>
-      <div class="freetext-preview" id="freetextPreviewContent"></div>
-    </div>
-  </div>
-
 
   <!-- STEP 3: FULL MENU + CART -->
   <div class="two-col" id="orderArea" style="display:none;">
@@ -1788,18 +1797,6 @@ function init() {
 }
 
 
-function checkTableAndProceed() {
-  // Auto-check table availability or proceed
-  const tableNum = document.getElementById('tableNum').value.trim();
-  if (tableNum) {
-    // Could add validation here
-    console.log('Tisch ' + tableNum + ' ausgewählt');
-  }
-}
-
-
-
-
 
 function toggleManualAddress() {
   const isManual = document.getElementById('manualAddressCheck').checked;
@@ -1815,22 +1812,17 @@ function updateStreetCount() {
   document.getElementById('streetCountBadge').textContent = total + ' Straßen';
 }
 
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+}
+
 // ===================== STEP 1: MODE =====================
 function setMode(mode) {
   currentMode = mode;
   document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
 
-  // Hide freetext section by default
-  hideFreetextSection();
-
-  // Handle freetext mode specially
-  if (mode === 'freetext') {
-    showFreetextSection();
-    showToast('✅ Freitext-Box aktiviert – Geben Sie die Bestellung frei ein');
-    return;
-  }
-
-  // Show customer card for other modes
+  // Show customer card
   document.getElementById('customerCard').style.display = 'block';
   document.getElementById('customerBody').classList.remove('collapsed');
   document.getElementById('customerSummary').classList.add('hidden');
@@ -1847,43 +1839,40 @@ function setMode(mode) {
   const nameG = document.getElementById('customerName').parentElement;
   const phoneG = document.getElementById('phone').parentElement;
   const manualToggleG = document.getElementById('manualToggleGroup');
-  const manualAddressG = document.getElementById('manualAddressGroup');
-
-  // Reset all fields visibility
-  cityG.style.display = 'block';
-  streetG.style.display = 'block';
-  houseG.style.display = 'block';
-  tableG.style.display = 'none';
-  deliveryFeeG.style.display = 'none';
-  nameG.style.display = 'block';
-  phoneG.style.display = 'block';
-  manualToggleG.style.display = 'block';
-  manualAddressG.style.display = 'none';
-
-  // Reset manual address checkbox
+  const manualAddrG = document.getElementById('manualAddressGroup');
+  // Reset manual address when switching modes
   document.getElementById('manualAddressCheck').checked = false;
-
+  toggleManualAddress();
   if (mode === 'lieferung') {
+    nameG.style.display = 'block';
+    phoneG.style.display = 'block';
     cityG.style.display = 'block';
     streetG.style.display = 'block';
     houseG.style.display = 'block';
     tableG.style.display = 'none';
-    deliveryFeeG.style.display = 'block';
     manualToggleG.style.display = 'block';
+    deliveryFeeG.style.display = 'block';
+    onCityChange(); // Set default delivery fee based on city
   } else if (mode === 'abholen') {
+    nameG.style.display = 'block';
+    phoneG.style.display = 'block';
     cityG.style.display = 'none';
     streetG.style.display = 'none';
     houseG.style.display = 'none';
     tableG.style.display = 'none';
-    deliveryFeeG.style.display = 'none';
     manualToggleG.style.display = 'none';
-  } else if (mode === 'hier') {
+    manualAddrG.style.display = 'none';
+    deliveryFeeG.style.display = 'none';
+  } else {
+    nameG.style.display = 'none';
+    phoneG.style.display = 'none';
     cityG.style.display = 'none';
     streetG.style.display = 'none';
     houseG.style.display = 'none';
     tableG.style.display = 'block';
-    deliveryFeeG.style.display = 'none';
     manualToggleG.style.display = 'none';
+    manualAddrG.style.display = 'none';
+    deliveryFeeG.style.display = 'none';
   }
 
   // Update step indicator
@@ -1891,249 +1880,12 @@ function setMode(mode) {
   document.getElementById('step1').classList.remove('active');
   document.getElementById('line1').classList.add('done');
   document.getElementById('step2').classList.add('active');
+
+  updatePreview();
+  showToast('✅ Modus gewählt – Bitte Kundendaten eingeben');
 }
 
-// ===================== FREETEXT BOX FUNCTIONS =====================
-function showFreetextSection() {
-  document.getElementById('freetextSection').style.display = 'block';
-  document.getElementById('customerCard').style.display = 'none';
-  document.getElementById('orderArea').style.display = 'none';
-
-  // Update steps for freetext mode
-  document.getElementById('step1').classList.add('done');
-  document.getElementById('step1').classList.remove('active');
-  document.getElementById('line1').classList.add('done');
-  document.getElementById('step2').classList.add('done');
-  document.getElementById('step2').classList.remove('active');
-  document.getElementById('line2').classList.add('done');
-  document.getElementById('step3').classList.add('active');
-}
-
-function hideFreetextSection() {
-  document.getElementById('freetextSection').style.display = 'none';
-}
-
-function printFreetext() {
-  const name = document.getElementById('freetextName').value.trim();
-  const phone = document.getElementById('freetextPhone').value.trim();
-  const content = document.getElementById('freetextContent').value.trim();
-
-  if (!content) {
-    showToast('❌ Bitte geben Sie eine Bestellung ein.');
-    return;
-  }
-
-  const now = new Date();
-  const dateStr = now.toLocaleString('de-DE', {
-    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
-    hour: '2-digit', minute: '2-digit'
-  });
-
-  const printWindow = window.open('', '_blank');
-  printWindow.document.write(`
-    <!DOCTYPE html>
-    <html lang="de">
-    <head>
-      <meta charset="UTF-8">
-      <title>Freitext-Bestellung</title>
-      <style>
-        @page { size: 80mm auto; margin: 5mm; }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-          font-family: 'Courier New', monospace;
-          font-size: 12pt;
-          line-height: 1.4;
-          color: #000;
-          background: #fff;
-          padding: 10px;
-          max-width: 80mm;
-          margin: 0 auto;
-        }
-        .header {
-          text-align: center;
-          border-bottom: 2px dashed #000;
-          padding-bottom: 10px;
-          margin-bottom: 15px;
-        }
-        .header h1 {
-          font-size: 16pt;
-          font-weight: bold;
-          margin-bottom: 5px;
-        }
-        .header .subtitle {
-          font-size: 10pt;
-          color: #555;
-        }
-        .header .datetime {
-          font-size: 9pt;
-          color: #777;
-          margin-top: 5px;
-        }
-        .info-section {
-          margin-bottom: 15px;
-          padding: 8px;
-          background: #f5f5f5;
-          border-radius: 4px;
-        }
-        .info-section p {
-          margin: 3px 0;
-          font-size: 10pt;
-        }
-        .info-label {
-          font-weight: bold;
-          display: inline-block;
-          width: 80px;
-        }
-        .content-section {
-          margin-bottom: 15px;
-        }
-        .content-section h2 {
-          font-size: 12pt;
-          border-bottom: 1px solid #000;
-          padding-bottom: 5px;
-          margin-bottom: 10px;
-        }
-        .order-content {
-          white-space: pre-wrap;
-          word-wrap: break-word;
-          font-size: 11pt;
-          line-height: 1.6;
-          padding: 10px;
-          background: #fafafa;
-          border: 1px solid #ddd;
-          border-radius: 4px;
-        }
-        .footer {
-          margin-top: 20px;
-          padding-top: 10px;
-          border-top: 1px solid #ccc;
-          text-align: center;
-          font-size: 8pt;
-          color: #888;
-        }
-        .mode-badge {
-          display: inline-block;
-          background: #e67e22;
-          color: #fff;
-          padding: 3px 10px;
-          border-radius: 12px;
-          font-size: 9pt;
-          font-weight: bold;
-          margin-bottom: 10px;
-        }
-        @media print {
-          body { padding: 0; }
-          .no-print { display: none !important; }
-        }
-      </style>
-    </head>
-    <body>
-      <div class="header">
-        <div class="mode-badge">FREITEXT-BESTELLUNG</div>
-        <h1>🍽️ Restaurant Bestellsystem</h1>
-        <div class="subtitle">Freitext-Box</div>
-        <div class="datetime">${dateStr}</div>
-      </div>
-
-      <div class="info-section">
-        <p><span class="info-label">Modus:</span> Freitext-Box</p>
-        ${name ? `<p><span class="info-label">Name:</span> ${escapeHtml(name)}</p>` : ''}
-        ${phone ? `<p><span class="info-label">Telefon:</span> ${escapeHtml(phone)}</p>` : ''}
-      </div>
-
-      <div class="content-section">
-        <h2>📝 Bestellung</h2>
-        <div class="order-content">${escapeHtml(content)}</div>
-      </div>
-
-      <div class="footer">
-        <p>Freitext-Bestellung | Restaurant Bestellsystem</p>
-        <p>Gedruckt am ${dateStr}</p>
-      </div>
-
-      <div class="no-print" style="margin-top: 20px; text-align: center;">
-        <button onclick="window.print();" style="padding: 10px 20px; font-size: 12pt; cursor: pointer;">🖨️ Jetzt drucken</button>
-        <button onclick="window.close();" style="padding: 10px 20px; font-size: 12pt; cursor: pointer; margin-left: 10px;">❌ Schließen</button>
-      </div>
-    </body>
-    </html>
-  `);
-  printWindow.document.close();
-
-  showToast('✅ Druckvorschau geöffnet');
-}
-
-function previewFreetext() {
-  const content = document.getElementById('freetextContent').value.trim();
-  const name = document.getElementById('freetextName').value.trim();
-  const phone = document.getElementById('freetextPhone').value.trim();
-
-  if (!content) {
-    showToast('❌ Bitte geben Sie eine Bestellung ein.');
-    return;
-  }
-
-  let previewHtml = '';
-  if (name) previewHtml += `<strong>👤 Name:</strong> ${escapeHtml(name)}
-`;
-  if (phone) previewHtml += `<strong>📞 Telefon:</strong> ${escapeHtml(phone)}
-`;
-  if (name || phone) previewHtml += '
-';
-  previewHtml += `<strong>📝 Bestellung:</strong>
-${escapeHtml(content)}`;
-
-  document.getElementById('freetextPreviewContent').innerHTML = previewHtml;
-  document.getElementById('freetextPreview').style.display = 'block';
-
-  showToast('👁️ Vorschau aktualisiert');
-}
-
-function saveFreetext() {
-  const name = document.getElementById('freetextName').value.trim();
-  const phone = document.getElementById('freetextPhone').value.trim();
-  const content = document.getElementById('freetextContent').value.trim();
-
-  if (!content) {
-    showToast('❌ Bitte geben Sie eine Bestellung ein.');
-    return;
-  }
-
-  const order = {
-    timestamp: new Date().toISOString(),
-    mode: 'Freitext-Box',
-    customerName: name || 'Unbekannt',
-    phone: phone || '',
-    freetextContent: content,
-    items: [{ name: 'Freitext-Bestellung', qty: 1, price: 0 }]
-  };
-
-  let history = JSON.parse(localStorage.getItem('orderHistory') || '[]');
-  history.unshift(order);
-  if (history.length > 50) history = history.slice(0, 50);
-  localStorage.setItem('orderHistory', JSON.stringify(history));
-
-  renderHistory();
-  showToast('✅ Freitext-Bestellung gespeichert');
-}
-
-function clearFreetext() {
-  if (confirm('Möchten Sie wirklich alle Felder leeren?')) {
-    document.getElementById('freetextName').value = '';
-    document.getElementById('freetextPhone').value = '';
-    document.getElementById('freetextContent').value = '';
-    document.getElementById('freetextPreview').style.display = 'none';
-    showToast('🗑️ Felder geleert');
-  }
-}
-
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
-// ===================== STEP 2: CUSTOMER DATA// ===================== STEP 2: CUSTOMER DATA =====================
+// ===================== STEP 2: CUSTOMER DATA =====================
 function toggleCustomer() {
   const body = document.getElementById('customerBody');
   const summary = document.getElementById('customerSummary');
@@ -2151,22 +1903,6 @@ function toggleCustomer() {
     text.textContent = '▲ Einklappen';
   }
 }
-
-
-function toggleCart() {
-  const body = document.getElementById('cartBody');
-  const text = document.getElementById('cartToggleText');
-  cartCollapsed = !cartCollapsed;
-  if (cartCollapsed) {
-    body.classList.add('collapsed');
-    text.textContent = '▼';
-  } else {
-    body.classList.remove('collapsed');
-    text.textContent = '▲';
-  }
-}
-
-
 
 function updateCustomerSummary() {
   const name = document.getElementById('customerName').value.trim();
@@ -2401,7 +2137,7 @@ function renderItemCard(catKey, item) {
       </div>
     </div>`;
 }
-function changeMenuQty(catKey, itemId, size, delta) {
+function changeQty(catKey, itemId, size, delta) {
   const item = menuData[catKey].items.find(i => i.id === itemId);
   if (!item) return;
   const sizeKey = size || 'default';
@@ -2425,18 +2161,6 @@ function changeMenuQty(catKey, itemId, size, delta) {
   renderFullMenu();
   updatePreview();
 }
-
-function changeQty(index, delta) {
-  if (index < 0 || index >= cart.length) return;
-  cart[index].qty += delta;
-  if (cart[index].qty <= 0) {
-    cart.splice(index, 1);
-  }
-  renderFullMenu();
-  updatePreview();
-}
-
-
 function filterMenu() {
   menuFilter = document.getElementById('menuSearch').value;
   const clearBtn = document.getElementById('searchClear');
@@ -2601,10 +2325,11 @@ function updatePreview() {
       if (c.extArr?.length) meta.push(`<span style="color:var(--success)">＋ ${escapeHtml(c.extArr.join(', '))}</span>`);
       if (c.remArr?.length) meta.push(`<span style="color:var(--danger)">✕ Ohne: ${escapeHtml(c.remArr.join(', '))}</span>`);
       if (c.note) meta.push(`<span style="color:var(--muted);font-style:italic">"${escapeHtml(c.note)}"</span>`);
+      const catTitle = c.catKey === 'custom' ? 'Freitext' : escapeHtml(menuData[c.catKey]?.title || '');
       return `<div class="order-row">
         <div class="order-info">
           <div class="order-name">${escapeHtml(c.name)}${escapeHtml(sizeLabel)}</div>
-          <div class="order-meta">${escapeHtml(menuData[c.catKey].title)}${meta.length ? '<br>' + meta.join('<br>') : ''}</div>
+          <div class="order-meta">${catTitle}${meta.length ? '<br>' + meta.join('<br>') : ''}</div>
         </div>
         <div class="order-actions">
           <div class="order-qty-controls">
@@ -2712,7 +2437,8 @@ function renderHistory() {
     const modeLabel = o.mode === 'lieferung' ? '🚚 Lieferung' : o.mode === 'abholen' ? '🛍️ Abholen' : '🍽️ Hier Essen';
     const items = o.cart.map(c => {
       const sz = c.size ? ` (${c.size})` : '';
-      return `${c.qty}x ${c.name}${sz}`;
+      const cat = c.catKey === 'custom' ? '[Freitext] ' : '';
+      return `${cat}${c.qty}x ${c.name}${sz}`;
     }).join(', ');
     const date = new Date(o.date).toLocaleString('de-DE');
     const deliveryInfo = o.mode === 'lieferung' && o.deliveryFee ? ` · Liefergebühr: ${parseFloat(o.deliveryFee).toFixed(2).replace('.', ',')} €` : '';
@@ -2730,12 +2456,14 @@ function printOrder() {
   const house = escapeHtml(document.getElementById('house').value.trim() || '-');
   const tableNum = escapeHtml(document.getElementById('tableNum').value.trim() || '-');
   const notes = escapeHtml(document.getElementById('notes').value.trim() || '-');
-  const modeLabel = currentMode === 'lieferung' ? 'Lieferung' : currentMode === 'abholen' ? 'Abholen' : 'Hier Essen';
+  const modeLabel = currentMode === 'lieferung' ? 'Lieferung' : currentMode === 'abholen' ? 'Abholen' : currentMode === 'hier' ? 'Hier Essen' : 'Freitext';
   const deliveryFee = parseFloat(document.getElementById('deliveryFeeInput')?.value || '0');
 
   let itemsHtml = cart.map(c => {
     const sz = c.size ? ` (${c.size})` : '';
-    return `<tr><td>${c.qty}x</td><td>${escapeHtml(c.name)}${escapeHtml(sz)}</td><td style="text-align:right">${(c.qty*c.price).toFixed(2).replace('.',',')} €</td></tr>`;
+    const catLabel = c.catKey === 'custom' ? ' [Freitext]' : '';
+    const noteLine = c.note ? `<br><small style="color:#666">${escapeHtml(c.note)}</small>` : '';
+    return `<tr><td>${c.qty}x</td><td>${escapeHtml(c.name)}${escapeHtml(sz)}${catLabel}${noteLine}</td><td style="text-align:right">${(c.qty*c.price).toFixed(2).replace('.',',')} €</td></tr>`;
   }).join('');
 
   let addressBlock = '';
@@ -2998,14 +2726,12 @@ function isFamilie() {
 }
 
 function getExtraPrice(key) {
-  if (!ms || !ms.item) return 0;
-  const ex = EXTRAS[key]; 
-  if (!ex) return 0;
+  const ex = EXTRAS[key]; if (!ex) return 0;
   if (isFamilie()) {
     return ex.cat === 'meat' ? 4.00 : 2.00;
   }
   // Tasche / Teller: Saucen kosten €2,00
-  if (ms.item.saucePriceOverride && ex.cat === 'sauce') {
+  if (ms.item?.saucePriceOverride && ex.cat === 'sauce') {
     return ms.item.saucePriceOverride;
   }
   return ex.price;
@@ -3096,6 +2822,160 @@ function addEntry(item, catKey, size, price, extArr, remArr, extrasObj, removedO
   updatePreview();
 }
 
+
+
+/* ===================== FREITEXT MODAL FUNCTIONS ===================== */
+let ftItems = [];
+
+function openFreitextBox() {
+  console.log('openFreitextBox called');
+  var ta = document.getElementById('ftTextarea');
+  var pv = document.getElementById('ftPreview');
+  var ov = document.getElementById('ftOverlay');
+  if (ta) ta.value = '';
+  if (pv) pv.style.display = 'none';
+  ftItems = [];
+  if (ov) ov.classList.add('active');
+  setTimeout(function() { if (ta) ta.focus(); }, 100);
+}
+
+function closeFreitextBox() {
+  var ov = document.getElementById('ftOverlay');
+  if (ov) ov.classList.remove('active');
+  ftItems = [];
+}
+
+function parseFreitextItems(text) {
+  var lines = text.split(/\n/).map(function(l) { return l.trim(); }).filter(function(l) { return l.length > 0; });
+  var items = [];
+
+  lines.forEach(function(line) {
+    var qty = 1;
+    var cleanLine = line;
+    var qtyMatch = line.match(/^(\d+)\s*[x×✕]\s*/i);
+    if (qtyMatch) {
+      qty = parseInt(qtyMatch[1], 10);
+      cleanLine = line.substring(qtyMatch[0].length).trim();
+    }
+
+    var price = null;
+    var priceMatchEnd = cleanLine.match(/(\d+[.,]\d{2})\s*€?$/);
+    var priceMatchStart = cleanLine.match(/^€?\s*(\d+[.,]\d{2})/);
+
+    if (priceMatchEnd) {
+      price = parseFloat(priceMatchEnd[1].replace(',', '.'));
+      cleanLine = cleanLine.substring(0, cleanLine.length - priceMatchEnd[0].length).trim();
+    } else if (priceMatchStart) {
+      price = parseFloat(priceMatchStart[1].replace(',', '.'));
+      cleanLine = cleanLine.substring(priceMatchStart[0].length).trim();
+    }
+
+    if (price === null) {
+      var anyPrice = cleanLine.match(/(\d+[.,]\d{2})/);
+      if (anyPrice) {
+        price = parseFloat(anyPrice[1].replace(',', '.'));
+        var endCheck = cleanLine.match(/(\d+[.,]\d{2})\s*$/);
+        if (endCheck) {
+          cleanLine = cleanLine.substring(0, cleanLine.length - endCheck[0].length).trim();
+        }
+      }
+    }
+
+    if (cleanLine.length > 0) {
+      items.push({
+        name: cleanLine,
+        qty: qty,
+        price: price,
+        note: price === null ? 'Preis nicht erkannt' : ''
+      });
+    }
+  });
+
+  return items;
+}
+
+function previewFreitextItems() {
+  var text = document.getElementById('ftTextarea').value;
+  if (!text.trim()) { showToast('Bitte Text eingeben.'); return; }
+
+  ftItems = parseFreitextItems(text);
+  var previewDiv = document.getElementById('ftPreview');
+  var listDiv = document.getElementById('ftPreviewList');
+
+  if (ftItems.length === 0) {
+    listDiv.innerHTML = '<div class="ft-empty">Keine Artikel erkannt.</div>';
+  } else {
+    listDiv.innerHTML = ftItems.map(function(it, i) {
+      return '<div class="ft-preview-item">' +
+        '<div>' +
+          '<div class="ft-name">' + it.qty + 'x ' + escapeHtml(it.name) + '</div>' +
+          (it.note ? '<div class="ft-note">' + escapeHtml(it.note) + '</div>' : '') +
+        '</div>' +
+        '<div class="ft-price">' + (it.price !== null ? '€' + it.price.toFixed(2).replace('.', ',') : '—') + '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  previewDiv.style.display = 'block';
+  previewDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function addFreitextToCart() {
+  var text = document.getElementById('ftTextarea').value;
+  if (!text.trim()) { showToast('Bitte Text eingeben.'); return; }
+
+  if (ftItems.length === 0) ftItems = parseFreitextItems(text);
+  if (ftItems.length === 0) { showToast('Keine Artikel erkannt.'); return; }
+
+  var added = 0;
+  ftItems.forEach(function(it) {
+    var price = it.price !== null ? it.price : 0;
+    cart.push({
+      catKey: 'custom',
+      itemId: 'custom_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+      name: it.name,
+      size: null,
+      price: price,
+      qty: it.qty,
+      extArr: [],
+      remArr: [],
+      note: it.note || '',
+      extrasObj: {},
+      removedObj: {},
+      freeSauce: null,
+      freeSauceLabel: null,
+      freeDressing: null,
+      freeDressingLabel: null
+    });
+    added++;
+  });
+
+  closeFreitextBox();
+
+  var orderArea = document.getElementById('orderArea');
+  if (orderArea && orderArea.style.display === 'none') {
+    orderArea.style.display = 'block';
+    renderFullMenu();
+  }
+
+  updatePreview();
+  showToast(added + ' Artikel hinzugefügt');
+
+  setTimeout(function() {
+    var previewCard = document.getElementById('previewCard');
+    if (previewCard) previewCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 300);
+}
+
+function addFreitextAndPrintNow() {
+  addFreitextToCart();
+  setTimeout(function() {
+    if (cart.length > 0) {
+      printOrder();
+    }
+  }, 500);
+}
+
 </script>
 
 
@@ -3117,6 +2997,37 @@ function addEntry(item, catKey, size, price, extArr, remArr, extrasObj, removedO
         <div class="modal-total-price" id="modalTotal">€0,00</div>
       </div>
       <button class="modal-add-btn" id="modalAddBtn" onclick="confirmAdd()">In den Warenkorb →</button>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- FREITEXT MODAL -->
+<div class="ft-overlay" id="ftOverlay" onclick="if(event.target===this)closeFreitextBox()">
+  <div class="ft-modal" id="ftModal">
+    <div class="ft-header">
+      <div class="ft-title">📝 Freitext Bestellung</div>
+      <button class="ft-close" onclick="closeFreitextBox()">✕</button>
+    </div>
+    <div class="ft-body">
+      <div class="ft-hint">
+        <strong>💡 So funktioniert's:</strong><br>
+        Geben Sie Ihre Bestellung als Freitext ein oder fügen Sie sie ein.<br>
+        Jede Zeile = ein Artikel. Format: <strong>Menge x Artikel [Preis]</strong><br>
+        Beispiel: <em>2x Kebap 8,50</em> oder <em>Pizza Salami Mittel 9,00</em>
+      </div>
+      <textarea class="ft-textarea" id="ftTextarea" placeholder="Bestellung hier eingeben oder einfügen...&#10;z.B.:&#10;Kebap Groß 11,00&#10;2x Pizza Salami 8,00&#10;Pommes Klein 4,00"></textarea>
+      <div class="ft-preview" id="ftPreview" style="display:none;">
+        <div class="ft-preview-title">Vorschau</div>
+        <div id="ftPreviewList"></div>
+      </div>
+    </div>
+    <div class="ft-footer">
+      <button class="btn btn-secondary" onclick="previewFreitextItems()">👁 Vorschau</button>
+      <button class="btn btn-primary" onclick="addFreitextToCart()">➕ Zur Bestellung</button>
+      <button class="btn btn-success" onclick="addFreitextAndPrintNow()">🖨️ Hinzufügen & Drucken</button>
+      <button class="btn" style="background:var(--border);color:var(--text-light);" onclick="closeFreitextBox()">Abbrechen</button>
     </div>
   </div>
 </div>
