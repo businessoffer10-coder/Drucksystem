@@ -48,7 +48,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .sb-space{flex:1;}
 
 /* ── MAIN ── */
-.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;background:var(--bg);}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;background:var(--bg);position:relative;}
+.pages-wrap{flex:1;display:flex;overflow:hidden;position:relative;}
+.page{display:flex;flex-direction:column;height:100%;min-width:100%;width:100%;overflow:hidden;position:absolute;top:0;left:0;transform:translateX(100%);transition:transform 0.32s cubic-bezier(0.4,0,0.2,1);will-change:transform;background:var(--bg);}
+.page.active{transform:translateX(0) !important;display:flex;}
+.page.slide-left{transform:translateX(-30%);}
 .page{display:none;flex-direction:column;height:100%;overflow:hidden;}
 .page.active{display:flex;}
 
@@ -461,6 +465,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
   .sb-btn i{font-size:22px;}
   .sb-btn.active::before{right:auto;top:0;left:50%;transform:translateX(-50%);width:24px;height:3px;border-radius:0 0 3px 3px;}
   .main{order:1;flex:1;overflow:hidden;}
+  .pages-wrap{flex:1;position:relative;overflow:hidden;}
   .pg0-body{padding:12px;}
   .type-grid{grid-template-columns:1fr 1fr;gap:8px;}
   .tc{padding:11px 10px;}
@@ -579,7 +584,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
   </div>
 
   <div class="main">
-    <!-- ══ PAGE 0: START ══ -->
+    <div class="pages-wrap" id="pages-wrap">    <!-- ══ PAGE 0: START ══ -->
     <div class="page active" id="pg0">
       <div class="topbar">
         <div class="tb-icon"><i class="ti ti-home"></i></div>
@@ -655,15 +660,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
                 <span class="chip-sel-name" id="chip-street-name"></span>
                 <button class="chip-sel-x" onclick="clearStreet()"><i class="ti ti-x"></i></button>
               </div>
-              <div class="f-grid2" id="street-row" style="display:none;">
-                <div class="inp-wrap">
-                  <i class="ti ti-road inp-ic"></i>
-                  <input class="f-inp f-inp-ic" id="street-inp" type="text" placeholder="Straße suchen…" oninput="onStreetInput()" onfocus="openStreetDD()" autocomplete="off"/>
-                  <div class="dd" id="street-dd"></div>
+              <div id="street-row" style="display:none;flex-direction:column;gap:8px;">
+                <div class="f-lbl" style="color:var(--blue);display:flex;align-items:center;gap:5px;">
+                  <i class="ti ti-road" style="font-size:14px;"></i>Straße suchen
                 </div>
-                <div class="f-row">
-                  <span class="f-lbl">Hausnr. *</span>
-                  <input class="f-inp" id="l-house" type="text" placeholder="Nr." oninput="updateLiefSum()"/>
+                <div class="f-grid2">
+                  <div class="inp-wrap">
+                    <i class="ti ti-search inp-ic"></i>
+                    <input class="f-inp f-inp-ic" id="street-inp" type="text" placeholder="Straße eingeben…" oninput="onStreetInput()" onfocus="openStreetDD()" autocomplete="off"/>
+                    <div class="dd" id="street-dd"></div>
+                  </div>
+                  <div class="f-row">
+                    <span class="f-lbl">Hausnr. *</span>
+                    <input class="f-inp" id="l-house" type="text" placeholder="Nr." oninput="updateLiefSum()"/>
+                  </div>
                 </div>
               </div>
               <div class="f-row" id="house-row" style="display:none;">
@@ -965,10 +975,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
         </div>
       </div>
     </div>
-  </div>
-</div>
+    </div><!-- /pages-wrap -->
+  </div><!-- /main -->
+</div><!-- /app -->
 
-<!-- ══ MODAL ══ -->
 <div class="modal-ov" id="modal-overlay" onclick="closeModalOutside(event)">
   <div class="modal-box" id="modal-box">
     <div class="modal-hdr">
@@ -1428,12 +1438,101 @@ const catKeys=Object.keys(MENU);
 // ════════════════════════════════════════════════════════
 // NAVIGATION
 // ════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
+// NAVIGATION — with slide animation
+// ════════════════════════════════════════════════════════
+let currentPage=0;
+const PAGE_ORDER=[0,1,2,3]; // pg0,pg1,pg2,pg3
+
 function go(i,btn){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.sb-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('pg'+i).classList.add('active');
-  btn.classList.add('active');
+  const prev=currentPage;
+  currentPage=i;
+  const pages=document.querySelectorAll('.page');
+  const btns=document.querySelectorAll('.sb-btn');
+
+  // Set direction
+  const goingRight=i>prev;
+
+  pages.forEach((p,idx)=>{
+    const pageNum=parseInt(p.id.replace('pg',''));
+    p.classList.remove('active','slide-left');
+    if(pageNum===i){
+      // Incoming page: start from right or left
+      p.style.transform=goingRight?'translateX(100%)':'translateX(-30%)';
+      p.style.transition='none';
+      requestAnimationFrame(()=>{
+        requestAnimationFrame(()=>{
+          p.style.transition='transform 0.32s cubic-bezier(0.4,0,0.2,1)';
+          p.style.transform='translateX(0)';
+          p.classList.add('active');
+        });
+      });
+    } else if(pageNum===prev){
+      // Outgoing page: slide to left or right
+      p.style.transition='transform 0.32s cubic-bezier(0.4,0,0.2,1)';
+      p.style.transform=goingRight?'translateX(-30%)':'translateX(100%)';
+    } else {
+      p.style.transform='translateX(100%)';
+      p.style.transition='none';
+    }
+  });
+
+  btns.forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
 }
+
+// ════════════════════════════════════════════════════════
+// SWIPE SUPPORT
+// ════════════════════════════════════════════════════════
+(function(){
+  let startX=0,startY=0,startT=0,isDragging=false;
+  const SWIPE_PAGES=[0,1,2]; // only between pg0,pg1,pg2 (not settings)
+  const MIN_DIST=60,MAX_TIME=400,MAX_VERT=80;
+
+  document.addEventListener('touchstart',e=>{
+    // Don't swipe if inside modal, cart, dropdown, or scrollable area
+    if(e.target.closest('.modal-ov,.cart-items,.dd,.dd-item,.prod-grid,.inv-body,.set-body,.pg0-body'))return;
+    startX=e.touches[0].clientX;
+    startY=e.touches[0].clientY;
+    startT=Date.now();
+    isDragging=true;
+  },{passive:true});
+
+  document.addEventListener('touchmove',e=>{
+    if(!isDragging)return;
+    const dx=e.touches[0].clientX-startX;
+    const dy=Math.abs(e.touches[0].clientY-startY);
+    if(dy>MAX_VERT){isDragging=false;return;}
+    // Live drag feedback on current page
+    if(Math.abs(dx)>10 && currentPage<3){
+      const pg=document.getElementById('pg'+currentPage);
+      if(pg) pg.style.transform=`translateX(${dx*0.3}px)`;
+    }
+  },{passive:true});
+
+  document.addEventListener('touchend',e=>{
+    if(!isDragging)return;
+    isDragging=false;
+    const dx=e.changedTouches[0].clientX-startX;
+    const dy=Math.abs(e.changedTouches[0].clientY-startY);
+    const dt=Date.now()-startT;
+    // Reset current page transform
+    const pg=document.getElementById('pg'+currentPage);
+    if(pg){pg.style.transition='transform 0.32s cubic-bezier(0.4,0,0.2,1)';pg.style.transform='translateX(0)';}
+
+    if(Math.abs(dx)<MIN_DIST||dt>MAX_TIME||dy>MAX_VERT)return;
+    if(!SWIPE_PAGES.includes(currentPage))return;
+
+    const btns=document.querySelectorAll('.sb-btn');
+    if(dx<0&&currentPage<2){
+      // Swipe left → go forward
+      go(currentPage+1,btns[currentPage+1]);
+    } else if(dx>0&&currentPage>0){
+      // Swipe right → go back
+      go(currentPage-1,btns[currentPage-1]);
+    }
+  },{passive:true});
+})();
 
 // ════════════════════════════════════════════════════════
 // ORDER TYPE
@@ -1492,7 +1591,7 @@ function selectCity(name){
   document.getElementById('city-sw').style.display='none';
   document.getElementById('city-chip').classList.add('show');
   document.getElementById('chip-city-name').textContent=name+' ('+(PLZ[name]||'')+')';
-  document.getElementById('street-row').style.display='grid';
+  document.getElementById('street-row').style.display='flex';
   document.getElementById('street-chip').style.display='none';
   document.getElementById('house-row').style.display='none';
   document.getElementById('l-house').value='';
@@ -1533,15 +1632,17 @@ function selectStreet(name){
 function clearStreet(){
   selStreet=null;
   document.getElementById('street-chip').style.display='none';
-  document.getElementById('street-row').style.display='grid';
+  document.getElementById('street-row').style.display='flex';
   document.getElementById('street-inp').value='';
   document.getElementById('house-row').style.display='none';
   document.getElementById('l-house2').value='';
   updateLiefSum();
 }
 document.addEventListener('click',e=>{
-  if(!e.target.closest('#city-sw'))document.getElementById('city-dd').classList.remove('open');
-  if(!e.target.closest('#street-row'))document.getElementById('street-dd').classList.remove('open');
+  if(!e.target.closest('#city-sw') && !e.target.closest('#city-chip'))
+    document.getElementById('city-dd').classList.remove('open');
+  if(!e.target.closest('#street-row') && !e.target.closest('#street-chip'))
+    document.getElementById('street-dd').classList.remove('open');
 });
 function selLiefTime(btn,mode){
   liefTimeMode=mode;
@@ -1785,7 +1886,7 @@ function buildModalBody(){
 
   // SIZE
   if(item.sizes){
-    html+=`<div class="ms"><div class="ms-title">📏 Größe wählen</div><div class="size-opts">`;
+    html+=`<div class="ms"><div class="ms-ttl">📏 Größe wählen</div><div class="size-opts">`;
     Object.entries(item.sizes).forEach(([sz,pr])=>{
       const on=sz===size?'on':'';
       html+=`<div class="size-opt ${on}" onclick="selModalSize('${sz}')"><span class="so-sz">${sz}</span><span class="so-pr">${fmt(pr)}</span></div>`;
@@ -1796,12 +1897,12 @@ function buildModalBody(){
   // FREE SAUCE
   if(item.freeSauce){
     const sauces=['tzatziki','chili','bbq','knoblauch','mayo','ketchup','hollandaise','remoulade','cocktail','sweetChili'];
-    html+=`<div class="free-sauce-wrap"><div class="free-sauce-lbl">🆓 Kostenlose Sauce (1 inklusive)</div><div class="free-chips">`;
+    html+=`<div class="ms"><div class="ms-ttl">🆓 Kostenlose Sauce (inklusive)</div><div class="chips">`;
     sauces.forEach(s=>{
       const ex=EXTRAS[s];if(!ex)return;
       const on=freeSauce===s?'on':'';
       const lbl=ex.label.replace('Extra ','').replace('Sauce ','').replace('-Sauce','');
-      html+=`<span class="free-chip ${on}" onclick="selFreeSauce('${s}')">${lbl}</span>`;
+      html+=`<span class="chip chip-sauce ${on}" onclick="selFreeSauce('${s}')">${lbl}</span>`;
     });
     html+=`</div></div>`;
   }
@@ -1809,22 +1910,23 @@ function buildModalBody(){
   // FREE DRESSING
   if(item.freeDressing){
     const dressings=['dressingJoghurt','dressingFrench','dressingItalien','dressingJoppi','dressingGranatapfel','dressingKnoblauch'];
-    html+=`<div class="dressing-wrap"><div class="dressing-lbl">🥗 Dressing wählen (inklusive)</div><div class="free-chips">`;
+    html+=`<div class="ms"><div class="ms-ttl">🥗 Dressing wählen (inklusive)</div><div class="chips">`;
     dressings.forEach(d=>{
       const ex=EXTRAS[d];if(!ex)return;
       const on=freeDressing===d?'on':'';
       const lbl=ex.label.replace('-Dressing','').replace(' Dressing','');
-      html+=`<span class="dressing-chip ${on}" onclick="selFreeDressing('${d}')">${lbl}</span>`;
+      html+=`<span class="chip chip-dress ${on}" onclick="selFreeDressing('${d}')">${lbl}</span>`;
     });
     html+=`</div></div>`;
   }
 
   // REMOVE INGREDIENTS
   if(item.ing&&item.ing.length){
-    html+=`<div class="remove-wrap"><div class="remove-lbl">🚫 Zutaten weglassen</div><div class="remove-chips">`;
+    html+=`<div class="ms"><div class="ms-ttl">🚫 Zutaten weglassen</div><div class="chips">`;
     item.ing.forEach(ing=>{
       const on=removed.includes(ing)?'on':'';
-      html+=`<span class="remove-chip ${on}" onclick="toggleRemove('${ing.replace(/'/g,"\\'")}')">${ing}</span>`;
+      html+=`<span class="chip chip-remove ${on}" onclick="toggleRemove('${ing.replace(/'/g,"\\'")}')">
+        ${removed.includes(ing)?'✕ ':''}${ing}</span>`;
     });
     html+=`</div></div>`;
   }
@@ -1834,48 +1936,48 @@ function buildModalBody(){
     const groups={meat:[],veg:[],sauce:[],side:[]};
     item.ex.forEach(key=>{const ex=EXTRAS[key];if(ex&&groups[ex.cat])groups[ex.cat].push(key);});
     const labels={
-      meat:isFamilie?'🥩 Fleisch (+4,00 €/Stück)':'🥩 Fleisch (+2,00 €/Stück)',
-      veg:isFamilie?'🥦 Gemüse & Käse (+2,00 €/Stück)':'🥦 Gemüse & Käse (+1,00 €/Stück)',
+      meat:isFamilie?'🥩 Fleisch (+4,00 €)':'🥩 Fleisch (+2,00 €)',
+      veg:isFamilie?'🥦 Gemüse & Käse (+2,00 €)':'🥦 Gemüse & Käse (+1,00 €)',
       sauce:`🫙 Saucen (+${spo.toFixed(2).replace('.',',')} €)`,
       side:'🍞 Beilagen'
     };
     let extHtml='';
     for(const[cat,keys]of Object.entries(groups)){
       if(!keys.length)continue;
-      extHtml+=`<div class="extras-group"><div class="eg-title">${labels[cat]}</div><div class="extras-chips">`;
+      extHtml+=`<div class="ex-group"><div class="ex-group-ttl">${labels[cat]}</div><div class="chips">`;
       keys.forEach(key=>{
         const ex=EXTRAS[key];
         const on=extras.includes(key)?'on':'';
         const pr=getExtraPrice(key,isFamilie,spo);
-        const prStr=pr>0?` <span class="ep">+${fmt(pr)}</span>`:'';
-        extHtml+=`<span class="extra-chip ${on}" onclick="toggleExtra('${key}')">${ex.label.replace('Extra ','')}${prStr}</span>`;
+        const prStr=pr>0?`<span class="ep"> +${fmt(pr)}</span>`:'';
+        extHtml+=`<span class="chip chip-extra ${on}" onclick="toggleExtra('${key}')">${ex.label.replace('Extra ','')}${prStr}</span>`;
       });
       extHtml+=`</div></div>`;
     }
     if(extHtml){
-      html+=`<div class="ms"><div class="ms-title">➕ Extras hinzufügen</div>${extHtml}</div>`;
+      html+=`<div class="ms"><div class="ms-ttl">➕ Extras hinzufügen</div>${extHtml}</div>`;
     }
   }
 
   // MANUAL EXTRAS
-  const mTags=modalState.manualExtras.map((me,i)=>
+  const mTags=(modalState.manualExtras||[]).map((me,i)=>
     `<span class="manual-tag">
       <span>${me.name}</span>
-      <span class="mt-price">+${fmt(me.price)}</span>
-      <button class="mt-rm" onclick="removeManualExtra(${i})" title="Entfernen">×</button>
+      <span style="font-size:10px;color:var(--green);margin-left:3px;">+${fmt(me.price)}</span>
+      <button class="manual-tag-rm" onclick="removeManualExtra(${i})">×</button>
     </span>`).join('');
-  html+=`<div class="manual-extra-wrap">
-    <div class="manual-extra-lbl">✏️ Manuelle Extras hinzufügen</div>
-    <div class="manual-extra-row">
-      <input class="manual-extra-name" id="me-name" type="text" placeholder="z.B. extra scharf, Soße extra…"/>
-      <input class="manual-extra-price" id="me-price" type="number" min="0" step="0.50" placeholder="0,00" value=""/>
-      <button class="manual-add-btn" onclick="addManualExtra()"><i class="ti ti-plus"></i>Hinzufügen</button>
+  html+=`<div class="manual-wrap">
+    <div class="manual-lbl">✏️ Manuelle Extras hinzufügen</div>
+    <div class="manual-row">
+      <input class="manual-name" id="me-name" type="text" placeholder="z.B. extra scharf…"/>
+      <input class="manual-price" id="me-price" type="number" min="0" step="0.50" placeholder="€"/>
+      <button class="btn btn-g btn-sm" onclick="addManualExtra()"><i class="ti ti-plus"></i>Hinzufügen</button>
     </div>
     ${mTags?`<div class="manual-tags">${mTags}</div>`:''}
   </div>`;
 
   // NOTE
-  html+=`<div class="ms"><div class="ms-title">📝 Anmerkung</div>
+  html+=`<div class="ms"><div class="ms-ttl">📝 Anmerkung</div>
     <textarea class="note-inp" rows="2" placeholder="z.B. extra scharf, ohne Sauce…" oninput="modalState.note=this.value">${modalState.note||''}</textarea>
   </div>`;
 
@@ -2429,14 +2531,32 @@ function openPartyModal(){
   document.getElementById('modal-overlay').classList.add('open');
   renderPartySVG();renderPartySlices();updatePartySummary();
 }
+// Category style map
+const CAT_STYLE={
+  kebap:  {bg:'#FAECE7',c:'#D85A30',t:'#7C2D12',l:'K',  icon:'🌯'},
+  teller: {bg:'#EFF6FF',c:'#2563EB',t:'#1E3A8A',l:'T',  icon:'🍽'},
+  fladenbrot:{bg:'#FEFCE8',c:'#CA8A04',t:'#713F12',l:'F',icon:'🫓'},
+  pizza:  {bg:'#FEF2F2',c:'#DC2626',t:'#7F1D1D',l:'P',  icon:'🍕'},
+  veggie: {bg:'#F0FDF4',c:'#16A34A',t:'#14532D',l:'V',  icon:'🥦'},
+  taschen:{bg:'#FDF2F8',c:'#C026D3',t:'#701A75',l:'Ta', icon:'👜'},
+  schnecken:{bg:'#F5F3FF',c:'#7C3AED',t:'#4C1D95',l:'S',icon:'🐌'},
+  pommbox:{bg:'#FFFBEB',c:'#D97706',t:'#78350F',l:'Po', icon:'🍟'},
+  pasta:  {bg:'#ECFDF5',c:'#059669',t:'#064E3B',l:'Pa', icon:'🍝'},
+  salat:  {bg:'#F0FDF4',c:'#15803D',t:'#14532D',l:'Sa', icon:'🥗'},
+  snacks: {bg:'#FEF2F2',c:'#B91C1C',t:'#7F1D1D',l:'Sn', icon:'🍗'},
+  kids:   {bg:'#FDF2F8',c:'#DB2777',t:'#831843',l:'Ki', icon:'🧒'},
+  getraenke:{bg:'#F5F3FF',c:'#6D28D9',t:'#3B0764',l:'G',icon:'🥤'},
+  party:  {bg:'#FFF7ED',c:'#EA580C',t:'#7C2D12',l:'PP', icon:'🎉'},
+};
+
 function buildCats(){
   const g=document.getElementById('cats-g');g.innerHTML='';
   catKeys.forEach(k=>{
     const cat=MENU[k];
+    const st=CAT_STYLE[k]||{bg:'#F5F5F5',c:'#666',t:'#333',l:k[0].toUpperCase(),icon:'🍴'};
     const b=document.createElement('button');
     b.className='cat-btn'+(k===activeCat?' on':'');
-    b.style.background=cat.bg;
-    b.innerHTML=`<div class="cat-dot" style="background:${cat.c};">${cat.l}</div><span class="cat-lbl" style="color:${cat.t};">${cat.title}</span>`;
+    b.innerHTML=`<div class="cat-dot" style="background:${st.c};">${st.l}</div><span class="cat-lbl" style="color:${st.t};">${cat.title}</span>`;
     b.onclick=()=>{activeCat=k;document.getElementById('cat-lbl').textContent=cat.title;buildCats();buildProducts();};
     g.appendChild(b);
   });
@@ -2479,11 +2599,23 @@ function findItem(id){
 }
 
 // ════════════════════════════════════════════════════════
-// CART
+// INIT
 // ════════════════════════════════════════════════════════
+const now=new Date();
+document.getElementById('inv-d').textContent=now.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
+document.getElementById('inv-t').textContent=now.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+document.getElementById('hw-time').textContent=now.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'short'})+' · '+now.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+document.getElementById('inv-no').textContent=Math.floor(2000+Math.random()*999);
+// Build categories and auto-select first
+buildCats();
+activeCat=catKeys[0]||'kebap';
+const _firstCat=MENU[activeCat];
+if(_firstCat) document.getElementById('cat-lbl').textContent=_firstCat.title;
+buildCats();
+buildProducts();
+renderCart();
 document.getElementById('inv-addr').classList.add('show');
 document.getElementById('ia-type-lbl').textContent='🚴 Liefern';
-// init settings panels
 renderCitiesList();
 initProdCatSelects();
 renderEditProducts();
