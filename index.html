@@ -916,10 +916,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
         </div>
         <div class="sc">
           <div class="sc-hdr">📋 Bestellarten</div>
-          <div class="sr"><div class="sr-l"><span class="sr-lbl">Liefern</span></div><div class="tgl on" onclick="this.classList.toggle('on')"></div></div>
-          <div class="sr"><div class="sr-l"><span class="sr-lbl">Abholen</span></div><div class="tgl on" onclick="this.classList.toggle('on')"></div></div>
-          <div class="sr"><div class="sr-l"><span class="sr-lbl">Hier Essen</span></div><div class="tgl on" onclick="this.classList.toggle('on')"></div></div>
-          <div class="sr"><div class="sr-l"><span class="sr-lbl">Frei Text</span></div><div class="tgl on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="sr"><div class="sr-l"><span class="sr-lbl">🚴 Liefern</span><span class="sr-dsc">Lieferung nach Hause</span></div><div class="tgl on" id="tgl-liefern" onclick="toggleBestellart('Liefern',this)"></div></div>
+          <div class="sr"><div class="sr-l"><span class="sr-lbl">🛍 Abholen</span><span class="sr-dsc">Abholung im Restaurant</span></div><div class="tgl on" id="tgl-abholen" onclick="toggleBestellart('Abholen',this)"></div></div>
+          <div class="sr"><div class="sr-l"><span class="sr-lbl">🍽 Hier Essen</span><span class="sr-dsc">Tisch im Restaurant</span></div><div class="tgl on" id="tgl-hier" onclick="toggleBestellart('Hier Essen',this)"></div></div>
+          <div class="sr"><div class="sr-l"><span class="sr-lbl">✏️ Frei Text</span><span class="sr-dsc">Direkt drucken</span></div><div class="tgl on" id="tgl-freitext" onclick="toggleBestellart('Frei Text',this)"></div></div>
         </div>
         <div class="sc">
           <div class="sc-hdr clickable" onclick="toggleAcc('acc-cities',this)"><span>🏙 Liefergebiete & Kosten</span><span style="margin-left:auto;font-size:11px;color:var(--t3);">▼</span></div>
@@ -1439,8 +1439,58 @@ const catKeys=Object.keys(MENU);
 // NAVIGATION
 // ════════════════════════════════════════════════════════
 // ════════════════════════════════════════════════════════
-// NAVIGATION — with slide animation
+// BESTELLARTEN TOGGLE
 // ════════════════════════════════════════════════════════
+const BESTELLART_MAP={
+  'Liefern':  {tgl:'tgl-liefern',  card:0, panel:'liefern-panel'},
+  'Abholen':  {tgl:'tgl-abholen',  card:1, panel:'abholen-panel'},
+  'Hier Essen':{tgl:'tgl-hier',    card:2, panel:'he-panel'},
+  'Frei Text':{tgl:'tgl-freitext', card:3, panel:'ft-panel'},
+};
+
+function toggleBestellart(type, tglEl){
+  tglEl.classList.toggle('on');
+  const active = tglEl.classList.contains('on');
+  const map = BESTELLART_MAP[type];
+  if(!map) return;
+
+  // Show/hide the type card on home page
+  const cards = document.querySelectorAll('.tc');
+  if(cards[map.card]){
+    cards[map.card].style.display = active ? '' : 'none';
+  }
+
+  // If currently selected type is disabled → switch to first active
+  if(!active && activeType===type){
+    const firstActive = Object.entries(BESTELLART_MAP).find(([t,m])=>{
+      const tgl = document.getElementById(m.tgl);
+      return tgl && tgl.classList.contains('on') && t !== type;
+    });
+    if(firstActive){
+      const firstCard = document.querySelectorAll('.tc')[firstActive[1].card];
+      if(firstCard) selT(firstCard, firstActive[0]);
+    }
+  }
+
+  // Show toast
+  showToast(`${type}: ${active ? 'Aktiviert ✓' : 'Deaktiviert'}`);
+}
+
+function showToast(msg){
+  let t = document.getElementById('toast');
+  if(!t){
+    t = document.createElement('div');
+    t.id = 'toast';
+    t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1C1C1A;color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:500;z-index:99999;opacity:0;transition:opacity 0.2s;pointer-events:none;white-space:nowrap;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity='1';
+  clearTimeout(t._to);
+  t._to = setTimeout(()=>t.style.opacity='0', 2000);
+}
+
+
 let currentPage=0;
 const PAGE_ORDER=[0,1,2,3]; // pg0,pg1,pg2,pg3
 
