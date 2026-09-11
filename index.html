@@ -915,11 +915,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
           <div class="sr"><div class="sr-l"><span class="sr-lbl">Automatisch drucken</span><span class="sr-dsc">Nach Abschluss</span></div><div class="tgl" onclick="this.classList.toggle('on')"></div></div>
         </div>
         <div class="sc">
-          <div class="sc-hdr">📋 Bestellarten</div>
+          <div class="sc-hdr clickable" onclick="toggleAcc('acc-bestellarten',this)"><span>📋 Bestellarten</span><span style="margin-left:auto;font-size:11px;color:var(--t3);">▼</span></div>
+          <div id="acc-bestellarten" style="display:none;">
           <div class="sr"><div class="sr-l"><span class="sr-lbl">🚴 Liefern</span><span class="sr-dsc">Lieferung nach Hause</span></div><div class="tgl on" id="tgl-liefern" onclick="toggleBestellart('Liefern',this)"></div></div>
           <div class="sr"><div class="sr-l"><span class="sr-lbl">🛍 Abholen</span><span class="sr-dsc">Abholung im Restaurant</span></div><div class="tgl on" id="tgl-abholen" onclick="toggleBestellart('Abholen',this)"></div></div>
           <div class="sr"><div class="sr-l"><span class="sr-lbl">🍽 Hier Essen</span><span class="sr-dsc">Tisch im Restaurant</span></div><div class="tgl on" id="tgl-hier" onclick="toggleBestellart('Hier Essen',this)"></div></div>
           <div class="sr"><div class="sr-l"><span class="sr-lbl">✏️ Frei Text</span><span class="sr-dsc">Direkt drucken</span></div><div class="tgl on" id="tgl-freitext" onclick="toggleBestellart('Frei Text',this)"></div></div>
+          </div>
         </div>
         <div class="sc">
           <div class="sc-hdr clickable" onclick="toggleAcc('acc-cities',this)"><span>🏙 Liefergebiete & Kosten</span><span style="margin-left:auto;font-size:11px;color:var(--t3);">▼</span></div>
