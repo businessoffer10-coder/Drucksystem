@@ -939,8 +939,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
         <div class="sc">
           <div class="sc-hdr clickable" onclick="toggleAcc('acc-prod',this)"><span>🍕 Produkte verwalten</span><span style="margin-left:auto;font-size:11px;color:var(--t3);">▼</span></div>
           <div id="acc-prod" style="display:none;">
+
+            <!-- Form Header -->
+            <div id="prod-form-hdr" style="padding:10px 16px;display:flex;align-items:center;justify-content:space-between;background:var(--green-l);border-bottom:1px solid #86EFAC;">
+              <div style="display:flex;align-items:center;gap:7px;">
+                <span id="prod-form-icon" style="font-size:16px;">➕</span>
+                <span id="prod-form-title" style="font-size:13px;font-weight:700;color:#14532D;">Neues Produkt</span>
+              </div>
+              <button id="prod-form-cancel" class="btn btn-ghost btn-xs" style="display:none;" onclick="cancelEditProduct()">
+                <i class="ti ti-x"></i>Abbrechen
+              </button>
+            </div>
+
+            <!-- Form Body -->
             <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:10px;">
-              <span class="set-lbl">Neues Produkt</span>
+              <input type="hidden" id="edit-prod-key"/>
+              <input type="hidden" id="edit-prod-idx"/>
               <div class="f-grid2">
                 <div><span class="set-lbl">Kategorie</span><select class="si si-full" id="new-prod-cat"></select></div>
                 <div><span class="set-lbl">Name *</span><input class="si si-full" id="new-prod-name" placeholder="Produktname…"/></div>
@@ -949,28 +963,33 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
               <div class="f-grid2">
                 <div><span class="set-lbl">Fester Preis (€)</span><input class="si si-full" id="new-prod-price" type="number" min="0" step="0.5" placeholder="0.00"/></div>
                 <div>
-                  <span class="set-lbl">Oder Größen (€)</span>
+                  <span class="set-lbl">Größenpreise (€)</span>
                   <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
-                    <input class="si si-full" id="sz-klein" type="number" min="0" step="0.5" placeholder="Klein" style="font-size:11px;"/>
-                    <input class="si si-full" id="sz-mittel" type="number" min="0" step="0.5" placeholder="Mittel" style="font-size:11px;"/>
-                    <input class="si si-full" id="sz-gross" type="number" min="0" step="0.5" placeholder="Groß" style="font-size:11px;"/>
+                    <input class="si si-full" id="sz-klein"   type="number" min="0" step="0.5" placeholder="Klein"   style="font-size:11px;"/>
+                    <input class="si si-full" id="sz-mittel"  type="number" min="0" step="0.5" placeholder="Mittel"  style="font-size:11px;"/>
+                    <input class="si si-full" id="sz-gross"   type="number" min="0" step="0.5" placeholder="Groß"    style="font-size:11px;"/>
                     <input class="si si-full" id="sz-familie" type="number" min="0" step="0.5" placeholder="Familie" style="font-size:11px;"/>
                   </div>
                 </div>
               </div>
-              <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
                 <div style="display:flex;gap:14px;">
                   <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;"><input type="checkbox" id="new-prod-new" style="accent-color:var(--acc);"/>NEU</label>
                   <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;"><input type="checkbox" id="new-prod-spicy" style="accent-color:var(--acc);"/>🌶 Scharf</label>
                 </div>
-                <button id="add-prod-btn" class="btn btn-p btn-sm" onclick="addProduct()"><i class="ti ti-plus"></i>Hinzufügen</button>
+                <button id="add-prod-btn" class="btn btn-g btn-sm" onclick="saveProduct()">
+                  <i class="ti ti-plus"></i>Hinzufügen
+                </button>
               </div>
             </div>
+
+            <!-- Product List -->
             <div style="padding:10px 16px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;">
               <span class="set-lbl" style="margin:0;white-space:nowrap;">Kategorie:</span>
               <select class="si" id="edit-prod-cat" style="flex:1;width:auto;" onchange="renderEditProducts()"></select>
             </div>
-            <div id="edit-products-list" style="max-height:200px;overflow-y:auto;"></div>
+            <div id="edit-products-list" style="max-height:280px;overflow-y:auto;"></div>
+
           </div>
         </div>
       </div>
@@ -2302,17 +2321,78 @@ function getCityFee(cityName){
   return c?c.fee:2;
 }
 // ════════════════════════════════════════════════════════
-// PRODUCTS MANAGEMENT
+// PRODUCTS MANAGEMENT — Add / Edit / Delete
 // ════════════════════════════════════════════════════════
+let prodEditMode=false;
+
 function initProdCatSelects(){
   const cats=Object.entries(MENU).map(([k,v])=>({k,title:v.title}));
   ['new-prod-cat','edit-prod-cat'].forEach(id=>{
     const el=document.getElementById(id);
     if(!el)return;
+    const prev=el.value;
     el.innerHTML=cats.map(c=>`<option value="${c.k}">${c.title}</option>`).join('');
+    if(prev) el.value=prev;
   });
 }
-function addProduct(){
+
+function onProdCatChange(){
+  if(!prodEditMode) renderEditProducts();
+}
+
+function setProdFormMode(mode,item=null,catKey=null,idx=null){
+  prodEditMode=(mode==='edit');
+  const hdr=document.getElementById('prod-form-hdr');
+  const icon=document.getElementById('prod-form-icon');
+  const title=document.getElementById('prod-form-title');
+  const cancelBtn=document.getElementById('prod-form-cancel');
+  const addBtn=document.getElementById('add-prod-btn');
+  if(!hdr||!addBtn)return;
+
+  if(prodEditMode){
+    hdr.style.background='#FEF3C7';hdr.style.borderBottomColor='#FDE68A';
+    icon.textContent='✏️';title.style.color='#92400E';
+    title.textContent='Bearbeiten: '+(item?.name||'');
+    cancelBtn.style.display='flex';
+    addBtn.innerHTML='<i class="ti ti-check"></i>Speichern';
+    addBtn.className='btn btn-p btn-sm';
+    document.getElementById('new-prod-cat').value=catKey||'';
+    document.getElementById('new-prod-cat').disabled=true;
+    document.getElementById('new-prod-name').value=item?.name||'';
+    document.getElementById('new-prod-desc').value=item?.desc||'';
+    document.getElementById('new-prod-new').checked=!!item?.isNew;
+    document.getElementById('new-prod-spicy').checked=!!item?.isSpicy;
+    document.getElementById('edit-prod-key').value=catKey||'';
+    document.getElementById('edit-prod-idx').value=idx!=null?idx:'';
+    if(item?.sizes){
+      document.getElementById('new-prod-price').value='';
+      document.getElementById('sz-klein').value=item.sizes['Klein']||'';
+      document.getElementById('sz-mittel').value=item.sizes['Mittel']||'';
+      document.getElementById('sz-gross').value=item.sizes['Groß']||item.sizes['Gross']||'';
+      document.getElementById('sz-familie').value=item.sizes['Familie']||'';
+    } else {
+      document.getElementById('new-prod-price').value=item?.price||'';
+      ['sz-klein','sz-mittel','sz-gross','sz-familie'].forEach(id=>document.getElementById(id).value='');
+    }
+    document.getElementById('prod-form-hdr').scrollIntoView({behavior:'smooth',block:'nearest'});
+  } else {
+    hdr.style.background='var(--green-l)';hdr.style.borderBottomColor='#86EFAC';
+    icon.textContent='➕';title.style.color='#14532D';title.textContent='Neues Produkt';
+    cancelBtn.style.display='none';
+    addBtn.innerHTML='<i class="ti ti-plus"></i>Hinzufügen';
+    addBtn.className='btn btn-g btn-sm';
+    document.getElementById('new-prod-cat').disabled=false;
+    ['new-prod-name','new-prod-desc','new-prod-price','sz-klein','sz-mittel','sz-gross','sz-familie'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('new-prod-new').checked=false;
+    document.getElementById('new-prod-spicy').checked=false;
+    document.getElementById('edit-prod-key').value='';
+    document.getElementById('edit-prod-idx').value='';
+  }
+}
+
+function cancelEditProduct(){setProdFormMode('add');renderEditProducts();}
+
+function saveProduct(){
   const catKey=document.getElementById('new-prod-cat').value;
   const name=(document.getElementById('new-prod-name').value||'').trim();
   const desc=(document.getElementById('new-prod-desc').value||'').trim();
@@ -2323,57 +2403,89 @@ function addProduct(){
   const familie=parseFloat(document.getElementById('sz-familie').value)||0;
   const isNew=document.getElementById('new-prod-new').checked;
   const isSpicy=document.getElementById('new-prod-spicy').checked;
-  if(!name){alert('Bitte Produktname eingeben!');return;}
   const hasSizes=klein||mittel||gross||familie;
-  if(!hasSizes&&!fixedPrice){alert('Bitte Preis oder Größen eingeben!');return;}
-  const newItem={id:'custom-'+Date.now(),name,desc,isNew,isSpicy,ex:[],ing:[]};
-  if(hasSizes){
-    newItem.sizes={};
-    if(klein) newItem.sizes.Klein=klein;
-    if(mittel) newItem.sizes.Mittel=mittel;
-    if(gross) newItem.sizes.Groß=gross;
-    if(familie) newItem.sizes.Familie=familie;
+  if(!name){showToast('⚠️ Bitte Produktname eingeben!');return;}
+  if(!hasSizes&&!fixedPrice){showToast('⚠️ Bitte Preis oder Größen eingeben!');return;}
+
+  if(prodEditMode){
+    const editKey=document.getElementById('edit-prod-key').value;
+    const editIdx=parseInt(document.getElementById('edit-prod-idx').value);
+    const item=MENU[editKey]?.items[editIdx];
+    if(!item){showToast('❌ Produkt nicht gefunden!');return;}
+    item.name=name;item.desc=desc;item.isNew=isNew;item.isSpicy=isSpicy;
+    if(hasSizes){
+      delete item.price;item.sizes={};
+      if(klein) item.sizes['Klein']=klein;
+      if(mittel) item.sizes['Mittel']=mittel;
+      if(gross) item.sizes['Groß']=gross;
+      if(familie) item.sizes['Familie']=familie;
+    } else {delete item.sizes;item.price=fixedPrice;}
+    if(activeCat===editKey) buildProducts();
+    setProdFormMode('add');renderEditProducts();
+    showToast('✅ Gespeichert!');
   } else {
-    newItem.price=fixedPrice;
+    if(!catKey||!MENU[catKey]){showToast('⚠️ Bitte Kategorie wählen!');return;}
+    const newItem={id:'custom-'+Date.now(),name,desc,isNew,isSpicy,ex:[],ing:[]};
+    if(hasSizes){
+      newItem.sizes={};
+      if(klein) newItem.sizes['Klein']=klein;
+      if(mittel) newItem.sizes['Mittel']=mittel;
+      if(gross) newItem.sizes['Groß']=gross;
+      if(familie) newItem.sizes['Familie']=familie;
+    } else {newItem.price=fixedPrice;}
+    MENU[catKey].items.push(newItem);
+    if(activeCat===catKey) buildProducts();
+    setProdFormMode('add');
+    document.getElementById('edit-prod-cat').value=catKey;
+    renderEditProducts();showToast('✅ Produkt hinzugefügt!');
   }
-  MENU[catKey].items.push(newItem);
-  ['new-prod-name','new-prod-desc','new-prod-price','sz-klein','sz-mittel','sz-gross','sz-familie'].forEach(id=>{document.getElementById(id).value='';});
-  document.getElementById('new-prod-new').checked=false;
-  document.getElementById('new-prod-spicy').checked=false;
-  if(activeCat===catKey) buildProducts();
-  renderEditProducts();
-  // feedback
-  const btn=document.getElementById('add-prod-btn');
-  if(btn){const o=btn.innerHTML;btn.innerHTML='<i class="ti ti-check"></i>Hinzugefügt!';btn.style.background='#16A34A';setTimeout(()=>{btn.innerHTML=o;btn.style.background='';},1500);}
 }
+
+function addProduct(){saveProduct();}
+
+function startEditProduct(catKey,idx){
+  const item=MENU[catKey]?.items[idx];
+  if(!item)return;
+  document.getElementById('new-prod-cat').value=catKey;
+  setProdFormMode('edit',item,catKey,idx);
+}
+
 function renderEditProducts(){
   const catKey=document.getElementById('edit-prod-cat')?.value;
   const el=document.getElementById('edit-products-list');
   if(!el||!catKey||!MENU[catKey])return;
   const items=MENU[catKey].items;
-  if(!items.length){el.innerHTML='<div style="padding:8px 16px;font-size:12px;color:var(--text3);">Keine Produkte.</div>';return;}
+  if(!items.length){el.innerHTML='<div style="padding:14px 16px;font-size:13px;color:var(--t3);">Keine Produkte.</div>';return;}
   el.innerHTML=items.map((p,i)=>{
-    const priceStr=p.sizes?Object.entries(p.sizes).map(([s,v])=>`${s}:${fmt(v)}`).join(' · '):fmt(p.price||0);
     const isCustom=String(p.id).startsWith('custom-');
-    return `<div style="display:flex;align-items:center;gap:8px;padding:6px 16px;border-bottom:0.5px solid var(--border);">
+    const priceStr=p.sizes
+      ?Object.entries(p.sizes).map(([s,v])=>`<span style="font-size:10px;background:var(--surface2);padding:1px 5px;border-radius:4px;margin-right:3px;">${s}: ${fmt(v)}</span>`).join('')
+      :`<strong style="font-size:13px;">${fmt(p.price||0)}</strong>`;
+    return `<div style="display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:0.5px solid var(--border);" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''">
       <div style="flex:1;min-width:0;">
-        <div style="font-size:12px;font-weight:500;color:var(--text1);display:flex;align-items:center;gap:4px;">
-          <span style="font-size:9px;color:var(--text3);">#${p.id}</span>${p.name}
-          ${p.isNew?'<span style="font-size:9px;background:#E1F5EE;color:#085041;padding:1px 4px;border-radius:3px;">NEU</span>':''}
-          ${p.isSpicy?'🌶':''}
+        <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:3px;">
+          <span style="font-size:10px;color:var(--t3);background:var(--surface2);padding:1px 5px;border-radius:4px;">#${p.id}</span>
+          <span style="font-size:13px;font-weight:600;color:var(--t1);">${p.name}</span>
+          ${p.isNew?'<span style="font-size:9px;background:var(--green-l);color:#14532D;padding:1px 5px;border-radius:4px;font-weight:700;">NEU</span>':''}
+          ${p.isSpicy?'<span>🌶</span>':''}
+          ${!isCustom?'<span style="font-size:9px;color:var(--t3);border:1px solid var(--border);padding:1px 5px;border-radius:4px;">Standard</span>':''}
         </div>
-        <div style="font-size:10px;color:var(--text3);">${priceStr}</div>
+        <div style="display:flex;gap:3px;flex-wrap:wrap;">${priceStr}</div>
       </div>
-      ${isCustom?`<button class="btn btn-del btn-sm" onclick="deleteProduct('${catKey}',${i})" style="padding:4px 8px;font-size:11px;flex-shrink:0;"><i class="ti ti-trash"></i>Löschen</button>`:'<span style="font-size:10px;color:var(--text3);flex-shrink:0;padding-right:8px;">Standard</span>'}
+      <div style="display:flex;gap:5px;flex-shrink:0;">
+        <button class="btn btn-xs" style="border-color:#BFDBFE;color:#1D4ED8;" onclick="startEditProduct('${catKey}',${i})" title="Bearbeiten"><i class="ti ti-pencil"></i></button>
+        ${isCustom?`<button class="btn btn-del btn-xs" onclick="deleteProduct('${catKey}',${i})" title="Löschen"><i class="ti ti-trash"></i></button>`:''}
+      </div>
     </div>`;
   }).join('');
 }
+
 function deleteProduct(catKey,idx){
   const item=MENU[catKey].items[idx];
-  if(!confirm(`"${item.name}" löschen?`))return;
+  if(!confirm(`"${item.name}" wirklich löschen?`))return;
   MENU[catKey].items.splice(idx,1);
-  if(activeCat===catKey) buildProducts();
-  renderEditProducts();
+  if(activeCat===catKey)buildProducts();
+  renderEditProducts();showToast('🗑 Produkt gelöscht');
 }
 // ════════════════════════════════════════════════════════
 // PARTY PIZZA FUNCTIONS
