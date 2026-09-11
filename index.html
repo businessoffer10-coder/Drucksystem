@@ -236,18 +236,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .prod-search-inp{width:100%;border:1px solid var(--border);border-radius:9px;padding:8px 12px 8px 36px;font-size:13px;font-family:inherit;color:var(--t1);background:var(--surface2);outline:none;transition:all 0.14s;}
 .prod-search-inp:focus{border-color:var(--acc);background:var(--surface);}
 .prod-search-ic{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--t3);}
-.prod-grid{flex:1;padding:12px;overflow-y:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-content:start;}
+.prod-grid{flex:1;padding:8px;overflow-y:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;align-content:start;}
 .prod-empty{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--t3);padding:48px 0;}
 .prod-empty i{font-size:44px;opacity:0.15;}
 .prod-empty p{font-size:13px;}
 
 /* Product card */
-.prod-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:11px 10px 28px;display:flex;flex-direction:column;gap:4px;position:relative;cursor:pointer;transition:all 0.15s;box-shadow:var(--sh);}
+.prod-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 8px 24px;display:flex;flex-direction:column;gap:3px;position:relative;cursor:pointer;transition:all 0.15s;box-shadow:var(--sh);}
 .prod-card:hover{border-color:var(--acc);box-shadow:var(--sh2);transform:translateY(-1px);}
-.pc-num{font-size:10px;font-weight:700;color:var(--t3);background:var(--surface2);padding:2px 6px;border-radius:5px;align-self:flex-start;}
-.pc-name{font-size:13px;font-weight:600;color:var(--t1);line-height:1.3;}
-.pc-badges{display:flex;gap:3px;flex-wrap:wrap;margin-top:1px;}
-.badge-new{font-size:9px;font-weight:700;padding:2px 6px;border-radius:5px;background:var(--green-l);color:#14532D;}
+.pc-num{font-size:9px;font-weight:700;color:var(--t3);background:var(--surface2);padding:1px 5px;border-radius:4px;align-self:flex-start;}
+.pc-name{font-size:11px;font-weight:600;color:var(--t1);line-height:1.3;}
+.pc-badges{display:flex;gap:2px;flex-wrap:wrap;margin-top:1px;}
+.badge-new{font-size:8px;font-weight:700;padding:1px 4px;border-radius:4px;background:var(--green-l);color:#14532D;}
+.badge-hot{font-size:8px;font-weight:700;padding:1px 4px;border-radius:4px;background:var(--red-l);color:#991B1B;}
+.pc-price{font-size:11px;font-weight:500;color:var(--t2);}
+.pc-hint{font-size:9px;color:var(--t3);}
+.pc-add{position:absolute;bottom:6px;right:6px;width:20px;height:20px;border-radius:50%;background:var(--acc);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(224,92,42,0.4);}
+.pc-add i{font-size:12px;color:#fff;}.badge-new{font-size:9px;font-weight:700;padding:2px 6px;border-radius:5px;background:var(--green-l);color:#14532D;}
 .badge-hot{font-size:9px;font-weight:700;padding:2px 6px;border-radius:5px;background:var(--red-l);color:#991B1B;}
 .pc-price{font-size:12px;font-weight:500;color:var(--t2);}
 .pc-hint{font-size:9px;color:var(--t3);}
@@ -479,7 +484,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
   .cat-dot{width:32px;height:32px;font-size:11px;}
   .cat-lbl{font-size:9px;}
   .ord-content{flex-direction:column;}
-  .prod-grid{grid-template-columns:1fr 1fr;gap:7px;padding:10px;}
+  .prod-grid{grid-template-columns:repeat(2,1fr);gap:5px;padding:8px;}
+  .pc-name{font-size:10px;}
+  .pc-num{font-size:8px;}
   .cart-side{width:100%;border-left:none;border-top:1px solid var(--border);max-height:190px;flex-shrink:0;}
   .cart-items{flex-direction:row;overflow-x:auto;overflow-y:hidden;padding:8px;flex-wrap:nowrap;gap:6px;}
   .ci{min-width:130px;flex-direction:row;align-items:center;}
@@ -518,7 +525,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
   .sb{width:62px;}
   .sb-btn{width:46px;height:48px;font-size:8px;}
   .sb-btn i{font-size:20px;}
-  .prod-grid{grid-template-columns:repeat(2,1fr);}
+  .prod-grid{grid-template-columns:repeat(3,1fr);}
   .cart-side{width:190px;}
   .modal-box{width:88vw;}
 }
