@@ -434,6 +434,31 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .party-slice-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:12px 13px;display:flex;flex-direction:column;gap:8px;}
 .party-slice-hdr{display:flex;align-items:center;gap:8px;}
 .party-dot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#fff;flex-shrink:0;}
+/* ══ PARTY CUSTOMIZE BUTTON & MODAL ══ */
+.party-customize-btn{width:100%;margin-top:8px;background:var(--surface);color:var(--t2);border:1.5px solid var(--border);padding:9px 13px;border-radius:9px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.party-customize-btn:hover:not(:disabled){border-color:var(--acc);color:var(--acc);}
+.party-customize-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.pcb-count{background:var(--border2);color:var(--t2);font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;min-width:20px;text-align:center;}
+.pcb-count.active{background:var(--acc);color:#fff;}
+.pcm-std{background:var(--acc-l);border:1px solid #FBBF9A;border-radius:9px;padding:10px 13px;margin-bottom:10px;}
+.pcm-std-lbl{font-size:10px;font-weight:700;color:var(--acc-d);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px;}
+.pcm-std-desc{font-size:12px;color:var(--acc-dd);line-height:1.4;}
+.pcm-remove-grid{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+.pcm-rm-chip{padding:5px 11px;border-radius:20px;border:1.5px solid #BFDBFE;background:#fff;cursor:pointer;font-size:12px;font-weight:500;color:#1E40AF;transition:all .13s;user-select:none;}
+.pcm-rm-chip.removed{border-color:#EF4444;background:#FEE2E2;color:#991B1B;text-decoration:line-through;}
+.pcm-extras-cat-lbl{font-size:11px;font-weight:700;color:var(--t2);margin:8px 0 5px;display:flex;align-items:center;gap:5px;}
+.pcm-extras-grid{display:flex;flex-direction:column;gap:4px;margin-bottom:6px;}
+.pcm-extra-row{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:9px;border:1.5px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .13s;}
+.pcm-extra-row:hover{border-color:var(--acc);}
+.pcm-extra-row.selected{border-color:var(--green);background:var(--green-l);}
+.pcm-extra-check{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0;color:var(--green);transition:all .13s;}
+.pcm-extra-row.selected .pcm-extra-check{background:var(--green);border-color:var(--green);color:#fff;}
+.pcm-extra-label{flex:1;font-size:13px;font-weight:500;color:var(--t1);}
+.pcm-extra-price{font-size:12px;font-weight:700;color:var(--t3);}
+.pcm-extra-row.selected .pcm-extra-price{color:var(--green);}
+.party-mods-summary{margin-top:6px;font-size:11px;display:flex;flex-wrap:wrap;gap:5px;}
+.party-mod-badge{padding:2px 8px;border-radius:10px;font-weight:600;}
+
 .party-slice-lbl{font-size:13px;font-weight:700;color:var(--t1);}
 .party-sel{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit;color:var(--t1);background:var(--surface);outline:none;cursor:pointer;}
 .party-sel:focus{border-color:var(--acc);}
@@ -509,13 +534,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 }
 @media(max-width:479px){
   .type-grid{grid-template-columns:1fr 1fr;}
-  .prod-grid{grid-template-columns:repeat(2,1fr);}
+  .prod-grid{grid-template-columns:repeat(auto-fill,minmax(90px,1fr));}
   .cats-scroll{gap:4px;}
   .cat-btn{min-width:52px;padding:6px 6px 5px;}
 }
 @media(max-width:767px) and (orientation:landscape){
   .ord-content{flex-direction:row;}
-  .prod-grid{grid-template-columns:repeat(3,1fr);}
+  .prod-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));}
   .cart-side{width:155px;max-height:none;height:100%;border-left:1px solid var(--border);border-top:none;}
   .cart-items{flex-direction:column;overflow-y:auto;overflow-x:hidden;height:auto;flex:1;}
   .ci{min-width:unset;flex-direction:column;height:auto;}
@@ -525,7 +550,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
   .sb{width:62px;}
   .sb-btn{width:46px;height:48px;font-size:8px;}
   .sb-btn i{font-size:20px;}
-  .prod-grid{grid-template-columns:repeat(3,1fr);}
+  .prod-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));}
   .cart-side{width:180px;}
   .modal-box{width:88vw;}
 }
@@ -1030,7 +1055,32 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
   </div>
 </div>
 
-<!-- ══ CONFIRM ══ -->
+<!-- ══ PARTY CUSTOMIZE MODAL (PCM) ══ -->
+<div class="modal-ov" id="pcmOverlay" onclick="if(event.target===this)closePcm()" style="z-index:99998;">
+  <div class="modal-box" style="max-width:520px;">
+    <div class="modal-hdr" id="pcmHdr">
+      <div class="modal-info">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+          <span id="pcmSliceBadge" style="width:26px;height:26px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;"></span>
+          <span class="modal-name" id="pcmTitle"></span>
+        </div>
+        <span class="modal-desc" id="pcmSubtitle"></span>
+      </div>
+      <button class="modal-close" onclick="closePcm()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body" id="pcmBody"></div>
+    <div class="modal-ftr">
+      <div>
+        <div class="modal-total-lbl">Extras für diesen Teil</div>
+        <div class="modal-total" id="pcmTotal" style="font-size:18px;">+0,00 €</div>
+      </div>
+      <button class="btn btn-p" onclick="closePcm()" style="padding:10px 22px;">
+        <i class="ti ti-check"></i>Fertig
+      </button>
+    </div>
+  </div>
+</div>
+
 <div class="conf-ov" id="confirm-overlay">
   <div class="conf-box">
     <div class="conf-top">
@@ -2538,134 +2588,181 @@ function renderPartySVG(){
   h+=`<rect x="${px}" y="${py}" width="${bw}" height="${bh}" rx="4" fill="none" stroke="#8B4513" stroke-width="1.5" opacity="0.3"/>`;
   svg.innerHTML=h;
 }
+let pcmState={sliceIdx:null};
+
 function renderPartySlices(){
-  const grid=document.getElementById('partySliceGrid');if(!grid)return;
+  const grid=document.getElementById('partySliceGrid');
+  if(!grid)return;
   const n=partyState.sections;
   grid.style.gridTemplateColumns=n===1?'1fr':n===2?'1fr 1fr':'1fr 1fr 1fr';
   grid.innerHTML='';
   for(let i=0;i<n;i++){
     const opts=PARTY_TYPES.map(t=>`<option value="${t.id}" ${partyState.selections[i]===t.id?'selected':''}>${t.name}</option>`).join('');
     const selType=partyState.selections[i]?PARTY_TYPES.find(t=>t.id===partyState.selections[i]):null;
-    const ings=selType?PARTY_ING_MAP[selType.id]||[]:[];
     const sliceExtras=partyState.partySectionExtras[i]||{};
     const removedForSlice=partyState.partyRemovedIng[i]||{};
-    const noteVal=partyState.partySliceNotes[i]||'';
-    const removeChips=ings.map(ing=>{
-      const removed=!!removedForSlice[ing];
-      return `<span class="party-remove-chip${removed?' removed':''}" onclick="togglePartyRemove(${i},\`${ing}\`)">${removed?'✕ ':''}${ing}</span>`;
-    }).join('');
-    const cats={meat:'🥩 Fleisch (+6 €)',cheese:'🧀 Käse (+3 €)',veg:'🥦 Gemüse (+3 €)',sauce:'🫙 Saucen (+3 €)'};
-    let extraHtml='';
-    for(const[cat,lbl] of Object.entries(cats)){
-      const keys=Object.entries(PARTY_EXTRAS).filter(([,v])=>v.cat===cat);
-      if(!keys.length)continue;
-      const chips=keys.map(([k,v])=>`<span class="party-extra-chip${sliceExtras[k]?' sel':''}" onclick="togglePartyExtra(${i},'${k}')">${v.label.replace('Extra ','')}</span>`).join('');
-      extraHtml+=`<div class="party-sect-lbl" style="margin-top:6px;">${lbl}</div><div class="party-extra-chips">${chips}</div>`;
-    }
+    const extCount=Object.values(sliceExtras).filter(Boolean).length;
+    const remCount=Object.values(removedForSlice).filter(Boolean).length;
+    const totalMods=extCount+remCount;
+    const noteVal=(partyState.partySliceNotes||{})[i]||'';
     const card=document.createElement('div');
     card.className='party-slice-card';
+    let modsHtml='';
+    if(totalMods>0){
+      modsHtml=`<div class="party-mods-summary">
+        ${extCount>0?`<span class="party-mod-badge" style="background:var(--green-l);color:#14532D;">+${extCount} Extra${extCount>1?'s':''}</span>`:''}
+        ${remCount>0?`<span class="party-mod-badge" style="background:var(--red-l);color:#991B1B;">✕ ${remCount} weggelassen</span>`:''}
+      </div>`;
+    }
     card.innerHTML=`
       <div class="party-slice-hdr">
-        <div class="party-slice-dot" style="background:${PARTY_COLORS[i]}">${i+1}</div>
+        <div class="party-dot" style="background:${PARTY_COLORS[i]}">${i+1}</div>
         <span class="party-slice-lbl">${PARTY_LABELS[i]}</span>
       </div>
-      <select class="party-select" onchange="partySelectType(${i},this.value)">
+      <select class="party-sel" onchange="partySelectType(${i},this.value)">
         <option value="">-- Sorte wählen --</option>${opts}
       </select>
       ${selType?`<div class="party-sel-desc">${selType.desc}</div>`:''}
-      ${ings.length?`<div class="party-lbl" style="margin-top:6px;">🚫 Weglassen</div><div class="party-remove-chips">${removeChips}</div>`:''}
-      ${selType?`<div class="party-lbl" style="margin-top:8px;">➕ Extras</div>${extraHtml}`:''}
-      <textarea class="party-slice-note" rows="1" placeholder="Anmerkung Teil ${i+1}…" oninput="partyState.partySliceNotes[${i}]=this.value">${noteVal}</textarea>`;
+      ${modsHtml}
+      <button class="party-customize-btn" onclick="openPcm(${i})" ${!selType?'disabled':''}>
+        <span>⚙️ Anpassen / Extras</span>
+        <span class="pcb-count ${totalMods>0?'active':''}">${totalMods}</span>
+      </button>
+      <textarea class="party-note-area" rows="1" placeholder="Anmerkung zu Teil ${i+1}…" oninput="setPartySliceNote(${i},this.value)">${noteVal}</textarea>`;
     grid.appendChild(card);
   }
 }
+
+function setPartySliceNote(sliceIdx,val){
+  if(!partyState.partySliceNotes) partyState.partySliceNotes={};
+  partyState.partySliceNotes[sliceIdx]=val;
+}
+
 function partySelectType(sliceIdx,val){
-  if(val)partyState.selections[sliceIdx]=val;else delete partyState.selections[sliceIdx];
+  if(val) partyState.selections[sliceIdx]=val;
+  else delete partyState.selections[sliceIdx];
   renderPartySlices();updatePartySummary();
 }
+
 function togglePartyRemove(sliceIdx,ing){
   if(!partyState.partyRemovedIng[sliceIdx])partyState.partyRemovedIng[sliceIdx]={};
   partyState.partyRemovedIng[sliceIdx][ing]=!partyState.partyRemovedIng[sliceIdx][ing];
   renderPartySlices();
 }
+
 function togglePartyExtra(sliceIdx,key){
   if(!partyState.partySectionExtras[sliceIdx])partyState.partySectionExtras[sliceIdx]={};
   partyState.partySectionExtras[sliceIdx][key]=!partyState.partySectionExtras[sliceIdx][key];
   renderPartySlices();updatePartySummary();
 }
-function calcPartyPrice(){
-  // Find max Familie price among selected slices
-  let maxBase=16.00; // minimum (Margherita)
-  for(let i=0;i<partyState.sections;i++){
-    const sel=partyState.selections[i];
-    if(sel&&PARTY_FAMILY_PRICE[sel]){
-      maxBase=Math.max(maxBase,PARTY_FAMILY_PRICE[sel]);
+
+// ── PCM: Party Customize Modal ──
+function openPcm(sliceIdx){
+  const selType=partyState.selections[sliceIdx]
+    ?PARTY_TYPES.find(t=>t.id===partyState.selections[sliceIdx]):null;
+  if(!selType)return;
+  pcmState.sliceIdx=sliceIdx;
+  const badge=document.getElementById('pcmSliceBadge');
+  badge.textContent=sliceIdx+1;
+  badge.style.background=PARTY_COLORS[sliceIdx];
+  document.getElementById('pcmTitle').textContent=selType.name;
+  document.getElementById('pcmSubtitle').textContent=selType.desc;
+  buildPcmBody(sliceIdx,selType);
+  updatePcmTotal(sliceIdx);
+  document.getElementById('pcmOverlay').classList.add('open');
+}
+
+function closePcm(){
+  document.getElementById('pcmOverlay').classList.remove('open');
+  renderPartySlices();
+  updatePartySummary();
+  pcmState.sliceIdx=null;
+}
+
+function buildPcmBody(sliceIdx,selType){
+  const sliceExtras=partyState.partySectionExtras[sliceIdx]||{};
+  const removedForSlice=partyState.partyRemovedIng[sliceIdx]||{};
+  const ingList=PARTY_ING_MAP[selType.id]||[];
+  const cats={
+    meat:{label:'🥩 Fleisch',sub:'je +6,00 €',keys:[]},
+    cheese:{label:'🧀 Käse',sub:'je +3,00 €',keys:[]},
+    veg:{label:'🥦 Gemüse',sub:'je +3,00 €',keys:[]},
+    sauce:{label:'🫙 Saucen',sub:'je +3,00 €',keys:[]},
+  };
+  Object.entries(PARTY_EXTRAS).forEach(([k,v])=>{if(cats[v.cat])cats[v.cat].keys.push(k);});
+  let h='';
+  // Standard ingredients
+  h+=`<div class="pcm-std">
+    <div class="pcm-std-lbl">📋 Standardbelag <span style="font-size:9px;background:var(--acc-d);color:#fff;padding:1px 6px;border-radius:10px;margin-left:4px;">INKLUSIVE</span></div>
+    <div class="pcm-std-desc">${selType.desc}</div>
+  </div>`;
+  // Remove ingredients
+  if(ingList.length){
+    h+=`<div class="ms-ttl" style="margin-bottom:7px;">🚫 Zutaten weglassen</div>
+    <div class="pcm-remove-grid">`;
+    h+=ingList.map(ing=>`<div class="pcm-rm-chip${removedForSlice[ing]?' removed':''}" onclick="pcmToggleRemove('${ing.replace(/'/g,"\'")}')">${removedForSlice[ing]?'✕ ':''}${ing}</div>`).join('');
+    h+=`</div>`;
+  }
+  // Extras by category
+  h+=`<div class="ms-ttl" style="margin-bottom:4px;">➕ Extras hinzufügen</div>`;
+  for(const[cat,info]of Object.entries(cats)){
+    if(!info.keys.length)continue;
+    h+=`<div class="pcm-extras-cat-lbl">${info.label} <span style="font-size:10px;color:var(--t3);font-weight:500;">(${info.sub})</span></div>
+    <div class="pcm-extras-grid">`;
+    h+=info.keys.map(k=>{
+      const v=PARTY_EXTRAS[k];
+      const sel=!!sliceExtras[k];
+      return `<div class="pcm-extra-row${sel?' selected':''}" onclick="pcmToggleExtra('${k}')">
+        <div class="pcm-extra-check">${sel?'✓':''}</div>
+        <span class="pcm-extra-label">${v.label}</span>
+        <span class="pcm-extra-price">+${fmt(v.price)}</span>
+      </div>`;
+    }).join('');
+    h+=`</div>`;
+  }
+  document.getElementById('pcmBody').innerHTML=h;
+}
+
+function pcmToggleExtra(key){
+  const i=pcmState.sliceIdx;
+  if(!partyState.partySectionExtras[i])partyState.partySectionExtras[i]={};
+  partyState.partySectionExtras[i][key]=!partyState.partySectionExtras[i][key];
+  // Update row instantly
+  document.querySelectorAll('.pcm-extra-row').forEach(row=>{
+    const lbl=row.querySelector('.pcm-extra-label');
+    if(lbl&&lbl.textContent===PARTY_EXTRAS[key]?.label){
+      const sel=!!partyState.partySectionExtras[i][key];
+      row.classList.toggle('selected',sel);
+      row.querySelector('.pcm-extra-check').textContent=sel?'✓':'';
     }
-  }
-  let total=maxBase+20;
-  // Add extras
-  for(let i=0;i<partyState.sections;i++){
-    const exts=partyState.partySectionExtras[i]||{};
-    Object.entries(exts).forEach(([k,v])=>{if(v&&PARTY_EXTRAS[k])total+=PARTY_EXTRAS[k].price;});
-  }
-  return total;
+  });
+  updatePcmTotal(i);
 }
-function updatePartySummary(){
-  const priceEl=document.getElementById('partyTotalPrice');
-  const addBtn=document.getElementById('partyAddBtn');
-  const sumBox=document.getElementById('partySummaryBox');
-  const price=calcPartyPrice();
-  if(priceEl)priceEl.textContent=fmt(price);
-  const active=[];
-  for(let i=0;i<partyState.sections;i++){if(partyState.selections[i])active.push(i);}
-  if(addBtn)addBtn.disabled=(active.length!==partyState.sections);
-  if(!sumBox)return;
-  if(!active.length){sumBox.innerHTML='<div style="font-size:12px;color:var(--text3);font-style:italic;">Noch keine Auswahl getroffen</div>';return;}
-  // find max base and which pizza it is
-  let maxBase=0,maxName='';
-  for(let i=0;i<partyState.sections;i++){
-    const sel=partyState.selections[i];
-    if(sel&&PARTY_FAMILY_PRICE[sel]&&PARTY_FAMILY_PRICE[sel]>maxBase){
-      maxBase=PARTY_FAMILY_PRICE[sel];
-      maxName=PARTY_TYPES.find(x=>x.id===sel)?.name||'';
+
+function pcmToggleRemove(ing){
+  const i=pcmState.sliceIdx;
+  if(!partyState.partyRemovedIng[i])partyState.partyRemovedIng[i]={};
+  partyState.partyRemovedIng[i][ing]=!partyState.partyRemovedIng[i][ing];
+  document.querySelectorAll('.pcm-rm-chip').forEach(chip=>{
+    const txt=chip.textContent.replace('✕ ','').trim();
+    if(txt===ing){
+      const removed=!!partyState.partyRemovedIng[i][ing];
+      chip.classList.toggle('removed',removed);
+      chip.textContent=(removed?'✕ ':'')+ing;
     }
-  }
-  const priceBreak=maxBase>0?`<div style="font-size:11px;color:var(--text2);padding:5px 0 3px;border-top:0.5px solid var(--border);margin-top:6px;">
-    💡 Basis: ${fmt(maxBase)} (${maxName} Familie) + 20,00 € = <strong>${fmt(maxBase+20)}</strong>
-  </div>`:'';
-  sumBox.innerHTML=active.map(i=>{
-    const t=PARTY_TYPES.find(x=>x.id===partyState.selections[i]);
-    const exts=partyState.partySectionExtras[i]||{};
-    const extNames=Object.entries(exts).filter(([,v])=>v).map(([k])=>PARTY_EXTRAS[k]?.label||k);
-    const fp=PARTY_FAMILY_PRICE[partyState.selections[i]]||0;
-    return `<div class="party-summary-row">
-      <div class="party-summary-dot" style="background:${PARTY_COLORS[i]}"></div>
-      <div style="flex:1;font-size:12px;color:var(--text1);">
-        <strong>${PARTY_LABELS[i]}:</strong> ${t?.name||''}
-        <span style="font-size:10px;color:var(--text3);margin-left:4px;">(Familie ${fmt(fp)})</span>
-        ${extNames.length?`<br><span style="font-size:11px;color:var(--accent);">+ ${extNames.join(', ')}</span>`:''}
-      </div>
-    </div>`;
-  }).join('')+priceBreak;
+  });
 }
-function addPartyToCart(){
-  if(Object.keys(partyState.selections).length<partyState.sections){alert('Bitte alle Teile auswählen!');return;}
-  const price=calcPartyPrice();
-  const slices=[];
-  for(let i=0;i<partyState.sections;i++){
-    const t=PARTY_TYPES.find(x=>x.id===partyState.selections[i]);
-    const exts=partyState.partySectionExtras[i]||{};
-    const extNames=Object.entries(exts).filter(([,v])=>v).map(([k])=>PARTY_EXTRAS[k]?.label||k);
-    const removed=Object.entries(partyState.partyRemovedIng[i]||{}).filter(([,v])=>v).map(([k])=>k);
-    const note=partyState.partySliceNotes[i]||'';
-    slices.push(`${PARTY_LABELS[i]}: ${t?.name||''}${extNames.length?' +'+extNames.join(','):''}${removed.length?' [ohne:'+removed.join(',')+']':''}${note?' · '+note:''}`);
-  }
-  const note=partyState.partyNote||'';
-  const fullName=`🎉 Party Pizza 60×40 (${partyState.sections} Teil${partyState.sections>1?'e':''}) | ${slices.join(' | ')}${note?' · '+note:''}`;
-  cart.push({k:Date.now()+'|party',n:fullName,p:price,q:1});
-  closeModal();renderCart();updateInvoice();
-  partyState={sections:1,selections:{},partySectionExtras:{},partyRemovedIng:{},partySliceNotes:{},partyNote:''};
+
+function updatePcmTotal(sliceIdx){
+  let ext=0;
+  const exts=partyState.partySectionExtras[sliceIdx]||{};
+  Object.entries(exts).forEach(([k,v])=>{if(v&&PARTY_EXTRAS[k])ext+=PARTY_EXTRAS[k].price;});
+  const el=document.getElementById('pcmTotal');
+  if(el) el.textContent=`+${fmt(ext)}`;
+  updatePartySummary();
 }
+
+
 function openPartyModal(){
   partyState={sections:1,selections:{},partySectionExtras:{},partyRemovedIng:{},partySliceNotes:{},partyNote:''};
   document.getElementById('modal-id').textContent='PP';
