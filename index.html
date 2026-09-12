@@ -2555,11 +2555,11 @@ function partySetSections(n){
     delete partyState.selections[i];
     delete partyState.partySectionExtras[i];
     delete partyState.partyRemovedIng[i];
-    delete partyState.partySliceNotes[i];
+    if(partyState.partySliceNotes) delete partyState.partySliceNotes[i];
   }
   [1,2,3].forEach(i=>{
     const b=document.getElementById('pSeg'+i);
-    if(b) b.classList.toggle('active',i===n);
+    if(b) b.classList.toggle('on',i===n);
   });
   renderPartySVG();renderPartySlices();updatePartySummary();
 }
@@ -2763,39 +2763,121 @@ function updatePcmTotal(sliceIdx){
 }
 
 
+function calcPartyPrice(){
+  let maxBase=16.00;
+  for(let i=0;i<partyState.sections;i++){
+    const sel=partyState.selections[i];
+    if(sel&&PARTY_FAMILY_PRICE[sel]) maxBase=Math.max(maxBase,PARTY_FAMILY_PRICE[sel]);
+  }
+  let total=maxBase+20;
+  for(let i=0;i<partyState.sections;i++){
+    const exts=partyState.partySectionExtras[i]||{};
+    Object.entries(exts).forEach(([k,v])=>{if(v&&PARTY_EXTRAS[k])total+=PARTY_EXTRAS[k].price;});
+  }
+  return total;
+}
+
+function updatePartySummary(){
+  const priceEl=document.getElementById('partyTotalPrice');
+  const addBtn=document.getElementById('partyAddBtn');
+  const sumBox=document.getElementById('partySummaryBox');
+  const price=calcPartyPrice();
+  if(priceEl) priceEl.textContent=fmt(price);
+  const active=[];
+  for(let i=0;i<partyState.sections;i++){if(partyState.selections[i])active.push(i);}
+  if(addBtn) addBtn.disabled=(active.length!==partyState.sections);
+  if(!sumBox)return;
+  if(!active.length){
+    sumBox.innerHTML='<div style="font-size:12px;color:var(--t3);font-style:italic;">Noch keine Auswahl</div>';
+    return;
+  }
+  let maxBase=0,maxName='';
+  for(let i=0;i<partyState.sections;i++){
+    const sel=partyState.selections[i];
+    if(sel&&PARTY_FAMILY_PRICE[sel]&&PARTY_FAMILY_PRICE[sel]>maxBase){
+      maxBase=PARTY_FAMILY_PRICE[sel];
+      maxName=PARTY_TYPES.find(x=>x.id===sel)?.name||'';
+    }
+  }
+  const priceBreak=maxBase>0?`<div style="font-size:11px;color:var(--t2);padding:5px 0 3px;border-top:0.5px solid var(--border);margin-top:6px;">
+    💡 Basis: ${fmt(maxBase)} (${maxName} Familie) + 20,00 € = <strong>${fmt(maxBase+20)}</strong>
+  </div>`:'';
+  sumBox.innerHTML=active.map(i=>{
+    const t=PARTY_TYPES.find(x=>x.id===partyState.selections[i]);
+    const exts=partyState.partySectionExtras[i]||{};
+    const extNames=Object.entries(exts).filter(([,v])=>v).map(([k])=>PARTY_EXTRAS[k]?.label||k);
+    const fp=PARTY_FAMILY_PRICE[partyState.selections[i]]||0;
+    return `<div class="party-sum-row">
+      <div class="party-sum-dot" style="background:${PARTY_COLORS[i]}"></div>
+      <div style="flex:1;font-size:12px;color:var(--t1);">
+        <strong>${PARTY_LABELS[i]}:</strong> ${t?.name||''}
+        <span style="font-size:10px;color:var(--t3);margin-left:4px;">(Familie ${fmt(fp)})</span>
+        ${extNames.length?`<br><span style="font-size:11px;color:var(--acc);">+ ${extNames.join(', ')}</span>`:''}
+      </div>
+    </div>`;
+  }).join('')+priceBreak;
+}
+
+function addPartyToCart(){
+  if(Object.keys(partyState.selections).length<partyState.sections){
+    showToast('⚠️ Bitte alle Teile auswählen!');return;
+  }
+  const price=calcPartyPrice();
+  const slices=[];
+  for(let i=0;i<partyState.sections;i++){
+    const t=PARTY_TYPES.find(x=>x.id===partyState.selections[i]);
+    const exts=partyState.partySectionExtras[i]||{};
+    const extNames=Object.entries(exts).filter(([,v])=>v).map(([k])=>PARTY_EXTRAS[k]?.label||k);
+    const removed=Object.entries(partyState.partyRemovedIng[i]||{}).filter(([,v])=>v).map(([k])=>k);
+    const note=(partyState.partySliceNotes||{})[i]||'';
+    slices.push(`${PARTY_LABELS[i]}: ${t?.name||''}${extNames.length?' +'+extNames.join(','):''}${removed.length?' [ohne:'+removed.join(',')+']':''}${note?' · '+note:''}`);
+  }
+  const note=partyState.partyNote||'';
+  const fullName=`🎉 Party Pizza 60×40 (${partyState.sections} Teil${partyState.sections>1?'e':''}) | ${slices.join(' | ')}${note?' · '+note:''}`;
+  cart.push({k:Date.now()+'|party',n:fullName,p:price,q:1});
+  closeModal();renderCart();updateInvoice();
+  partyState={sections:1,selections:{},partySectionExtras:{},partyRemovedIng:{},partySliceNotes:{},partyNote:''};
+  showToast('✅ Party Pizza in den Warenkorb!');
+}
+
 function openPartyModal(){
   partyState={sections:1,selections:{},partySectionExtras:{},partyRemovedIng:{},partySliceNotes:{},partyNote:''};
   document.getElementById('modal-id').textContent='PP';
   document.getElementById('modal-name').textContent='🎉 Party Pizza 60×40 cm';
-  document.getElementById('modal-desc').textContent='Riesige Party-Pizza 60×40 cm – wähle 1, 2 oder 3 verschiedene Beläge';
+  document.getElementById('modal-desc').textContent='Riesige Party-Pizza – wähle 1, 2 oder 3 verschiedene Beläge';
   const body=document.getElementById('modal-body');
   body.innerHTML=`
     <div class="party-body">
       <div>
-        <div class="ms-title" style="margin-bottom:8px;">🍕 Wie viele Teile?</div>
-        <div class="party-seg-group">
-          <button class="party-seg-btn active" id="pSeg1" onclick="partySetSections(1)"><i class="ti ti-square"></i> 1 Teil</button>
-          <button class="party-seg-btn" id="pSeg2" onclick="partySetSections(2)"><i class="ti ti-layout-columns"></i> 2 Teile</button>
-          <button class="party-seg-btn" id="pSeg3" onclick="partySetSections(3)"><i class="ti ti-columns-3"></i> 3 Teile</button>
+        <div class="ms-ttl" style="margin-bottom:8px;">🍕 Wie viele Teile?</div>
+        <div class="party-segs">
+          <button class="party-seg on" id="pSeg1" onclick="partySetSections(1)"><i class="ti ti-square"></i> 1 Teil</button>
+          <button class="party-seg" id="pSeg2" onclick="partySetSections(2)"><i class="ti ti-layout-columns"></i> 2 Teile</button>
+          <button class="party-seg" id="pSeg3" onclick="partySetSections(3)"><i class="ti ti-columns-3"></i> 3 Teile</button>
         </div>
       </div>
       <div class="party-svg-wrap"><svg id="partySVG" width="260" height="110" viewBox="0 0 260 110"></svg></div>
       <div>
-        <div class="ms-title" style="margin-bottom:8px;">🧇 Belag-Auswahl</div>
+        <div class="ms-ttl" style="margin-bottom:8px;">🧇 Belag-Auswahl</div>
         <div class="party-slice-grid" id="partySliceGrid" style="grid-template-columns:1fr;"></div>
       </div>
       <div>
-        <div class="ms-title" style="margin-bottom:6px;">📋 Zusammenfassung</div>
-        <div class="party-summary" id="partySummaryBox"></div>
+        <div class="ms-ttl" style="margin-bottom:6px;">📋 Zusammenfassung</div>
+        <div class="party-sum" id="partySummaryBox"></div>
       </div>
       <div class="ms">
-        <div class="ms-title">📝 Anmerkung</div>
+        <div class="ms-ttl">📝 Anmerkung</div>
         <textarea class="note-inp" rows="2" placeholder="z.B. gut durchgebacken…" oninput="partyState.partyNote=this.value"></textarea>
       </div>
     </div>`;
   document.getElementById('modal-total').innerHTML=`<span id="partyTotalPrice">${fmt(36.00)}</span>`;
-  const footBtn=document.querySelector('.modal-footer .btn-p');
-  if(footBtn){footBtn.id='partyAddBtn';footBtn.onclick=addPartyToCart;footBtn.innerHTML='<i class="ti ti-shopping-cart"></i> In den Warenkorb';}
+  const footBtn=document.querySelector('.modal-ftr .btn-p');
+  if(footBtn){
+    footBtn.id='partyAddBtn';
+    footBtn.onclick=addPartyToCart;
+    footBtn.innerHTML='<i class="ti ti-shopping-cart"></i> In den Warenkorb';
+    footBtn.disabled=false;
+  }
   document.getElementById('modal-overlay').classList.add('open');
   renderPartySVG();renderPartySlices();updatePartySummary();
 }
