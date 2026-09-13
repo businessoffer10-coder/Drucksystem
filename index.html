@@ -1891,18 +1891,22 @@ function renderCart(){
   document.getElementById('sub-t').textContent=fmt(sub);
   document.getElementById('grand-t').textContent=fmt(sub);
   if(!cart.length){el.innerHTML='<div class="cart-empty"><i class="ti ti-shopping-cart"></i><p>Noch leer</p></div>';return;}
-  el.innerHTML=cart.map(x=>`
+  el.innerHTML=cart.map(x=>{
+    const kSafe=x.k.replace(/'/g,"\'");
+    return `
     <div class="ci">
       <div class="ci-top">
         <div class="ci-name">${x.n}</div>
         <div class="ci-qty">
-          <button class="ci-qbtn" onclick="changeQty('${x.k.replace(/'/g,"\'")}', -1)">−</button>
+          ${x.itemId?`<button class="ci-qbtn" onclick="editCartItem('${kSafe}')" style="color:var(--blue);border-color:#BFDBFE;" title="Bearbeiten"><i class="ti ti-pencil" style="font-size:10px;"></i></button>`:''}
+          <button class="ci-qbtn" onclick="changeQty('${kSafe}',-1)">−</button>
           <span class="ci-qn">${x.q}</span>
-          <button class="ci-qbtn" onclick="changeQty('${x.k.replace(/'/g,"\'")}', 1)">+</button>
+          <button class="ci-qbtn" onclick="changeQty('${kSafe}',1)">+</button>
         </div>
       </div>
       <div class="ci-price">${fmt(x.p)} × ${x.q} = <strong>${fmt(x.p*x.q)}</strong></div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 // ════════════════════════════════════════════════════════
@@ -1998,13 +2002,12 @@ function openModal(item){
 function closeModal(){
   document.getElementById('modal-overlay').classList.remove('open');
   modalState=null;
-  // reset footer button
-  const footBtn=document.querySelector('.modal-footer .btn-p');
-  if(footBtn){
-    footBtn.id='';
-    footBtn.onclick=addToCartFromModal;
-    footBtn.innerHTML='<i class="ti ti-shopping-cart"></i> In den Warenkorb';
-    footBtn.disabled=false;
+  isPartyModal=false;
+  const btn=document.getElementById('modal-add-btn');
+  if(btn){
+    btn.innerHTML='<i class="ti ti-shopping-cart"></i>In den Warenkorb';
+    btn.onclick=modalAddToCart;
+    btn.disabled=false;
   }
 }
 function closeModalOutside(e){if(e.target===document.getElementById('modal-overlay'))closeModal();}
@@ -2164,7 +2167,7 @@ function updateModalTotal(){
   document.getElementById('modal-total').textContent=fmt(total);
 }
 
-function addToCartFromModal(){
+function addToCartFromModal(editKey=null){
   if(!modalState)return;
   const{item,selectedSize:size,extras,removed,freeSauce,freeDressing,note,manualExtras}=modalState;
   const isFamilie=size==='Familie';
@@ -2182,16 +2185,65 @@ function addToCartFromModal(){
   });
   const sizeLabel=size?` (${size})`:'';
   const removedLabel=removed.length?` [ohne: ${removed.join(', ')}]`:'';
-  const extLabel=extLabels.length?` + ${extLabels.join(', ')}`:'';
+  const extLabel=extLabels.length?` + ${extLabels.join(', ')}`:'' ;
   const noteLabel=note?` · ${note}`:'';
   const fsLabel=freeSauce&&EXTRAS[freeSauce]?` · ${EXTRAS[freeSauce].label}`:'';
   const fdLabel=freeDressing&&EXTRAS[freeDressing]?` · ${EXTRAS[freeDressing].label}`:'';
   const fullName=`#${item.id} ${item.name}${sizeLabel}${removedLabel}${extLabel}${fsLabel}${fdLabel}${noteLabel}`;
-  const key=Date.now()+'|'+item.id;
-  cart.push({k:key,n:fullName,p:total,q:1});
-  closeModal();
-  renderCart();
-  updateInvoice();
+  if(editKey){
+    const existing=cart.find(x=>x.k===editKey);
+    if(existing){
+      existing.n=fullName;existing.p=total;
+      existing.snapshot=JSON.stringify({...modalState,item:undefined,itemId:item.id});
+    }
+  } else {
+    const key=Date.now()+'|'+item.id;
+    cart.push({k:key,n:fullName,p:total,q:1,itemId:item.id,
+      snapshot:JSON.stringify({...modalState,item:undefined,itemId:item.id})});
+  }
+  closeModal();renderCart();updateInvoice();
+}
+
+function editCartItem(cartKey){
+  const ci=cart.find(x=>x.k===cartKey);
+  if(!ci||!ci.itemId)return;
+  const item=findItem(ci.itemId);
+  if(!item)return;
+  // Restore modal state from snapshot
+  if(ci.snapshot){
+    try{
+      const snap=JSON.parse(ci.snapshot);
+      modalState={
+        item,
+        selectedSize:snap.selectedSize||null,
+        extras:snap.extras||[],
+        removed:snap.removed||[],
+        note:snap.note||'',
+        freeSauce:snap.freeSauce||null,
+        freeDressing:snap.freeDressing||null,
+        editKey:cartKey,
+        manualExtras:snap.manualExtras||[]
+      };
+    }catch(e){
+      // Fallback: open fresh
+      modalState={item,selectedSize:item.sizes?Object.keys(item.sizes)[0]:null,
+        extras:[],removed:[],note:'',freeSauce:item.freeSauce||null,
+        freeDressing:item.freeDressing||null,editKey:cartKey,manualExtras:[]};
+    }
+  }
+  isPartyModal=false;
+  document.getElementById('modal-id').textContent='#'+item.id;
+  document.getElementById('modal-name').textContent='✏️ '+item.name+' bearbeiten';
+  document.getElementById('modal-desc').textContent='Änderungen werden auf diesen Artikel angewendet';
+  buildModalBody();
+  updateModalTotal();
+  // Change button to "Speichern"
+  const btn=document.getElementById('modal-add-btn');
+  if(btn){
+    btn.innerHTML='<i class="ti ti-check"></i>Änderungen speichern';
+    btn.onclick=()=>addToCartFromModal(cartKey);
+  }
+  document.getElementById('modal-overlay').classList.add('open');
 }
 // ════════════════════════════════════════════════════════
 // CONFIRM DIALOG
@@ -2595,7 +2647,7 @@ let isPartyModal=false;
 
 function modalAddToCart(){
   if(isPartyModal) addPartyToCart();
-  else addToCartFromModal();
+  else addToCartFromModal(modalState?.editKey||null);
 }
 
 
