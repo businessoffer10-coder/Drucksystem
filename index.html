@@ -1050,7 +1050,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
         <div class="modal-total-lbl">Gesamtpreis</div>
         <div class="modal-total" id="modal-total">0,00 €</div>
       </div>
-      <button class="btn btn-p" style="padding:10px 22px;font-size:14px;" onclick="addToCartFromModal()">
+      <button class="btn btn-p" id="modal-add-btn" style="padding:10px 22px;font-size:14px;" onclick="modalAddToCart()">
         <i class="ti ti-shopping-cart"></i>In den Warenkorb
       </button>
     </div>
@@ -1974,6 +1974,7 @@ function getExtraPrice(key,isFamilie,saucePriceOverride){
 
 function openModal(item){
   if(item&&item.id==='party1'){openPartyModal();return;}
+  isPartyModal=false;
   const sizes=item.sizes?Object.keys(item.sizes):null;
   modalState={
     item,
@@ -2590,7 +2591,13 @@ function renderPartySVG(){
   h+=`<rect x="${px}" y="${py}" width="${bw}" height="${bh}" rx="4" fill="none" stroke="#8B4513" stroke-width="1.5" opacity="0.3"/>`;
   svg.innerHTML=h;
 }
-let pcmState={sliceIdx:null};
+let isPartyModal=false;
+
+function modalAddToCart(){
+  if(isPartyModal) addPartyToCart();
+  else addToCartFromModal();
+}
+
 
 function renderPartySlices(){
   const grid=document.getElementById('partySliceGrid');
@@ -2781,7 +2788,7 @@ function calcPartyPrice(){
 
 function updatePartySummary(){
   const priceEl=document.getElementById('partyTotalPrice');
-  const addBtn=document.getElementById('partyAddBtn');
+  const addBtn=document.getElementById('modal-add-btn');
   const sumBox=document.getElementById('partySummaryBox');
   const price=calcPartyPrice();
   if(priceEl) priceEl.textContent=fmt(price);
@@ -2801,9 +2808,6 @@ function updatePartySummary(){
       maxName=PARTY_TYPES.find(x=>x.id===sel)?.name||'';
     }
   }
-  const priceBreak=maxBase>0?`<div style="font-size:11px;color:var(--t2);padding:5px 0 3px;border-top:0.5px solid var(--border);margin-top:6px;">
-    💡 Basis: ${fmt(maxBase)} (${maxName} Familie) + 20,00 € = <strong>${fmt(maxBase+20)}</strong>
-  </div>`:'';
   sumBox.innerHTML=active.map(i=>{
     const t=PARTY_TYPES.find(x=>x.id===partyState.selections[i]);
     const exts=partyState.partySectionExtras[i]||{};
@@ -2817,7 +2821,7 @@ function updatePartySummary(){
         ${extNames.length?`<br><span style="font-size:11px;color:var(--acc);">+ ${extNames.join(', ')}</span>`:''}
       </div>
     </div>`;
-  }).join('')+priceBreak;
+  }).join('');
 }
 
 function addPartyToCart(){
@@ -2873,14 +2877,10 @@ function openPartyModal(){
       </div>
     </div>`;
   document.getElementById('modal-total').innerHTML=`<span id="partyTotalPrice">${fmt(36.00)}</span>`;
-  const footBtn=document.querySelector('.modal-ftr .btn-p');
-  if(footBtn){
-    footBtn.id='partyAddBtn';
-    footBtn.onclick=addPartyToCart;
-    footBtn.innerHTML='<i class="ti ti-shopping-cart"></i> In den Warenkorb';
-    footBtn.disabled=false;
-  }
+  isPartyModal=true;
   document.getElementById('modal-overlay').classList.add('open');
+  const btn=document.getElementById('modal-add-btn');
+  if(btn){btn.innerHTML='<i class="ti ti-shopping-cart"></i> In den Warenkorb';btn.disabled=false;}
   renderPartySVG();renderPartySlices();updatePartySummary();
 }
 // Category style map
