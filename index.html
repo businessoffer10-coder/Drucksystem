@@ -1326,35 +1326,39 @@ const PARTY_COLORS=['#e8001d','#e67e22','#2980b9'];
 const PARTY_LABELS=['1. Teil','2. Teil','3. Teil'];
 
 const PARTY_EXTRAS={
-  pEx_kebap:     {label:'Extra Kebap',      price:6.00,cat:'meat'},
-  pEx_haehnchen: {label:'Extra Hähnchen',   price:6.00,cat:'meat'},
-  pEx_sucuk:     {label:'Extra Sucuk',      price:6.00,cat:'meat'},
-  pEx_salami:    {label:'Extra Salami',     price:6.00,cat:'meat'},
-  pEx_schinken:  {label:'Extra Schinken',   price:6.00,cat:'meat'},
-  pEx_thunfisch: {label:'Extra Thunfisch',  price:6.00,cat:'meat'},
-  pEx_bolognese: {label:'Extra Bolognese',  price:6.00,cat:'meat'},
-  pEx_cheese:    {label:'Extra Käse',       price:3.00,cat:'cheese'},
-  pEx_hirtenkase:{label:'Extra Hirtenkäse', price:3.00,cat:'cheese'},
-  pEx_mozzarella:{label:'Extra Mozzarella', price:3.00,cat:'cheese'},
-  pEx_cheddar:   {label:'Extra Cheddar',    price:3.00,cat:'cheese'},
-  pEx_pilze:     {label:'Extra Pilze',      price:3.00,cat:'veg'},
-  pEx_paprika:   {label:'Extra Paprika',    price:3.00,cat:'veg'},
-  pEx_mais:      {label:'Extra Mais',       price:3.00,cat:'veg'},
-  pEx_jalapenos: {label:'Extra Jalapeños',  price:3.00,cat:'veg'},
-  pEx_oliven:    {label:'Extra Oliven',     price:3.00,cat:'veg'},
-  pEx_peperoni:  {label:'Extra Peperoni',   price:3.00,cat:'veg'},
-  pEx_brokkoli:  {label:'Extra Brokkoli',   price:3.00,cat:'veg'},
-  pEx_tomaten:   {label:'Extra Tomaten',    price:3.00,cat:'veg'},
-  pEx_zwiebeln:  {label:'Extra Zwiebeln',   price:3.00,cat:'veg'},
-  pEx_ananas:    {label:'Extra Ananas',     price:3.00,cat:'veg'},
-  pEx_spinat:    {label:'Extra Spinat',     price:3.00,cat:'veg'},
-  pEx_spargel:   {label:'Extra Spargel',    price:3.00,cat:'veg'},
-  pEx_hollandaise:{label:'Sauce Hollandaise',price:3.00,cat:'sauce'},
-  pEx_bbq:       {label:'BBQ-Sauce',        price:3.00,cat:'sauce'},
-  pEx_tzatziki:  {label:'Tzatziki',         price:3.00,cat:'sauce'},
-  pEx_chili:     {label:'Chili-Cheese-Sauce',price:3.00,cat:'sauce'},
-  pEx_knoblauch: {label:'Knoblauchsauce',   price:3.00,cat:'sauce'},
-  pEx_sweetChili:{label:'Sweet-Chili-Sauce', price:3.00,cat:'sauce'},
+  pEx_kebap:      {label:'Extra Kebap',          price:6.00,cat:'meat'},
+  pEx_haehnchen:  {label:'Extra Hähnchen',        price:6.00,cat:'meat'},
+  pEx_sucuk:      {label:'Extra Sucuk',           price:6.00,cat:'meat'},
+  pEx_salami:     {label:'Extra Salami',          price:6.00,cat:'meat'},
+  pEx_schinken:   {label:'Extra Schinken',        price:6.00,cat:'meat'},
+  pEx_thunfisch:  {label:'Extra Thunfisch',       price:6.00,cat:'meat'},
+  pEx_bolognese:  {label:'Extra Bolognese',       price:6.00,cat:'meat'},
+  pEx_cheese:     {label:'Extra Käse',            price:3.00,cat:'cheese'},
+  pEx_hirtenkase: {label:'Extra Hirtenkäse',      price:3.00,cat:'cheese'},
+  pEx_mozzarella: {label:'Extra Mozzarella',      price:3.00,cat:'cheese'},
+  pEx_cheddar:    {label:'Extra Cheddar',         price:3.00,cat:'cheese'},
+  pEx_pilze:      {label:'Extra Pilze',           price:3.00,cat:'veg'},
+  pEx_paprika:    {label:'Extra Paprika',         price:3.00,cat:'veg'},
+  pEx_mais:       {label:'Extra Mais',            price:3.00,cat:'veg'},
+  pEx_jalapenos:  {label:'Extra Jalapeños',       price:3.00,cat:'veg'},
+  pEx_oliven:     {label:'Extra Oliven',          price:3.00,cat:'veg'},
+  pEx_peperoni:   {label:'Extra Peperoni',        price:3.00,cat:'veg'},
+  pEx_brokkoli:   {label:'Extra Brokkoli',        price:3.00,cat:'veg'},
+  pEx_tomaten:    {label:'Extra Tomaten',         price:3.00,cat:'veg'},
+  pEx_zwiebeln:   {label:'Extra Zwiebeln',        price:3.00,cat:'veg'},
+  pEx_ananas:     {label:'Extra Ananas',          price:3.00,cat:'veg'},
+  pEx_spinat:     {label:'Extra Spinat',          price:3.00,cat:'veg'},
+  pEx_spargel:    {label:'Extra Spargel',         price:3.00,cat:'veg'},
+  pEx_hollandaise:{label:'Sauce Hollandaise',     price:3.00,cat:'sauce'},
+  pEx_bbq:        {label:'BBQ-Sauce',             price:3.00,cat:'sauce'},
+  pEx_tzatziki:   {label:'Tzatziki',              price:3.00,cat:'sauce'},
+  pEx_chili:      {label:'Chili-Cheese-Sauce',    price:3.00,cat:'sauce'},
+  pEx_knoblauch:  {label:'Knoblauchsauce',        price:3.00,cat:'sauce'},
+  pEx_sweetChili: {label:'Sweet-Chili-Sauce',     price:3.00,cat:'sauce'},
+  pEx_remoulade:  {label:'Remoulade',             price:3.00,cat:'sauce'},
+  pEx_mayo:       {label:'Mayonnaise',            price:3.00,cat:'sauce'},
+  pEx_ketchup:    {label:'Ketchup',               price:3.00,cat:'sauce'},
+  pEx_cocktail:   {label:'Cocktailsauce',         price:3.00,cat:'sauce'},
 };
 
 const PARTY_TYPES=[
@@ -2741,6 +2745,8 @@ function closePcm(){
 }
 
 function buildPcmBody(sliceIdx,selType){
+  const pcmBody=document.getElementById('pcmBody');
+  const scrollTop=pcmBody?pcmBody.scrollTop:0;
   const sliceExtras=partyState.partySectionExtras[sliceIdx]||{};
   const removedForSlice=partyState.partyRemovedIng[sliceIdx]||{};
   const ingList=PARTY_ING_MAP[selType.id]||[];
@@ -2772,8 +2778,9 @@ function buildPcmBody(sliceIdx,selType){
     <div class="pcm-extras-grid">`;
     h+=info.keys.map(k=>{
       const v=PARTY_EXTRAS[k];
+      if(!v)return '';
       const sel=!!sliceExtras[k];
-      return `<div class="pcm-extra-row${sel?' selected':''}" onclick="pcmToggleExtra('${k}')">
+      return `<div class="pcm-extra-row${sel?' selected':''}" data-key="${k}" onclick="pcmToggleExtra('${k}')">
         <div class="pcm-extra-check">${sel?'✓':''}</div>
         <span class="pcm-extra-label">${v.label}</span>
         <span class="pcm-extra-price">+${fmt(v.price)}</span>
@@ -2782,36 +2789,27 @@ function buildPcmBody(sliceIdx,selType){
     h+=`</div>`;
   }
   document.getElementById('pcmBody').innerHTML=h;
+  if(pcmBody) setTimeout(()=>pcmBody.scrollTop=scrollTop,0);
 }
 
 function pcmToggleExtra(key){
   const i=pcmState.sliceIdx;
+  if(i===null||i===undefined)return;
   if(!partyState.partySectionExtras[i])partyState.partySectionExtras[i]={};
   partyState.partySectionExtras[i][key]=!partyState.partySectionExtras[i][key];
-  // Update row instantly
-  document.querySelectorAll('.pcm-extra-row').forEach(row=>{
-    const lbl=row.querySelector('.pcm-extra-label');
-    if(lbl&&lbl.textContent===PARTY_EXTRAS[key]?.label){
-      const sel=!!partyState.partySectionExtras[i][key];
-      row.classList.toggle('selected',sel);
-      row.querySelector('.pcm-extra-check').textContent=sel?'✓':'';
-    }
-  });
+  // Rebuild body to reflect change
+  const selType=partyState.selections[i]?PARTY_TYPES.find(t=>t.id===partyState.selections[i]):null;
+  if(selType) buildPcmBody(i,selType);
   updatePcmTotal(i);
 }
 
 function pcmToggleRemove(ing){
   const i=pcmState.sliceIdx;
+  if(i===null||i===undefined)return;
   if(!partyState.partyRemovedIng[i])partyState.partyRemovedIng[i]={};
   partyState.partyRemovedIng[i][ing]=!partyState.partyRemovedIng[i][ing];
-  document.querySelectorAll('.pcm-rm-chip').forEach(chip=>{
-    const txt=chip.textContent.replace('✕ ','').trim();
-    if(txt===ing){
-      const removed=!!partyState.partyRemovedIng[i][ing];
-      chip.classList.toggle('removed',removed);
-      chip.textContent=(removed?'✕ ':'')+ing;
-    }
-  });
+  const selType=partyState.selections[i]?PARTY_TYPES.find(t=>t.id===partyState.selections[i]):null;
+  if(selType) buildPcmBody(i,selType);
 }
 
 function updatePcmTotal(sliceIdx){
