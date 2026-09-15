@@ -925,7 +925,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
         <button class="btn btn-del" onclick="confirmDelete()"><i class="ti ti-trash"></i>Stornieren</button>
         <div style="flex:1"></div>
         <button class="btn btn-g" onclick="confirmNewOrder()"><i class="ti ti-plus"></i>Neue Bestellung</button>
-        <button class="btn btn-ghost"><i class="ti ti-download"></i>PDF</button>
+        <button class="btn btn-ghost" onclick="printKitchen()" title="Küchenbon drucken"><i class="ti ti-tools-kitchen-2"></i>Küche</button>
         <button class="btn btn-p" onclick="window.print()"><i class="ti ti-printer"></i>Drucken</button>
       </div>
     </div>
@@ -3001,8 +3001,97 @@ function findItem(id){
 }
 
 // ════════════════════════════════════════════════════════
-// INIT
+// KITCHEN PRINT
 // ════════════════════════════════════════════════════════
+function printKitchen(){
+  if(!cart.length){showToast('⚠️ Warenkorb ist leer!');return;}
+
+  // Build kitchen ticket HTML
+  const now=new Date();
+  const time=now.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+  const date=now.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
+  const invNo=document.getElementById('inv-no')?.textContent||'';
+
+  // Get order info
+  const typeLabel=document.getElementById('ia-type-lbl')?.textContent||activeType;
+  const nameEl=document.getElementById('ia-name');
+  const tischEl=document.getElementById('ia-tisch');
+  const timeEl=document.getElementById('ia-time');
+  const noteEl=document.getElementById('gen-note');
+
+  const customerInfo=[];
+  if(nameEl?.textContent) customerInfo.push(nameEl.textContent);
+  if(tischEl?.offsetParent!==null&&tischEl?.textContent) customerInfo.push(tischEl.textContent);
+  if(timeEl?.textContent) customerInfo.push('⏱ '+timeEl.textContent);
+
+  // Build items rows
+  const itemsHtml=cart.map(x=>{
+    // Clean name: remove price info, keep extras/notes
+    const cleanName=x.n
+      .replace(/#\w+\s+/,'')  // remove #id prefix
+      .replace(/\d+,\d+ €/g,'') // remove prices
+      .replace(/×\s*\d+/g,'')   // remove × quantity
+      .trim();
+    return `<tr>
+      <td style="font-size:18pt;font-weight:900;padding:6px 8px;vertical-align:top;white-space:nowrap;">${x.q}×</td>
+      <td style="font-size:13pt;font-weight:600;padding:6px 4px;line-height:1.4;">${cleanName}</td>
+    </tr>`;
+  }).join('');
+
+  const noteText=noteEl?.value?.trim()||'';
+
+  const kitchenHTML=`<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<style>
+@page{size:105mm 148mm;margin:3mm 4mm;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Arial,Helvetica,sans-serif;color:#000;background:#fff;font-size:11pt;}
+.k-hdr{background:#000;color:#fff;padding:6px 8px;display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.k-hdr-title{font-size:14pt;font-weight:900;letter-spacing:1px;}
+.k-hdr-num{font-size:11pt;font-weight:700;border:1.5px solid #fff;padding:2px 7px;border-radius:3px;}
+.k-meta{background:#f0f0f0;padding:5px 8px;border:0.5px solid #ccc;margin-bottom:6px;display:flex;gap:12px;flex-wrap:wrap;}
+.k-meta-item{font-size:9pt;color:#333;}
+.k-meta-item strong{font-size:10pt;color:#000;font-weight:700;}
+.k-type{font-size:11pt;font-weight:900;color:#000;background:#FFD600;padding:4px 10px;border-radius:4px;display:inline-block;margin-bottom:6px;}
+.k-table{width:100%;border-collapse:collapse;margin-bottom:6px;}
+.k-table td{border-bottom:0.5px solid #ccc;vertical-align:top;}
+.k-table tr:last-child td{border-bottom:none;}
+.k-note{border:1.5px dashed #555;padding:6px 8px;margin-top:4px;background:#fafafa;}
+.k-note-lbl{font-size:8pt;font-weight:900;text-transform:uppercase;letter-spacing:0.5px;color:#555;margin-bottom:2px;}
+.k-note-txt{font-size:12pt;font-weight:600;color:#000;line-height:1.4;}
+.k-footer{text-align:center;font-size:8pt;color:#888;margin-top:6px;padding-top:4px;border-top:0.5px solid #ccc;}
+.k-divider{border:none;border-top:2px solid #000;margin:4px 0;}
+</style>
+</head>
+<body>
+  <div class="k-hdr">
+    <span class="k-hdr-title">🍳 KÜCHE</span>
+    <span class="k-hdr-num">#${invNo}</span>
+  </div>
+  <div class="k-meta">
+    <div class="k-meta-item"><strong>${time}</strong> Uhr</div>
+    <div class="k-meta-item">${date}</div>
+    ${customerInfo.map(i=>`<div class="k-meta-item"><strong>${i}</strong></div>`).join('')}
+  </div>
+  <div class="k-type">${typeLabel}</div>
+  <hr class="k-divider"/>
+  <table class="k-table">${itemsHtml}</table>
+  ${noteText?`<div class="k-note"><div class="k-note-lbl">📝 Anmerkung</div><div class="k-note-txt">${noteText}</div></div>`:''}
+  <div class="k-footer">Bon #${invNo} · ${time}</div>
+</body>
+</html>`;
+
+  // Open in new window and print
+  const win=window.open('','_blank','width=400,height=600');
+  win.document.write(kitchenHTML);
+  win.document.close();
+  win.focus();
+  setTimeout(()=>{win.print();win.close();},400);
+}
+
+
 const now=new Date();
 document.getElementById('inv-d').textContent=now.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
 document.getElementById('inv-t').textContent=now.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
