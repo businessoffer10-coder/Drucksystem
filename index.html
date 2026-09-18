@@ -495,74 +495,127 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 /* ══════════════════════════════════
    MOBILE BOTTOM NAV
 ══════════════════════════════════ */
-@media(max-width:767px){
+/* ══════════════════════════════════
+   RESPONSIVE — Auto-fit all devices
+══════════════════════════════════ */
+
+/* ── Desktop ≥1200px ── */
+@media(min-width:1200px){
+  body{background:var(--bg);}
+  .app{width:100vw;height:100vh;border-radius:0;overflow:hidden;}
+  .cart-side{width:260px;}
+  .prod-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));}
+}
+
+/* ── Tablet landscape 1024–1199px ── */
+@media(min-width:1024px) and (max-width:1199px){
+  .sb{width:62px;}
+  .cart-side{width:220px;}
+  .prod-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));}
+  .modal-box{width:680px;}
+}
+
+/* ── Tablet portrait 768–1023px ── */
+@media(min-width:768px) and (max-width:1023px){
+  .sb{width:58px;}
+  .sb-btn{width:44px;height:46px;font-size:8px;}
+  .sb-btn i{font-size:19px;}
+  .cart-side{width:190px;}
+  .prod-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));}
+  .modal-box{width:92vw;}
+  .f-grid2{grid-template-columns:1fr 1fr;}
+  .tbl-grid{grid-template-columns:repeat(8,1fr);}
+}
+
+/* ── Large phone / small tablet 600–767px ── */
+@media(min-width:600px) and (max-width:767px){
   body{overflow:hidden;background:var(--bg);}
   .app{flex-direction:column;}
-  .sb{width:100%;height:60px;flex-direction:row;padding:0 6px;gap:0;order:2;border-top:1px solid #1A1A18;justify-content:space-around;flex-shrink:0;}
+  .sb{width:100%;height:58px;flex-direction:row;padding:0 8px;gap:0;order:2;border-top:1px solid #1A1A18;justify-content:space-around;flex-shrink:0;}
   .sb-logo,.sb-div,.sb-space{display:none;}
-  .sb-btn{width:auto;flex:1;height:56px;border-radius:8px;font-size:9px;flex-direction:column;gap:3px;text-transform:none;}
+  .sb-btn{width:auto;flex:1;height:54px;border-radius:8px;font-size:9px;flex-direction:column;gap:3px;}
   .sb-btn i{font-size:22px;}
   .sb-btn.active::before{right:auto;top:0;left:50%;transform:translateX(-50%);width:24px;height:3px;border-radius:0 0 3px 3px;}
   .main{order:1;flex:1;overflow:hidden;}
   .pages-wrap{flex:1;position:relative;overflow:hidden;}
-  .pg0-body{padding:12px;}
-  .type-grid{grid-template-columns:1fr 1fr;gap:8px;}
-  .tc{padding:11px 10px;}
-  .tc-icon{width:34px;height:34px;}
-  .tc-icon i{font-size:17px;}
-  .tc-name{font-size:13px;}
+  .ord-content{flex-direction:row;}
+  .prod-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:6px;padding:10px;}
+  .cart-side{width:180px;border-left:1px solid var(--border);border-top:none;}
+  .modal-box{width:96vw;}
+  .tbl-grid{grid-template-columns:repeat(8,1fr);}
+  .type-grid{grid-template-columns:1fr 1fr;}
+}
+
+/* ── Mobile portrait ≤599px ── */
+@media(max-width:599px){
+  body{overflow:hidden;background:var(--bg);}
+  .app{flex-direction:column;}
+  .sb{width:100%;height:58px;flex-direction:row;padding:0 4px;gap:0;order:2;border-top:1px solid #1A1A18;justify-content:space-around;flex-shrink:0;}
+  .sb-logo,.sb-div,.sb-space{display:none;}
+  .sb-btn{width:auto;flex:1;height:54px;border-radius:8px;font-size:8.5px;flex-direction:column;gap:2px;}
+  .sb-btn i{font-size:20px;}
+  .sb-btn.active::before{right:auto;top:0;left:50%;transform:translateX(-50%);width:24px;height:3px;border-radius:0 0 3px 3px;}
+  .main{order:1;flex:1;overflow:hidden;}
+  .pages-wrap{flex:1;position:relative;overflow:hidden;}
+  .pg0-body{padding:10px 12px;}
+  .type-grid{grid-template-columns:1fr 1fr;gap:7px;}
+  .tc{padding:10px 8px;}
+  .tc-icon{width:32px;height:32px;}
+  .tc-icon i{font-size:16px;}
+  .tc-name{font-size:12px;}
   .ord-top{padding:8px 10px 10px;}
-  .ord-bar{margin-bottom:8px;}
-  .cats-scroll{gap:5px;}
-  .cat-btn{min-width:58px;padding:7px 8px 6px;}
+  .cats-scroll{gap:4px;}
+  .cat-btn{min-width:54px;padding:7px 7px 6px;}
   .cat-dot{width:32px;height:32px;font-size:11px;}
   .cat-lbl{font-size:9px;}
   .ord-content{flex-direction:column;}
-  .prod-grid{grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:4px;padding:6px;}
+  .prod-grid{grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:5px;padding:8px;}
   .pc-name{font-size:10px;}
   .pc-num{font-size:8px;}
-  .cart-side{width:100%;border-left:none;border-top:1px solid var(--border);max-height:190px;flex-shrink:0;}
-  .cart-items{flex-direction:row;overflow-x:auto;overflow-y:hidden;padding:8px;flex-wrap:nowrap;gap:6px;}
-  .ci{min-width:130px;flex-direction:row;align-items:center;}
+  .cart-side{width:100%;border-left:none;border-top:1px solid var(--border);max-height:185px;flex-shrink:0;}
+  .cart-items{flex-direction:row;overflow-x:auto;overflow-y:hidden;padding:7px;flex-wrap:nowrap;gap:6px;}
+  .ci{min-width:125px;flex-direction:row;align-items:center;}
   .ci-top{flex:1;}
-  .cart-foot{padding:8px 12px;border-top:1px solid var(--border);}
-  .cart-row.big{font-size:13px;margin-bottom:6px;}
+  .cart-foot{padding:7px 10px;}
+  .cart-row.big{font-size:13px;margin-bottom:5px;}
   .inv-body{padding:10px;}
   .rc-meta{grid-template-columns:1fr 1fr;}
-  .inv-foot{padding:8px 12px;gap:5px;}
+  .inv-foot{padding:8px 10px;gap:5px;flex-wrap:wrap;}
   .modal-box{width:100%;max-height:92dvh;border-radius:18px 18px 0 0;align-self:flex-end;transform:translateY(100%)!important;}
   .modal-ov.open .modal-box{transform:none!important;}
   .modal-ov{align-items:flex-end;}
-  .topbar{height:48px;padding:0 14px;}
+  .topbar{height:48px;padding:0 12px;}
   .tb-title{font-size:14px;}
   .set-body{padding:10px 12px;}
-  .si{max-width:100%;}
+  .si{max-width:100%;width:100%;}
   .sr{flex-wrap:wrap;gap:8px;}
   .f-grid2{grid-template-columns:1fr;}
   .tbl-grid{grid-template-columns:repeat(6,1fr);}
 }
-@media(max-width:479px){
-  .type-grid{grid-template-columns:1fr 1fr;}
-  .prod-grid{grid-template-columns:repeat(auto-fill,minmax(90px,1fr));}
-  .cats-scroll{gap:4px;}
-  .cat-btn{min-width:52px;padding:6px 6px 5px;}
-}
+
+/* ── Mobile landscape ≤767px ── */
 @media(max-width:767px) and (orientation:landscape){
   .ord-content{flex-direction:row;}
-  .prod-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));}
-  .cart-side{width:155px;max-height:none;height:100%;border-left:1px solid var(--border);border-top:none;}
+  .prod-grid{grid-template-columns:repeat(auto-fill,minmax(90px,1fr));}
+  .cart-side{width:150px;max-height:none;height:100%;border-left:1px solid var(--border);border-top:none;}
   .cart-items{flex-direction:column;overflow-y:auto;overflow-x:hidden;height:auto;flex:1;}
   .ci{min-width:unset;flex-direction:column;height:auto;}
-  .sb{height:50px;}
-}
-@media(min-width:768px) and (max-width:1199px){
-  .sb{width:62px;}
-  .sb-btn{width:46px;height:48px;font-size:8px;}
+  .sb{height:48px;}
+  .sb-btn{font-size:0;}
   .sb-btn i{font-size:20px;}
-  .prod-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));}
-  .cart-side{width:180px;}
-  .modal-box{width:88vw;}
 }
+
+/* ── Very small screens ≤380px ── */
+@media(max-width:380px){
+  .type-grid{grid-template-columns:1fr 1fr;}
+  .prod-grid{grid-template-columns:repeat(auto-fill,minmax(80px,1fr));}
+  .cat-btn{min-width:48px;padding:6px 5px 5px;}
+  .cat-lbl{font-size:8px;}
+  .tc-name{font-size:11px;}
+  .sb-btn{font-size:0;}
+}
+
+
 
 /* ══════════════════════════════════
    PRINT — A6 Epson WF-M5299
