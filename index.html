@@ -496,6 +496,29 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
    MOBILE BOTTOM NAV
 ══════════════════════════════════ */
 /* ══════════════════════════════════
+   SETTINGS TABS
+══════════════════════════════════ */
+.set-tab{width:44px;height:44px;border:none;border-radius:10px;background:transparent;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;transition:all .15s;position:relative;}
+.set-tab:hover{background:var(--surface3);}
+.set-tab.active{background:var(--surface);box-shadow:var(--sh);}
+.set-tab.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:24px;background:var(--acc);border-radius:0 3px 3px 0;}
+.set-panel{display:none;flex-direction:column;}
+.set-panel.active{display:flex;}
+.sp-hdr{font-size:16px;font-weight:700;color:var(--t1);padding:18px 20px 14px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1;}
+.sp-body{padding:16px 20px;display:flex;flex-direction:column;gap:14px;}
+.sp-field{display:flex;flex-direction:column;gap:5px;}
+.sp-lbl{font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.4px;}
+.sp-inp{border:1.5px solid var(--border);border-radius:9px;padding:9px 12px;font-size:14px;font-family:inherit;color:var(--t1);background:var(--surface2);outline:none;width:100%;transition:all .14s;}
+.sp-inp:focus{border-color:var(--acc);background:var(--surface);box-shadow:0 0 0 3px rgba(224,92,42,.08);}
+.sp-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0;flex-wrap:wrap;}
+.sp-row-l{display:flex;flex-direction:column;gap:3px;flex:1;min-width:120px;}
+.sp-row-lbl{font-size:14px;font-weight:600;color:var(--t1);}
+.sp-row-dsc{font-size:12px;color:var(--t3);}
+.sp-divider{height:1px;background:var(--border);margin:2px 0;}
+.sp-preview{border-radius:10px;overflow:hidden;border:1px solid var(--border);}
+.sp-preview-lbl{font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.4px;padding:8px 14px;background:var(--surface2);border-bottom:1px solid var(--border);}
+
+/* ══════════════════════════════════
    RESPONSIVE — Auto-fit all devices
 ══════════════════════════════════ */
 
@@ -1000,146 +1023,203 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
           <button class="btn btn-p btn-sm" onclick="saveAllSettings()"><i class="ti ti-check"></i>Speichern</button>
         </div>
       </div>
-      <div class="set-body">
 
-        <!-- ── RESTAURANT ── -->
-        <div class="sc">
-          <div class="sc-hdr">🏠 Restaurant</div>
-          <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px;">
-            <div style="display:grid;grid-template-columns:70px 1fr;gap:10px;">
-              <div>
-                <span class="set-lbl">Logo</span>
-                <input class="si si-full" id="set-logo" value="🍕" style="font-size:22px;text-align:center;padding:6px;" oninput="liveUpdateSettings()"/>
-              </div>
-              <div>
-                <span class="set-lbl">Restaurantname *</span>
-                <input class="si si-full" id="set-name" value="Restaurant Emlichheim" oninput="liveUpdateSettings()"/>
-              </div>
-            </div>
-            <div>
-              <span class="set-lbl">Adresse</span>
-              <input class="si si-full" id="set-addr" value="Hauptstraße 1, 49824 Emlichheim" oninput="liveUpdateSettings()"/>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-              <div>
-                <span class="set-lbl">Telefon</span>
-                <input class="si si-full" id="set-phone" value="+49 5943 123456" oninput="liveUpdateSettings()"/>
-              </div>
-              <div>
-                <span class="set-lbl">Öffnungszeiten</span>
-                <input class="si si-full" id="set-hours" value="Mo–So 11:00–22:00" oninput="liveUpdateSettings()"/>
-              </div>
-            </div>
-            <div>
-              <span class="set-lbl">Fußzeile Rechnung</span>
-              <input class="si si-full" id="set-footer-msg" value="Vielen Dank für Ihren Besuch!" oninput="liveUpdateSettings()"/>
-            </div>
-          </div>
+      <!-- Settings Layout: sidebar tabs + content -->
+      <div style="flex:1;display:flex;overflow:hidden;min-height:0;">
+
+        <!-- Left Tabs -->
+        <div style="width:58px;background:var(--surface2);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:4px;flex-shrink:0;">
+          <button class="set-tab active" id="stab-0" onclick="selSetTab(0)" title="Restaurant">🏠</button>
+          <button class="set-tab" id="stab-1" onclick="selSetTab(1)" title="Rechnung">🧾</button>
+          <button class="set-tab" id="stab-2" onclick="selSetTab(2)" title="Bestellarten">📋</button>
+          <button class="set-tab" id="stab-3" onclick="selSetTab(3)" title="Tische">🍽</button>
+          <button class="set-tab" id="stab-4" onclick="selSetTab(4)" title="Liefergebiete">🏙</button>
+          <button class="set-tab" id="stab-5" onclick="selSetTab(5)" title="Extras">➕</button>
+          <button class="set-tab" id="stab-6" onclick="selSetTab(6)" title="Produkte">🍕</button>
         </div>
 
-        <!-- ── RECHNUNG ── -->
-        <div class="sc">
-          <div class="sc-hdr">🧾 Rechnung & Nummern</div>
-          <div class="sr">
-            <div class="sr-l">
-              <span class="sr-lbl">Aktuelle Rechnungsnr.</span>
-              <span class="sr-dsc">Wird automatisch erhöht nach jedem Abschluss</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:6px;">
-              <input class="si" id="set-inv-no" type="number" value="1000" min="1" style="width:100px;" oninput="document.getElementById('inv-no').textContent=this.value"/>
-              <button class="btn btn-ghost btn-xs" onclick="resetInvNo()"><i class="ti ti-refresh"></i>Reset</button>
-            </div>
-          </div>
-          <div class="sr">
-            <div class="sr-l"><span class="sr-lbl">Automatisch drucken</span><span class="sr-dsc">Nach Bestellabschluss</span></div>
-            <div class="tgl" id="tgl-auto-print" onclick="this.classList.toggle('on');saveAllSettings()"></div>
-          </div>
-        </div>
+        <!-- Right Content (scrollable) -->
+        <div style="flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;min-height:0;">
 
-        <!-- ── BESTELLARTEN ── -->
-        <div class="sc">
-          <div class="sc-hdr clickable" onclick="toggleAcc('acc-bestellarten',this)">
-            <span>📋 Bestellarten</span><span style="margin-left:auto;font-size:11px;color:var(--t3);">▼</span>
-          </div>
-          <div id="acc-bestellarten" style="display:none;">
-            <div class="sr"><div class="sr-l"><span class="sr-lbl">🚴 Liefern</span><span class="sr-dsc">Lieferung nach Hause</span></div><div class="tgl on" id="tgl-liefern" onclick="toggleBestellart('Liefern',this)"></div></div>
-            <div class="sr"><div class="sr-l"><span class="sr-lbl">🛍 Abholen</span><span class="sr-dsc">Abholung im Restaurant</span></div><div class="tgl on" id="tgl-abholen" onclick="toggleBestellart('Abholen',this)"></div></div>
-            <div class="sr"><div class="sr-l"><span class="sr-lbl">🍽 Hier Essen</span><span class="sr-dsc">Tisch im Restaurant</span></div><div class="tgl on" id="tgl-hier" onclick="toggleBestellart('Hier Essen',this)"></div></div>
-            <div class="sr"><div class="sr-l"><span class="sr-lbl">✏️ Frei Text</span><span class="sr-dsc">Direkt drucken</span></div><div class="tgl on" id="tgl-freitext" onclick="toggleBestellart('Frei Text',this)"></div></div>
-          </div>
-        </div>
-
-        <!-- ── TISCHE ── -->
-        <div class="sc">
-          <div class="sc-hdr clickable" onclick="toggleAcc('acc-tische',this)">
-            <span>🍽 Tische</span><span style="margin-left:auto;font-size:11px;color:var(--t3);">▼</span>
-          </div>
-          <div id="acc-tische" style="display:none;">
-            <div class="sr">
-              <div class="sr-l"><span class="sr-lbl">Anzahl Tische</span><span class="sr-dsc">Tischgrid auf der Startseite</span></div>
-              <div style="display:flex;align-items:center;gap:10px;">
-                <button class="btn btn-ghost btn-sm" onclick="changeTischCount(-5)" style="padding:6px 10px;">−5</button>
-                <button class="btn btn-ghost btn-sm" onclick="changeTischCount(-1)" style="padding:6px 10px;">−</button>
-                <span id="tisch-count-lbl" style="font-size:18px;font-weight:800;min-width:36px;text-align:center;color:var(--acc);">30</span>
-                <button class="btn btn-ghost btn-sm" onclick="changeTischCount(1)" style="padding:6px 10px;">+</button>
-                <button class="btn btn-ghost btn-sm" onclick="changeTischCount(5)" style="padding:6px 10px;">+5</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ── LIEFERGEBIETE ── -->
-        <div class="sc">
-          <div class="sc-hdr clickable" onclick="toggleAcc('acc-cities',this)">
-            <span>🏙 Liefergebiete & Kosten</span><span style="margin-left:auto;font-size:11px;color:var(--t3);">▼</span>
-          </div>
-          <div id="acc-cities" style="display:none;">
-            <div id="cities-list"></div>
-            <div style="padding:12px 16px;background:var(--surface2);border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px;">
-              <span class="set-lbl">Neue Stadt hinzufügen</span>
-              <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:6px;">
-                <div><span class="set-lbl">Stadtname</span><input class="si si-full" id="new-city-name" placeholder="z.B. Emlichheim"/></div>
-                <div><span class="set-lbl">PLZ</span><input class="si si-full" id="new-city-plz" placeholder="49824"/></div>
-                <div><span class="set-lbl">Gebühr €</span><input class="si si-full" id="new-city-fee" type="number" min="0" step="0.5" placeholder="2.00"/></div>
-                <div><span class="set-lbl">Min. € </span><input class="si si-full" id="new-city-min" type="number" min="0" step="1" placeholder="0"/></div>
-              </div>
-              <button class="btn btn-p btn-sm" onclick="addCity()" style="align-self:flex-start;"><i class="ti ti-plus"></i>Stadt hinzufügen</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- ── CUSTOM EXTRAS ── -->
-        <div class="sc">
-          <div class="sc-hdr clickable" onclick="toggleAcc('acc-extras',this)">
-            <span>➕ Extras verwalten</span><span style="margin-left:auto;font-size:11px;color:var(--t3);">▼</span>
-          </div>
-          <div id="acc-extras" style="display:none;">
-            <div id="custom-extras-list"></div>
-            <div style="padding:12px 16px;background:var(--surface2);border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px;">
-              <span class="set-lbl">Neues Extra (gilt für alle Produkte)</span>
-              <div style="display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:6px;align-items:end;">
-                <div><span class="set-lbl">Name</span><input class="si si-full" id="new-extra-name" placeholder="z.B. Extra Sauce"/></div>
-                <div><span class="set-lbl">Preis €</span><input class="si si-full" id="new-extra-price" type="number" min="0" step="0.5" placeholder="1.00"/></div>
-                <div><span class="set-lbl">Kategorie</span>
-                  <select class="si si-full" id="new-extra-cat">
-                    <option value="veg">🥦 Gemüse</option>
-                    <option value="meat">🥩 Fleisch</option>
-                    <option value="sauce">🫙 Sauce</option>
-                    <option value="side">🍞 Beilage</option>
-                  </select>
+          <!-- Tab 0: Restaurant -->
+          <div class="set-panel active" id="spanel-0">
+            <div class="sp-hdr">🏠 Restaurant</div>
+            <div class="sp-body">
+              <div style="display:grid;grid-template-columns:80px 1fr;gap:12px;align-items:end;">
+                <div class="sp-field">
+                  <span class="sp-lbl">Logo</span>
+                  <input class="sp-inp" id="set-logo" value="🍕" style="font-size:24px;text-align:center;padding:8px 4px;" oninput="liveUpdateSettings()"/>
                 </div>
-                <button class="btn btn-p btn-sm" onclick="addCustomExtra()" style="white-space:nowrap;"><i class="ti ti-plus"></i></button>
+                <div class="sp-field">
+                  <span class="sp-lbl">Restaurantname</span>
+                  <input class="sp-inp" id="set-name" value="Restaurant Emlichheim" oninput="liveUpdateSettings()"/>
+                </div>
+              </div>
+              <div class="sp-field">
+                <span class="sp-lbl">Adresse</span>
+                <input class="sp-inp" id="set-addr" value="Hauptstraße 1, 49824 Emlichheim"/>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div class="sp-field">
+                  <span class="sp-lbl">Telefon</span>
+                  <input class="sp-inp" id="set-phone" value="+49 5943 123456"/>
+                </div>
+                <div class="sp-field">
+                  <span class="sp-lbl">Öffnungszeiten</span>
+                  <input class="sp-inp" id="set-hours" value="Mo–So 11:00–22:00"/>
+                </div>
+              </div>
+              <div class="sp-field">
+                <span class="sp-lbl">Fußzeile auf Rechnung</span>
+                <input class="sp-inp" id="set-footer-msg" value="Vielen Dank für Ihren Besuch!"/>
+              </div>
+              <div class="sp-preview">
+                <div class="sp-preview-lbl">Vorschau Rechnungskopf</div>
+                <div style="background:#000;color:#fff;border-radius:8px 8px 0 0;padding:10px 14px;display:flex;align-items:center;gap:8px;">
+                  <span id="prev-logo" style="font-size:20px;">🍕</span>
+                  <span id="prev-name" style="font-size:14px;font-weight:700;">Restaurant Emlichheim</span>
+                </div>
+                <div style="background:var(--surface2);border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:8px 14px;font-size:11px;color:var(--t2);">
+                  <span id="prev-addr">Hauptstraße 1, 49824 Emlichheim</span> · <span id="prev-phone">+49 5943 123456</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- ── PRODUKTE ── -->
-        <div class="sc">
-          <div class="sc-hdr clickable" onclick="toggleAcc('acc-prod',this)">
-            <span>🍕 Produkte verwalten</span><span style="margin-left:auto;font-size:11px;color:var(--t3);">▼</span>
+          <!-- Tab 1: Rechnung -->
+          <div class="set-panel" id="spanel-1">
+            <div class="sp-hdr">🧾 Rechnung & Nummern</div>
+            <div class="sp-body">
+              <div class="sp-row">
+                <div class="sp-row-l"><span class="sp-row-lbl">Rechnungsnummer</span><span class="sp-row-dsc">Wird nach jedem Abschluss automatisch erhöht</span></div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <input class="sp-inp" id="set-inv-no" type="number" value="1000" min="1" style="width:110px;text-align:center;font-size:16px;font-weight:700;" oninput="document.getElementById('inv-no').textContent=this.value"/>
+                  <button class="btn btn-ghost btn-sm" onclick="resetInvNo()"><i class="ti ti-refresh"></i>Reset</button>
+                </div>
+              </div>
+              <div class="sp-divider"></div>
+              <div class="sp-row">
+                <div class="sp-row-l"><span class="sp-row-lbl">Automatisch drucken</span><span class="sp-row-dsc">Rechnung nach Abschluss sofort drucken</span></div>
+                <div class="tgl" id="tgl-auto-print" onclick="this.classList.toggle('on')"></div>
+              </div>
+            </div>
           </div>
-          <div id="acc-prod" style="display:none;">
+
+          <!-- Tab 2: Bestellarten -->
+          <div class="set-panel" id="spanel-2">
+            <div class="sp-hdr">📋 Bestellarten aktivieren</div>
+            <div class="sp-body">
+              <div class="sp-row">
+                <div class="sp-row-l">
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div style="width:38px;height:38px;background:var(--acc-l);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">🚴</div>
+                    <div><span class="sp-row-lbl">Liefern</span><div class="sp-row-dsc">Lieferung nach Hause</div></div>
+                  </div>
+                </div>
+                <div class="tgl on" id="tgl-liefern" onclick="toggleBestellart('Liefern',this)"></div>
+              </div>
+              <div class="sp-divider"></div>
+              <div class="sp-row">
+                <div class="sp-row-l">
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div style="width:38px;height:38px;background:var(--green-l);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">🛍</div>
+                    <div><span class="sp-row-lbl">Abholen</span><div class="sp-row-dsc">Abholung im Restaurant</div></div>
+                  </div>
+                </div>
+                <div class="tgl on" id="tgl-abholen" onclick="toggleBestellart('Abholen',this)"></div>
+              </div>
+              <div class="sp-divider"></div>
+              <div class="sp-row">
+                <div class="sp-row-l">
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div style="width:38px;height:38px;background:var(--blue-l);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">🍽</div>
+                    <div><span class="sp-row-lbl">Hier Essen</span><div class="sp-row-dsc">Tisch im Restaurant</div></div>
+                  </div>
+                </div>
+                <div class="tgl on" id="tgl-hier" onclick="toggleBestellart('Hier Essen',this)"></div>
+              </div>
+              <div class="sp-divider"></div>
+              <div class="sp-row">
+                <div class="sp-row-l">
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div style="width:38px;height:38px;background:var(--purple-l);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">✏️</div>
+                    <div><span class="sp-row-lbl">Frei Text</span><div class="sp-row-dsc">Direkt drucken ohne Warenkorb</div></div>
+                  </div>
+                </div>
+                <div class="tgl on" id="tgl-freitext" onclick="toggleBestellart('Frei Text',this)"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 3: Tische -->
+          <div class="set-panel" id="spanel-3">
+            <div class="sp-hdr">🍽 Tischverwaltung</div>
+            <div class="sp-body">
+              <div class="sp-row">
+                <div class="sp-row-l"><span class="sp-row-lbl">Anzahl Tische</span><span class="sp-row-dsc">Tischgrid auf der Startseite</span></div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <button class="btn btn-ghost btn-sm" onclick="changeTischCount(-5)">−5</button>
+                  <button class="btn btn-ghost btn-sm" onclick="changeTischCount(-1)">−1</button>
+                  <span id="tisch-count-lbl" style="font-size:22px;font-weight:900;min-width:44px;text-align:center;color:var(--acc);">30</span>
+                  <button class="btn btn-ghost btn-sm" onclick="changeTischCount(1)">+1</button>
+                  <button class="btn btn-ghost btn-sm" onclick="changeTischCount(5)">+5</button>
+                </div>
+              </div>
+              <div style="background:var(--surface2);border-radius:10px;padding:12px;margin-top:4px;">
+                <div style="font-size:11px;color:var(--t3);margin-bottom:8px;font-weight:600;">VORSCHAU TISCHGRID</div>
+                <div id="tisch-preview" style="display:grid;grid-template-columns:repeat(10,1fr);gap:4px;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 4: Liefergebiete -->
+          <div class="set-panel" id="spanel-4">
+            <div class="sp-hdr">🏙 Liefergebiete & Kosten</div>
+            <div class="sp-body">
+              <div id="cities-list"></div>
+              <div class="sp-divider"></div>
+              <div style="background:var(--surface2);border-radius:10px;padding:14px;">
+                <div style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">Neue Stadt</div>
+                <div style="display:grid;grid-template-columns:1fr 70px 70px 70px;gap:8px;margin-bottom:10px;">
+                  <div class="sp-field"><span class="sp-lbl">Stadtname</span><input class="sp-inp" id="new-city-name" placeholder="Emlichheim"/></div>
+                  <div class="sp-field"><span class="sp-lbl">PLZ</span><input class="sp-inp" id="new-city-plz" placeholder="49824"/></div>
+                  <div class="sp-field"><span class="sp-lbl">Gebühr €</span><input class="sp-inp" id="new-city-fee" type="number" min="0" step="0.5" placeholder="2"/></div>
+                  <div class="sp-field"><span class="sp-lbl">Min. €</span><input class="sp-inp" id="new-city-min" type="number" min="0" step="1" placeholder="0"/></div>
+                </div>
+                <button class="btn btn-p btn-sm" onclick="addCity()"><i class="ti ti-plus"></i>Hinzufügen</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 5: Extras -->
+          <div class="set-panel" id="spanel-5">
+            <div class="sp-hdr">➕ Extras verwalten</div>
+            <div class="sp-body">
+              <div id="custom-extras-list"></div>
+              <div class="sp-divider"></div>
+              <div style="background:var(--surface2);border-radius:10px;padding:14px;">
+                <div style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">Neues Extra</div>
+                <div style="display:grid;grid-template-columns:1fr 80px 1fr;gap:8px;margin-bottom:10px;">
+                  <div class="sp-field"><span class="sp-lbl">Name</span><input class="sp-inp" id="new-extra-name" placeholder="z.B. Extra Sauce"/></div>
+                  <div class="sp-field"><span class="sp-lbl">Preis €</span><input class="sp-inp" id="new-extra-price" type="number" min="0" step="0.5" placeholder="1.00"/></div>
+                  <div class="sp-field"><span class="sp-lbl">Kategorie</span>
+                    <select class="sp-inp" id="new-extra-cat">
+                      <option value="veg">🥦 Gemüse</option>
+                      <option value="meat">🥩 Fleisch</option>
+                      <option value="sauce">🫙 Sauce</option>
+                      <option value="side">🍞 Beilage</option>
+                    </select>
+                  </div>
+                </div>
+                <button class="btn btn-p btn-sm" onclick="addCustomExtra()"><i class="ti ti-plus"></i>Hinzufügen</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 6: Produkte -->
+          <div class="set-panel" id="spanel-6">
+            <div class="sp-hdr">🍕 Produkte verwalten</div>
+            <!-- Form Header -->
             <div id="prod-form-hdr" style="padding:10px 16px;display:flex;align-items:center;justify-content:space-between;background:var(--green-l);border-bottom:1px solid #86EFAC;">
               <div style="display:flex;align-items:center;gap:7px;">
                 <span id="prod-form-icon" style="font-size:16px;">➕</span>
@@ -1147,23 +1227,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
               </div>
               <button id="prod-form-cancel" class="btn btn-ghost btn-xs" style="display:none;" onclick="cancelEditProduct()"><i class="ti ti-x"></i>Abbrechen</button>
             </div>
-            <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:10px;">
+            <div class="sp-body">
               <input type="hidden" id="edit-prod-key"/>
               <input type="hidden" id="edit-prod-idx"/>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                <div><span class="set-lbl">Kategorie</span><select class="si si-full" id="new-prod-cat"></select></div>
-                <div><span class="set-lbl">Name *</span><input class="si si-full" id="new-prod-name" placeholder="Produktname…"/></div>
+                <div class="sp-field"><span class="sp-lbl">Kategorie</span><select class="sp-inp" id="new-prod-cat"></select></div>
+                <div class="sp-field"><span class="sp-lbl">Name *</span><input class="sp-inp" id="new-prod-name" placeholder="Produktname…"/></div>
               </div>
-              <div><span class="set-lbl">Beschreibung</span><input class="si si-full" id="new-prod-desc" placeholder="Kurze Beschreibung…"/></div>
+              <div class="sp-field"><span class="sp-lbl">Beschreibung</span><input class="sp-inp" id="new-prod-desc" placeholder="Kurze Beschreibung…"/></div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                <div><span class="set-lbl">Fester Preis (€)</span><input class="si si-full" id="new-prod-price" type="number" min="0" step="0.5" placeholder="0.00"/></div>
+                <div class="sp-field"><span class="sp-lbl">Fester Preis (€)</span><input class="sp-inp" id="new-prod-price" type="number" min="0" step="0.5" placeholder="0.00"/></div>
                 <div>
-                  <span class="set-lbl">Größenpreise (€)</span>
-                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
-                    <input class="si si-full" id="sz-klein" type="number" min="0" step="0.5" placeholder="Klein" style="font-size:11px;padding:6px 8px;"/>
-                    <input class="si si-full" id="sz-mittel" type="number" min="0" step="0.5" placeholder="Mittel" style="font-size:11px;padding:6px 8px;"/>
-                    <input class="si si-full" id="sz-gross" type="number" min="0" step="0.5" placeholder="Groß" style="font-size:11px;padding:6px 8px;"/>
-                    <input class="si si-full" id="sz-familie" type="number" min="0" step="0.5" placeholder="Familie" style="font-size:11px;padding:6px 8px;"/>
+                  <span class="sp-lbl">Größenpreise (€)</span>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
+                    <input class="sp-inp" id="sz-klein" type="number" min="0" step="0.5" placeholder="Klein" style="font-size:11px;"/>
+                    <input class="sp-inp" id="sz-mittel" type="number" min="0" step="0.5" placeholder="Mittel" style="font-size:11px;"/>
+                    <input class="sp-inp" id="sz-gross" type="number" min="0" step="0.5" placeholder="Groß" style="font-size:11px;"/>
+                    <input class="sp-inp" id="sz-familie" type="number" min="0" step="0.5" placeholder="Familie" style="font-size:11px;"/>
                   </div>
                 </div>
               </div>
@@ -1175,14 +1255,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
                 <button id="add-prod-btn" class="btn btn-g btn-sm" onclick="saveProduct()"><i class="ti ti-plus"></i>Hinzufügen</button>
               </div>
             </div>
-            <div style="padding:10px 16px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;">
-              <span class="set-lbl" style="margin:0;white-space:nowrap;">Kategorie:</span>
-              <select class="si" id="edit-prod-cat" style="flex:1;width:auto;max-width:100%;" onchange="renderEditProducts()"></select>
+            <div style="padding:10px 16px;background:var(--surface2);border-bottom:1px solid var(--border);border-top:1px solid var(--border);display:flex;align-items:center;gap:8px;">
+              <span style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;white-space:nowrap;">Kategorie:</span>
+              <select class="sp-inp" id="edit-prod-cat" style="flex:1;" onchange="renderEditProducts()"></select>
             </div>
-            <div id="edit-products-list" style="max-height:300px;overflow-y:auto;"></div>
+            <div id="edit-products-list" style="min-height:100px;"></div>
           </div>
-        </div>
 
+        </div>
       </div>
     </div>
     </div><!-- /pages-wrap -->
@@ -1683,8 +1763,24 @@ function loadCustomProds(){
     if(MENU[k]){const ids=new Set(MENU[k].items.map(p=>p.id));prods.forEach(p=>{if(!ids.has(p.id))MENU[k].items.push(p);});}
   });
 }
+// SETTINGS TABS
+function selSetTab(n){
+  document.querySelectorAll('.set-tab').forEach((b,i)=>b.classList.toggle('active',i===n));
+  document.querySelectorAll('.set-panel').forEach((p,i)=>p.classList.toggle('active',i===n));
+  if(n===3)renderTischPreview();
+}
+function renderTischPreview(){
+  const el=document.getElementById('tisch-preview');if(!el)return;
+  el.innerHTML='';const show=Math.min(tischCount,30);
+  for(let i=1;i<=show;i++){const b=document.createElement('div');b.style.cssText='background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:4px 2px;font-size:10px;font-weight:700;text-align:center;color:var(--t2);';b.textContent=i;el.appendChild(b);}
+  if(tischCount>30){const m=document.createElement('div');m.style.cssText='grid-column:1/-1;font-size:11px;color:var(--t3);text-align:center;padding:4px;';m.textContent='+ '+(tischCount-30)+' weitere';el.appendChild(m);}
+}
 function liveUpdateSettings(){
-  const n=document.getElementById('set-name')?.value||'';if(n)document.getElementById('resto-name').textContent=n;
+  const n=document.getElementById('set-name')?.value||'';
+  if(n){document.getElementById('resto-name').textContent=n;const pn=document.getElementById('prev-name');if(pn)pn.textContent=n;}
+  const logo=document.getElementById('set-logo')?.value||'🍕';const pl=document.getElementById('prev-logo');if(pl)pl.textContent=logo;
+  const addr=document.getElementById('set-addr')?.value||'';const pa=document.getElementById('prev-addr');if(pa)pa.textContent=addr;
+  const phone=document.getElementById('set-phone')?.value||'';const pp=document.getElementById('prev-phone');if(pp)pp.textContent=phone;
   const inv=document.getElementById('set-inv-no')?.value;if(inv)document.getElementById('inv-no').textContent=inv;
 }
 function resetInvNo(){const e=document.getElementById('set-inv-no');if(e){e.value=1000;document.getElementById('inv-no').textContent=1000;}saveAllSettings();}
@@ -2340,10 +2436,7 @@ function loadCustomProds(){
     if(MENU[k]){const ids=new Set(MENU[k].items.map(p=>p.id));prods.forEach(p=>{if(!ids.has(p.id))MENU[k].items.push(p);});}
   });
 }
-function liveUpdateSettings(){
-  const n=document.getElementById('set-name')?.value||'';if(n)document.getElementById('resto-name').textContent=n;
-  const inv=document.getElementById('set-inv-no')?.value;if(inv)document.getElementById('inv-no').textContent=inv;
-}
+
 function resetInvNo(){const e=document.getElementById('set-inv-no');if(e){e.value=1000;document.getElementById('inv-no').textContent=1000;}saveAllSettings();}
 function exportSettings(){
   const blob=new Blob([JSON.stringify(settings,null,2)],{type:'application/json'});
