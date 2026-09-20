@@ -502,6 +502,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .set-tab:hover{background:var(--surface3);}
 .set-tab.active{background:var(--surface);box-shadow:var(--sh);}
 .set-tab.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:24px;background:var(--acc);border-radius:0 3px 3px 0;}
+.inv-mode-btn{flex:1;border:1.5px solid var(--border);border-radius:10px;padding:10px 8px;background:var(--surface2);cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all .15s;}
+.inv-mode-btn i{font-size:18px;color:var(--t3);}
+.inv-mode-btn span{font-size:12px;font-weight:700;color:var(--t2);}
+.inv-mode-btn small{font-size:10px;color:var(--t3);font-family:monospace;}
+.inv-mode-btn:hover{border-color:var(--acc);}
+.inv-mode-btn.active{border-color:var(--acc);background:var(--acc-l);}
+.inv-mode-btn.active i,.inv-mode-btn.active span{color:var(--acc-d);}
 .set-panel{display:none;flex-direction:column;}
 .set-panel.active{display:flex;}
 .sp-hdr{font-size:16px;font-weight:700;color:var(--t1);padding:18px 20px 14px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1;}
@@ -1090,18 +1097,96 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
           <div class="set-panel" id="spanel-1">
             <div class="sp-hdr">🧾 Rechnung & Nummern</div>
             <div class="sp-body">
-              <div class="sp-row">
-                <div class="sp-row-l"><span class="sp-row-lbl">Rechnungsnummer</span><span class="sp-row-dsc">Wird nach jedem Abschluss automatisch erhöht</span></div>
-                <div style="display:flex;align-items:center;gap:8px;">
-                  <input class="sp-inp" id="set-inv-no" type="number" value="1000" min="1" style="width:110px;text-align:center;font-size:16px;font-weight:700;" oninput="document.getElementById('inv-no').textContent=this.value"/>
-                  <button class="btn btn-ghost btn-sm" onclick="resetInvNo()"><i class="ti ti-refresh"></i>Reset</button>
+
+              <!-- Invoice number mode -->
+              <div>
+                <span class="sp-lbl">Nummernformat</span>
+                <div style="display:flex;gap:8px;margin-top:6px;">
+                  <button class="inv-mode-btn active" id="inv-mode-num" onclick="setInvMode('numeric')">
+                    <i class="ti ti-hash"></i><span>Numerisch</span><small>2001, 2002…</small>
+                  </button>
+                  <button class="inv-mode-btn" id="inv-mode-alpha" onclick="setInvMode('alphanumeric')">
+                    <i class="ti ti-code"></i><span>Alphanumerisch</span><small>A3K-9X2…</small>
+                  </button>
+                  <button class="inv-mode-btn" id="inv-mode-prefix" onclick="setInvMode('prefix')">
+                    <i class="ti ti-tag"></i><span>Präfix + Nr.</span><small>EM-2001…</small>
+                  </button>
                 </div>
               </div>
+
+              <!-- Numeric options -->
+              <div id="inv-opt-numeric">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                  <div class="sp-field">
+                    <span class="sp-lbl">Aktuelle Nummer</span>
+                    <input class="sp-inp" id="set-inv-no" type="number" value="1000" min="1" style="font-size:18px;font-weight:700;text-align:center;" oninput="liveUpdateSettings()"/>
+                  </div>
+                  <div class="sp-field">
+                    <span class="sp-lbl">Startnummer</span>
+                    <input class="sp-inp" id="set-inv-start" type="number" value="1000" min="1" placeholder="1000"/>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Alphanumeric options -->
+              <div id="inv-opt-alpha" style="display:none;">
+                <div style="background:var(--surface2);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px;">
+                  <div style="display:flex;align-items:center;gap:12px;">
+                    <div style="flex:1;">
+                      <span class="sp-lbl">Aktueller Code</span>
+                      <div id="inv-alpha-preview" style="font-size:24px;font-weight:900;color:var(--acc);letter-spacing:2px;margin-top:4px;font-family:monospace;">A3K-9X2</div>
+                    </div>
+                    <button class="btn btn-p btn-sm" onclick="generateAlphaCode()"><i class="ti ti-refresh"></i>Neu generieren</button>
+                  </div>
+                  <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                    <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;">
+                      <input type="checkbox" id="alpha-use-letters" checked style="accent-color:var(--acc);"/>Buchstaben (A-Z)
+                    </label>
+                    <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;">
+                      <input type="checkbox" id="alpha-use-numbers" checked style="accent-color:var(--acc);"/>Zahlen (0-9)
+                    </label>
+                  </div>
+                  <div class="sp-field">
+                    <span class="sp-lbl">Länge</span>
+                    <input class="sp-inp" id="alpha-length" type="number" value="7" min="4" max="12" style="width:80px;"/>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Prefix options -->
+              <div id="inv-opt-prefix" style="display:none;">
+                <div style="display:grid;grid-template-columns:100px 1fr;gap:10px;">
+                  <div class="sp-field">
+                    <span class="sp-lbl">Präfix</span>
+                    <input class="sp-inp" id="inv-prefix" value="EM" maxlength="5" style="font-weight:700;letter-spacing:1px;text-transform:uppercase;"/>
+                  </div>
+                  <div class="sp-field">
+                    <span class="sp-lbl">Aktuelle Nummer</span>
+                    <input class="sp-inp" id="set-inv-no-p" type="number" value="1000" min="1" style="font-size:16px;font-weight:700;" oninput="liveUpdateSettings()"/>
+                  </div>
+                </div>
+                <div style="margin-top:8px;padding:10px 14px;background:var(--acc-l);border-radius:9px;font-size:15px;font-weight:700;color:var(--acc-d);font-family:monospace;">
+                  Vorschau: <span id="prefix-preview">EM-1000</span>
+                </div>
+              </div>
+
+              <!-- Live preview -->
+              <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
+                <div>
+                  <div style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;margin-bottom:4px;">Auf Rechnung erscheint</div>
+                  <div style="font-size:20px;font-weight:900;color:var(--t1);">Nr. #<span id="inv-no-preview">1000</span></div>
+                </div>
+                <button class="btn btn-ghost btn-sm" onclick="resetInvNo()"><i class="ti ti-refresh"></i>Reset</button>
+              </div>
+
               <div class="sp-divider"></div>
+
+              <!-- Auto-print toggle -->
               <div class="sp-row">
                 <div class="sp-row-l"><span class="sp-row-lbl">Automatisch drucken</span><span class="sp-row-dsc">Rechnung nach Abschluss sofort drucken</span></div>
                 <div class="tgl" id="tgl-auto-print" onclick="this.classList.toggle('on')"></div>
               </div>
+
             </div>
           </div>
 
@@ -1769,6 +1854,82 @@ function selSetTab(n){
   document.querySelectorAll('.set-panel').forEach((p,i)=>p.classList.toggle('active',i===n));
   if(n===3)renderTischPreview();
 }
+
+// INVOICE NUMBER SYSTEM
+let invMode='numeric'; // 'numeric' | 'alphanumeric' | 'prefix'
+
+function setInvMode(mode){
+  invMode=mode;settings.invMode=mode;
+  ['numeric','alpha','prefix'].forEach(m=>{
+    const btn=document.getElementById('inv-mode-'+m);
+    if(btn)btn.classList.toggle('active',m===mode||
+      (m==='alpha'&&mode==='alphanumeric')||
+      (m==='prefix'&&mode==='prefix'));
+  });
+  document.getElementById('inv-mode-num')?.classList.toggle('active',mode==='numeric');
+  document.getElementById('inv-mode-alpha')?.classList.toggle('active',mode==='alphanumeric');
+  document.getElementById('inv-mode-prefix')?.classList.toggle('active',mode==='prefix');
+  document.getElementById('inv-opt-numeric').style.display=mode==='numeric'?'':'none';
+  document.getElementById('inv-opt-alpha').style.display=mode==='alphanumeric'?'':'none';
+  document.getElementById('inv-opt-prefix').style.display=mode==='prefix'?'':'none';
+  updateInvPreview();
+}
+
+function generateAlphaCode(){
+  const useLetters=document.getElementById('alpha-use-letters')?.checked!==false;
+  const useNumbers=document.getElementById('alpha-use-numbers')?.checked!==false;
+  const len=parseInt(document.getElementById('alpha-length')?.value)||7;
+  let chars='';
+  if(useLetters)chars+='ABCDEFGHJKLMNPQRSTUVWXYZ';
+  if(useNumbers)chars+='23456789';
+  if(!chars)chars='0123456789';
+  let code='';
+  for(let i=0;i<len;i++){
+    if(i>0&&i%3===0)code+='-';
+    code+=chars[Math.floor(Math.random()*chars.length)];
+  }
+  settings.alphaCode=code;
+  const el=document.getElementById('inv-alpha-preview');if(el)el.textContent=code;
+  document.getElementById('inv-no').textContent=code;
+  updateInvPreview();
+}
+
+function updateInvPreview(){
+  let val='';
+  if(invMode==='numeric'){
+    val=document.getElementById('set-inv-no')?.value||'1000';
+  } else if(invMode==='alphanumeric'){
+    val=settings.alphaCode||'A3K-9X2';
+  } else if(invMode==='prefix'){
+    const prefix=(document.getElementById('inv-prefix')?.value||'EM').toUpperCase();
+    const num=document.getElementById('set-inv-no-p')?.value||'1000';
+    val=prefix+'-'+num;
+  }
+  const el=document.getElementById('inv-no-preview');if(el)el.textContent=val;
+  document.getElementById('inv-no').textContent=val;
+  // Sync prefix preview
+  if(invMode==='prefix'){
+    const p=(document.getElementById('inv-prefix')?.value||'EM').toUpperCase();
+    const n=document.getElementById('set-inv-no-p')?.value||'1000';
+    const pp=document.getElementById('prefix-preview');if(pp)pp.textContent=p+'-'+n;
+  }
+}
+
+function getNextInvNo(){
+  if(invMode==='alphanumeric'){generateAlphaCode();return settings.alphaCode;}
+  if(invMode==='prefix'){
+    const prefix=(document.getElementById('inv-prefix')?.value||'EM').toUpperCase();
+    const el=document.getElementById('set-inv-no-p');
+    const cur=parseInt(el?.value)||1000;
+    const next=cur+1;if(el)el.value=next;
+    settings.invNo=next;
+    return prefix+'-'+next;
+  }
+  // numeric
+  const cur=parseInt(document.getElementById('set-inv-no')?.value)||1000;
+  return cur;
+}
+
 function renderTischPreview(){
   const el=document.getElementById('tisch-preview');if(!el)return;
   el.innerHTML='';const show=Math.min(tischCount,30);
@@ -2074,9 +2235,22 @@ function updateInvoice(){
 }
 function selP(el){document.querySelectorAll('.pill').forEach(p=>p.classList.remove('on'));el.classList.add('on');document.getElementById('inv-tp').textContent=el.textContent;}
 function incrementInvNo(){
-  const cur=parseInt(document.getElementById('inv-no').textContent)||1000;const next=cur+1;
-  document.getElementById('inv-no').textContent=next;const e=document.getElementById('set-inv-no');if(e)e.value=next;
-  settings.invNo=next;try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));}catch(e){}
+  let next;
+  if(invMode==='alphanumeric'){
+    generateAlphaCode();next=settings.alphaCode;
+  } else if(invMode==='prefix'){
+    const prefix=(document.getElementById('inv-prefix')?.value||'EM').toUpperCase();
+    const el=document.getElementById('set-inv-no-p');
+    const cur=parseInt(el?.value)||1000;next=cur+1;if(el)el.value=next;
+    settings.invNo=next;next=prefix+'-'+next;
+  } else {
+    const cur=parseInt(document.getElementById('set-inv-no')?.value||'1000')||1000;
+    next=cur+1;const el=document.getElementById('set-inv-no');if(el)el.value=next;
+    settings.invNo=next;
+  }
+  document.getElementById('inv-no').textContent=next;
+  const preview=document.getElementById('inv-no-preview');if(preview)preview.textContent=next;
+  try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));}catch(e){}
 }
 
 // CONFIRM / RESET
@@ -2728,9 +2902,22 @@ function updateInvoice(){
 }
 function selP(el){document.querySelectorAll('.pill').forEach(p=>p.classList.remove('on'));el.classList.add('on');document.getElementById('inv-tp').textContent=el.textContent;}
 function incrementInvNo(){
-  const cur=parseInt(document.getElementById('inv-no').textContent)||1000;const next=cur+1;
-  document.getElementById('inv-no').textContent=next;const e=document.getElementById('set-inv-no');if(e)e.value=next;
-  settings.invNo=next;try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));}catch(e){}
+  let next;
+  if(invMode==='alphanumeric'){
+    generateAlphaCode();next=settings.alphaCode;
+  } else if(invMode==='prefix'){
+    const prefix=(document.getElementById('inv-prefix')?.value||'EM').toUpperCase();
+    const el=document.getElementById('set-inv-no-p');
+    const cur=parseInt(el?.value)||1000;next=cur+1;if(el)el.value=next;
+    settings.invNo=next;next=prefix+'-'+next;
+  } else {
+    const cur=parseInt(document.getElementById('set-inv-no')?.value||'1000')||1000;
+    next=cur+1;const el=document.getElementById('set-inv-no');if(el)el.value=next;
+    settings.invNo=next;
+  }
+  document.getElementById('inv-no').textContent=next;
+  const preview=document.getElementById('inv-no-preview');if(preview)preview.textContent=next;
+  try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));}catch(e){}
 }
 
 // CONFIRM / RESET
