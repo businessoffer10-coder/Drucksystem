@@ -7,11 +7,17 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;}
-:root{
+/* ════════════════════════════════════
+   THEMES — 4 Professional Themes
+════════════════════════════════════ */
+
+/* Theme 1: Warm Sand (Default) */
+:root,[data-theme="warm"]{
   --bg:#F2F0EB;--surface:#FFFFFF;--surface2:#F8F7F4;--surface3:#F0EDE8;
   --border:#E2DFD9;--border2:#CCC9C2;
   --t1:#0F0F0E;--t2:#4A4744;--t3:#9A9691;
   --acc:#E05C2A;--acc-d:#B84820;--acc-l:#FEF0EA;--acc-ll:#FFF8F5;
+  --acc-dd:#7C2D12;
   --green:#16A34A;--green-l:#DCFCE7;
   --blue:#2563EB;--blue-l:#EFF6FF;
   --purple:#7C3AED;--purple-l:#F5F3FF;
@@ -22,6 +28,62 @@
   --sh2:0 4px 16px rgba(0,0,0,0.10),0 2px 4px rgba(0,0,0,0.06);
   --sh3:0 20px 60px rgba(0,0,0,0.16),0 4px 16px rgba(0,0,0,0.08);
 }
+
+/* Theme 2: Dark Red — Noir & Rouge */
+[data-theme="dark-red"]{
+  --bg:#0A0A0B;--surface:#111113;--surface2:#18181B;--surface3:#1E1E22;
+  --border:#27272A;--border2:#3F3F46;
+  --t1:#FAFAF9;--t2:#A1A1AA;--t3:#52525B;
+  --acc:#E63946;--acc-d:#C1121F;--acc-l:rgba(230,57,70,0.12);--acc-ll:rgba(230,57,70,0.06);
+  --acc-dd:#9B0E1A;
+  --green:#22C55E;--green-l:rgba(34,197,94,0.12);
+  --blue:#3B82F6;--blue-l:rgba(59,130,246,0.12);
+  --purple:#A78BFA;--purple-l:rgba(167,139,250,0.12);
+  --red:#F87171;--red-l:rgba(248,113,113,0.12);
+  --sb-bg:#050506;--sb-active:#111113;--sb-text:#52525B;--sb-active-text:#E63946;
+  --r:10px;--r2:14px;--r3:18px;
+  --sh:0 1px 3px rgba(0,0,0,0.4),0 1px 2px rgba(0,0,0,0.3);
+  --sh2:0 4px 16px rgba(0,0,0,0.5),0 2px 4px rgba(0,0,0,0.4);
+  --sh3:0 20px 60px rgba(0,0,0,0.8),0 4px 16px rgba(0,0,0,0.6);
+}
+
+/* Theme 3: Ocean Dark — Blue & Slate */
+[data-theme="ocean"]{
+  --bg:#0F172A;--surface:#1E293B;--surface2:#162032;--surface3:#1A2840;
+  --border:#334155;--border2:#475569;
+  --t1:#F1F5F9;--t2:#94A3B8;--t3:#475569;
+  --acc:#38BDF8;--acc-d:#0284C7;--acc-l:rgba(56,189,248,0.12);--acc-ll:rgba(56,189,248,0.06);
+  --acc-dd:#0369A1;
+  --green:#34D399;--green-l:rgba(52,211,153,0.12);
+  --blue:#818CF8;--blue-l:rgba(129,140,248,0.12);
+  --purple:#C084FC;--purple-l:rgba(192,132,252,0.12);
+  --red:#FB7185;--red-l:rgba(251,113,133,0.12);
+  --sb-bg:#020617;--sb-active:#0F172A;--sb-text:#334155;--sb-active-text:#38BDF8;
+  --r:10px;--r2:14px;--r3:18px;
+  --sh:0 1px 3px rgba(0,0,0,0.4),0 1px 2px rgba(0,0,0,0.3);
+  --sh2:0 4px 16px rgba(0,0,0,0.4),0 2px 4px rgba(0,0,0,0.3);
+  --sh3:0 20px 60px rgba(0,0,0,0.7),0 4px 16px rgba(0,0,0,0.5);
+}
+
+/* Theme 4: Mint Light — Fresh & Clean */
+[data-theme="mint"]{
+  --bg:#F0FDF4;--surface:#FFFFFF;--surface2:#F0FDF4;--surface3:#DCFCE7;
+  --border:#BBF7D0;--border2:#86EFAC;
+  --t1:#052E16;--t2:#166534;--t3:#6EE7B7;
+  --acc:#059669;--acc-d:#047857;--acc-l:#DCFCE7;--acc-ll:#F0FDF4;
+  --acc-dd:#064E3B;
+  --green:#10B981;--green-l:#D1FAE5;
+  --blue:#0EA5E9;--blue-l:#E0F2FE;
+  --purple:#8B5CF6;--purple-l:#EDE9FE;
+  --red:#EF4444;--red-l:#FEE2E2;
+  --sb-bg:#022C22;--sb-active:#064E3B;--sb-text:#6EE7B7;--sb-active-text:#6EE7B7;
+  --r:10px;--r2:14px;--r3:18px;
+  --sh:0 1px 3px rgba(5,150,105,0.08),0 1px 2px rgba(5,150,105,0.04);
+  --sh2:0 4px 16px rgba(5,150,105,0.12),0 2px 4px rgba(5,150,105,0.08);
+  --sh3:0 20px 60px rgba(5,150,105,0.2),0 4px 16px rgba(5,150,105,0.1);
+}
+
+
 
 /* ── BASE ── */
 html{height:100%;font-size:100%;}body{height:100%;width:100%;overflow:hidden;margin:0;padding:0;}
@@ -524,6 +586,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .sp-divider{height:1px;background:var(--border);margin:2px 0;}
 .sp-preview{border-radius:10px;overflow:hidden;border:1px solid var(--border);}
 .sp-preview-lbl{font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.4px;padding:8px 14px;background:var(--surface2);border-bottom:1px solid var(--border);}
+
+/* ══ THEME CARDS ══ */
+.theme-card{border:2px solid var(--border);border-radius:12px;padding:10px;cursor:pointer;transition:all .18s;position:relative;background:var(--surface2);}
+.theme-card:hover{border-color:var(--acc);transform:translateY(-2px);box-shadow:var(--sh2);}
+.theme-card.active{border-color:var(--acc);box-shadow:0 0 0 3px rgba(var(--acc-rgb,224,92,42),.15);}
+.theme-preview{height:44px;border-radius:7px;overflow:hidden;display:flex;margin-bottom:8px;border:1px solid rgba(0,0,0,.1);}
+.theme-name{font-size:12px;font-weight:700;color:var(--t1);margin-bottom:1px;}
+.theme-desc{font-size:10px;color:var(--t3);}
+.theme-check{position:absolute;top:8px;right:8px;width:20px;height:20px;background:var(--acc);border-radius:50%;display:none;align-items:center;justify-content:center;}
+.theme-check i{font-size:11px;color:#fff;}
+.theme-card.active .theme-check{display:flex;}
+
 
 /* ══════════════════════════════════
    RESPONSIVE — Auto-fit all devices
@@ -1080,6 +1154,84 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
                 <span class="sp-lbl">Fußzeile auf Rechnung</span>
                 <input class="sp-inp" id="set-footer-msg" value="Vielen Dank für Ihren Besuch!"/>
               </div>
+
+              <!-- THEME SWITCHER -->
+              <div>
+                <span class="sp-lbl">Design & Farben</span>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;">
+                  <div class="theme-card active" id="thm-warm" onclick="applyTheme('warm')" title="Warm Sand">
+                    <div class="theme-preview">
+                      <div style="background:#111110;width:28px;border-radius:6px 0 0 6px;display:flex;flex-direction:column;align-items:center;padding:4px 0;gap:3px;">
+                        <div style="width:14px;height:3px;border-radius:2px;background:#6B6966;"></div>
+                        <div style="width:14px;height:3px;border-radius:2px;background:#E05C2A;"></div>
+                        <div style="width:14px;height:3px;border-radius:2px;background:#6B6966;"></div>
+                      </div>
+                      <div style="flex:1;background:#F2F0EB;padding:4px;display:flex;flex-direction:column;gap:3px;">
+                        <div style="height:6px;border-radius:3px;background:#FFFFFF;"></div>
+                        <div style="height:4px;border-radius:2px;background:#E05C2A;width:60%;"></div>
+                        <div style="height:4px;border-radius:2px;background:#E2DFD9;width:80%;"></div>
+                      </div>
+                    </div>
+                    <div class="theme-name">🌾 Warm Sand</div>
+                    <div class="theme-desc">Hell & warm</div>
+                    <div class="theme-check"><i class="ti ti-check"></i></div>
+                  </div>
+
+                  <div class="theme-card" id="thm-dark-red" onclick="applyTheme('dark-red')" title="Noir Rouge">
+                    <div class="theme-preview">
+                      <div style="background:#050506;width:28px;border-radius:6px 0 0 6px;display:flex;flex-direction:column;align-items:center;padding:4px 0;gap:3px;">
+                        <div style="width:14px;height:3px;border-radius:2px;background:#52525B;"></div>
+                        <div style="width:14px;height:3px;border-radius:2px;background:#E63946;"></div>
+                        <div style="width:14px;height:3px;border-radius:2px;background:#52525B;"></div>
+                      </div>
+                      <div style="flex:1;background:#0A0A0B;padding:4px;display:flex;flex-direction:column;gap:3px;">
+                        <div style="height:6px;border-radius:3px;background:#111113;"></div>
+                        <div style="height:4px;border-radius:2px;background:#E63946;width:60%;"></div>
+                        <div style="height:4px;border-radius:2px;background:#27272A;width:80%;"></div>
+                      </div>
+                    </div>
+                    <div class="theme-name">🖤 Noir & Rouge</div>
+                    <div class="theme-desc">Dunkel & elegant</div>
+                    <div class="theme-check"><i class="ti ti-check"></i></div>
+                  </div>
+
+                  <div class="theme-card" id="thm-ocean" onclick="applyTheme('ocean')" title="Ocean Dark">
+                    <div class="theme-preview">
+                      <div style="background:#020617;width:28px;border-radius:6px 0 0 6px;display:flex;flex-direction:column;align-items:center;padding:4px 0;gap:3px;">
+                        <div style="width:14px;height:3px;border-radius:2px;background:#334155;"></div>
+                        <div style="width:14px;height:3px;border-radius:2px;background:#38BDF8;"></div>
+                        <div style="width:14px;height:3px;border-radius:2px;background:#334155;"></div>
+                      </div>
+                      <div style="flex:1;background:#0F172A;padding:4px;display:flex;flex-direction:column;gap:3px;">
+                        <div style="height:6px;border-radius:3px;background:#1E293B;"></div>
+                        <div style="height:4px;border-radius:2px;background:#38BDF8;width:60%;"></div>
+                        <div style="height:4px;border-radius:2px;background:#334155;width:80%;"></div>
+                      </div>
+                    </div>
+                    <div class="theme-name">🌊 Ocean Dark</div>
+                    <div class="theme-desc">Dunkelblau & modern</div>
+                    <div class="theme-check"><i class="ti ti-check"></i></div>
+                  </div>
+
+                  <div class="theme-card" id="thm-mint" onclick="applyTheme('mint')" title="Mint Fresh">
+                    <div class="theme-preview">
+                      <div style="background:#022C22;width:28px;border-radius:6px 0 0 6px;display:flex;flex-direction:column;align-items:center;padding:4px 0;gap:3px;">
+                        <div style="width:14px;height:3px;border-radius:2px;background:#6EE7B7;"></div>
+                        <div style="width:14px;height:3px;border-radius:2px;background:#059669;"></div>
+                        <div style="width:14px;height:3px;border-radius:2px;background:#6EE7B7;"></div>
+                      </div>
+                      <div style="flex:1;background:#F0FDF4;padding:4px;display:flex;flex-direction:column;gap:3px;">
+                        <div style="height:6px;border-radius:3px;background:#FFFFFF;"></div>
+                        <div style="height:4px;border-radius:2px;background:#059669;width:60%;"></div>
+                        <div style="height:4px;border-radius:2px;background:#BBF7D0;width:80%;"></div>
+                      </div>
+                    </div>
+                    <div class="theme-name">🌿 Mint Fresh</div>
+                    <div class="theme-desc">Hell & frisch</div>
+                    <div class="theme-check"><i class="ti ti-check"></i></div>
+                  </div>
+                </div>
+              </div>
               <div class="sp-preview">
                 <div class="sp-preview-lbl">Vorschau Rechnungskopf</div>
                 <div style="background:#000;color:#fff;border-radius:8px 8px 0 0;padding:10px 14px;display:flex;align-items:center;gap:8px;">
@@ -1185,6 +1337,70 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
               <div class="sp-row">
                 <div class="sp-row-l"><span class="sp-row-lbl">Automatisch drucken</span><span class="sp-row-dsc">Rechnung nach Abschluss sofort drucken</span></div>
                 <div class="tgl" id="tgl-auto-print" onclick="this.classList.toggle('on')"></div>
+              </div>
+
+              <div class="sp-divider"></div>
+
+              <!-- Kitchen Print Font Size -->
+              <div>
+                <span class="sp-lbl">🍳 Küchenbon — Schriftgröße</span>
+                <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px;">
+
+                  <!-- Qty font -->
+                  <div style="display:flex;align-items:center;gap:12px;">
+                    <div style="flex:1;">
+                      <div style="font-size:12px;font-weight:600;color:var(--t2);margin-bottom:4px;">Menge (Anzahl)</div>
+                      <input type="range" id="font-qty" min="14" max="36" value="20" step="2"
+                        oninput="updateKitchenPreview()" style="width:100%;accent-color:var(--acc);"/>
+                    </div>
+                    <div id="font-qty-val" style="font-size:13px;font-weight:700;color:var(--acc);min-width:36px;text-align:center;background:var(--acc-l);padding:4px 8px;border-radius:7px;">20pt</div>
+                  </div>
+
+                  <!-- Item font -->
+                  <div style="display:flex;align-items:center;gap:12px;">
+                    <div style="flex:1;">
+                      <div style="font-size:12px;font-weight:600;color:var(--t2);margin-bottom:4px;">Artikelname</div>
+                      <input type="range" id="font-item" min="10" max="28" value="14" step="1"
+                        oninput="updateKitchenPreview()" style="width:100%;accent-color:var(--acc);"/>
+                    </div>
+                    <div id="font-item-val" style="font-size:13px;font-weight:700;color:var(--acc);min-width:36px;text-align:center;background:var(--acc-l);padding:4px 8px;border-radius:7px;">14pt</div>
+                  </div>
+
+                  <!-- Header font -->
+                  <div style="display:flex;align-items:center;gap:12px;">
+                    <div style="flex:1;">
+                      <div style="font-size:12px;font-weight:600;color:var(--t2);margin-bottom:4px;">Überschrift (KÜCHE)</div>
+                      <input type="range" id="font-hdr" min="10" max="24" value="14" step="1"
+                        oninput="updateKitchenPreview()" style="width:100%;accent-color:var(--acc);"/>
+                    </div>
+                    <div id="font-hdr-val" style="font-size:13px;font-weight:700;color:var(--acc);min-width:36px;text-align:center;background:var(--acc-l);padding:4px 8px;border-radius:7px;">14pt</div>
+                  </div>
+
+                  <!-- Preset buttons -->
+                  <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                    <span style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;align-self:center;margin-right:4px;">Schnell:</span>
+                    <button class="btn btn-ghost btn-xs" onclick="setKitchenPreset('small')">📄 Klein (58mm)</button>
+                    <button class="btn btn-ghost btn-xs" onclick="setKitchenPreset('medium')">📄 Mittel (80mm)</button>
+                    <button class="btn btn-ghost btn-xs" onclick="setKitchenPreset('large')">📄 Groß (A4)</button>
+                  </div>
+
+                  <!-- Live Preview -->
+                  <div>
+                    <div style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">Vorschau Küchenbon</div>
+                    <div id="kitchen-preview-box" style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:Arial,sans-serif;color:#000;max-width:240px;">
+                      <div id="kp-hdr" style="background:#000;color:#fff;padding:5px 8px;margin:-10px -12px 8px;border-radius:8px 8px 0 0;font-weight:900;font-size:14pt;">🍳 KÜCHE &nbsp; <span style="border:1px solid #fff;padding:1px 6px;font-size:11pt;">#1001</span></div>
+                      <div style="font-size:9pt;color:#555;margin-bottom:6px;">12:30 Uhr · Liefern · Max Müller</div>
+                      <hr style="border:none;border-top:2px solid #000;margin:4px 0;"/>
+                      <table style="width:100%;border-collapse:collapse;">
+                        <tr><td id="kp-qty" style="font-size:20pt;font-weight:900;padding:4px 6px 4px 0;vertical-align:top;white-space:nowrap;">2×</td><td id="kp-item" style="font-size:14pt;font-weight:600;padding:4px 0;line-height:1.3;">Pizza Kebap (Groß) + Extra Käse · ohne Zwiebeln</td></tr>
+                        <tr><td id="kp-qty2" style="font-size:20pt;font-weight:900;padding:4px 6px 4px 0;vertical-align:top;">1×</td><td id="kp-item2" style="font-size:14pt;font-weight:600;padding:4px 0;line-height:1.3;">🎉 Party Pizza 60×40 (2 Teile)</td></tr>
+                      </table>
+                      <div style="border:1px dashed #555;padding:5px 8px;margin-top:6px;font-size:9pt;">📝 Gut durchgebacken bitte!</div>
+                      <div style="text-align:center;font-size:8pt;color:#888;margin-top:6px;">Bon #1001 · 12:30</div>
+                    </div>
+                  </div>
+
+                </div>
               </div>
 
             </div>
@@ -1350,6 +1566,39 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
         </div>
       </div>
     </div>
+    <!-- ══ PAGE 4: ORDER HISTORY ══ -->
+    <div class="page" id="pg4">
+      <div class="topbar">
+        <div class="tb-icon"><i class="ti ti-history"></i></div>
+        <span class="tb-title">Bestellverlauf</span>
+        <div class="tb-end">
+          <span id="history-count" style="font-size:12px;color:var(--t3);"></span>
+          <button class="btn btn-del btn-sm" onclick="clearOrderHistory()"><i class="ti ti-trash"></i>Leeren</button>
+        </div>
+      </div>
+      <!-- Stats strip -->
+      <div style="padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;gap:12px;flex-shrink:0;">
+        <div style="flex:1;text-align:center;padding:8px;background:var(--surface2);border-radius:10px;">
+          <div style="font-size:20px;font-weight:900;color:var(--acc);" id="stat-orders">0</div>
+          <div style="font-size:10px;color:var(--t3);font-weight:600;text-transform:uppercase;">Bestellungen</div>
+        </div>
+        <div style="flex:1;text-align:center;padding:8px;background:var(--surface2);border-radius:10px;">
+          <div style="font-size:20px;font-weight:900;color:var(--green);" id="stat-total">0,00 €</div>
+          <div style="font-size:10px;color:var(--t3);font-weight:600;text-transform:uppercase;">Umsatz heute</div>
+        </div>
+        <div style="flex:1;text-align:center;padding:8px;background:var(--surface2);border-radius:10px;">
+          <div style="font-size:20px;font-weight:900;color:var(--blue);" id="stat-avg">0,00 €</div>
+          <div style="font-size:10px;color:var(--t3);font-weight:600;text-transform:uppercase;">Durchschnitt</div>
+        </div>
+      </div>
+      <div style="flex:1;overflow-y:auto;min-height:0;" id="order-history-list">
+        <div style="padding:24px;text-align:center;color:var(--t3);">
+          <i class="ti ti-receipt" style="font-size:36px;opacity:0.2;display:block;margin-bottom:8px;"></i>
+          Noch keine Bestellungen
+        </div>
+      </div>
+    </div>
+
     </div><!-- /pages-wrap -->
   </div><!-- /main -->
 </div><!-- /app -->
@@ -1820,6 +2069,8 @@ function loadSettings(){
   applySettings();
 }
 function applySettings(){
+  // Apply theme first
+  if(settings.theme) applyTheme(settings.theme,false);
   const setVal=(id,v)=>{const e=document.getElementById(id);if(e)e.value=v;};
   setVal('set-name',settings.name);setVal('set-logo',settings.logo||'🍕');setVal('set-addr',settings.addr||'');
   setVal('set-phone',settings.phone||'');setVal('set-hours',settings.hours||'');setVal('set-footer-msg',settings.footerMsg||'');
@@ -1848,9 +2099,27 @@ function loadCustomProds(){
     if(MENU[k]){const ids=new Set(MENU[k].items.map(p=>p.id));prods.forEach(p=>{if(!ids.has(p.id))MENU[k].items.push(p);});}
   });
 }
+// ════════════════════════════════════════════════════════
+// THEME SYSTEM
+// ════════════════════════════════════════════════════════
+const THEMES=['warm','dark-red','ocean','mint'];
+
+function applyTheme(theme,save=true){
+  document.documentElement.setAttribute('data-theme',theme);
+  // Update theme cards
+  THEMES.forEach(t=>{
+    const card=document.getElementById('thm-'+t);
+    if(card)card.classList.toggle('active',t===theme);
+  });
+  if(save){
+    settings.theme=theme;
+    try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));}catch(e){}
+    showToast('✅ Theme: '+(theme==='warm'?'🌾 Warm Sand':theme==='dark-red'?'🖤 Noir & Rouge':theme==='ocean'?'🌊 Ocean Dark':'🌿 Mint Fresh'));
+  }
+}
+
 // SETTINGS TABS
-function selSetTab(n){
-  document.querySelectorAll('.set-tab').forEach((b,i)=>b.classList.toggle('active',i===n));
+function selSetTab(n){  document.querySelectorAll('.set-tab').forEach((b,i)=>b.classList.toggle('active',i===n));
   document.querySelectorAll('.set-panel').forEach((p,i)=>p.classList.toggle('active',i===n));
   if(n===3)renderTischPreview();
 }
@@ -2212,6 +2481,7 @@ function buildTblGrid(){
 function onTblManual(){document.querySelectorAll('.tbl-btn').forEach(x=>x.classList.remove('on'));const val=document.getElementById('tbl-manual').value;if(val)syncTischToInvoice(val);}
 
 // CART
+function setCartNote(k,v){const it=cart.find(x=>x.k===k);if(it)it.note=v;}
 function changeQty(k,d){const ex=cart.find(x=>x.k===k);if(!ex)return;ex.q+=d;if(ex.q<=0)cart=cart.filter(x=>x.k!==k);renderCart();updateInvoice();}
 function clearCart(){cart=[];renderCart();updateInvoice();}
 function renderCart(){
@@ -2256,7 +2526,7 @@ function incrementInvNo(){
 // CONFIRM / RESET
 let confirmCallback=null;
 function confirmDelete(){openConfirm('🗑️','Bestellung stornieren?','Diese Aktion kann nicht rückgängig gemacht werden.','Stornieren','btn-del',()=>resetAll(true));}
-function confirmNewOrder(){if(!cart.length){resetAll(true);return;}openConfirm('➕','Neue Bestellung?','Der aktuelle Warenkorb wird geleert.','Neue Bestellung','btn-p',()=>{incrementInvNo();resetAll(true);});}
+function confirmNewOrder(){if(!cart.length){resetAll(true);return;}openConfirm('➕','Neue Bestellung?','Der aktuelle Warenkorb wird geleert.','Neue Bestellung','btn-p',()=>{saveOrderToHistory();playSound('complete');incrementInvNo();resetAll(true);});}
 function openConfirm(icon,title,msg,okTxt,okCls,cb){
   document.getElementById('confirm-icon').textContent=icon;document.getElementById('confirm-title').textContent=title;document.getElementById('confirm-msg').textContent=msg;
   const btn=document.getElementById('confirm-ok-btn');btn.textContent=okTxt;btn.className='btn '+okCls;confirmCallback=cb;
@@ -2399,7 +2669,7 @@ function addToCartFromModal(editKey){
   const fullName='#'+item.id+' '+item.name+(size?' ('+size+')':'')+(removed.length?' [ohne: '+removed.join(', ')+']':'')+(extLabels.length?' + '+extLabels.join(', '):'')+(freeSauce&&EXTRAS[freeSauce]?' · '+EXTRAS[freeSauce].label:'')+(freeDressing&&EXTRAS[freeDressing]?' · '+EXTRAS[freeDressing].label:'')+(note?' · '+note:'');
   if(editKey){const ex=cart.find(x=>x.k===editKey);if(ex){ex.n=fullName;ex.p=total;ex.snapshot=JSON.stringify({...modalState,item:undefined,itemId:item.id});}}
   else{const key=Date.now()+'|'+item.id;cart.push({k:key,n:fullName,p:total,q:1,itemId:item.id,snapshot:JSON.stringify({...modalState,item:undefined,itemId:item.id})});}
-  closeModal();renderCart();updateInvoice();
+  closeModal();renderCart();updateInvoice();playSound('add');
 }
 function editCartItem(cartKey){
   const ci=cart.find(x=>x.k===cartKey);if(!ci||!ci.itemId)return;const item=findItem(ci.itemId);if(!item)return;
@@ -2478,7 +2748,7 @@ function addPartyToCart(){
   const price=calcPartyPrice();const slices=[];
   for(let i=0;i<partyState.sections;i++){const t=PARTY_TYPES.find(x=>x.id===partyState.selections[i]);const exts=Object.entries(partyState.partySectionExtras[i]||{}).filter(([,v])=>v).map(([k])=>PARTY_EXTRAS[k]?.label||k);const removed=Object.entries(partyState.partyRemovedIng[i]||{}).filter(([,v])=>v).map(([k])=>k);const note=(partyState.partySliceNotes||{})[i]||'';slices.push(`${PARTY_LABELS[i]}: ${t?.name||''}${exts.length?' +'+exts.join(','):''}${removed.length?' [ohne:'+removed.join(',')+']':''}${note?' · '+note:''}`);}
   const fullName=`🎉 Party Pizza 60×40 (${partyState.sections} Teil${partyState.sections>1?'e':''}) | ${slices.join(' | ')}${partyState.partyNote?' · '+partyState.partyNote:''}`;
-  cart.push({k:Date.now()+'|party',n:fullName,p:price,q:1});closeModal();renderCart();updateInvoice();
+  cart.push({k:Date.now()+'|party',n:fullName,p:price,q:1});closeModal();renderCart();updateInvoice();playSound('add');
   partyState={sections:1,selections:{},partySectionExtras:{},partyRemovedIng:{},partySliceNotes:{},partyNote:''};showToast('✅ Party Pizza in den Warenkorb!');
 }
 function openPartyModal(){
@@ -2489,6 +2759,164 @@ function openPartyModal(){
   document.getElementById('modal-overlay').classList.add('open');const btn=document.getElementById('modal-add-btn');if(btn){btn.innerHTML='<i class="ti ti-shopping-cart"></i> In den Warenkorb';btn.disabled=false;}
   renderPartySVG();renderPartySlices();updatePartySummary();
 }
+
+// ════════════════════════════════════════════════════════
+// KITCHEN FONT SIZE SETTINGS
+// ════════════════════════════════════════════════════════
+let kitchenFonts={qty:20,item:14,hdr:14};
+
+function updateKitchenPreview(){
+  const qty=parseInt(document.getElementById('font-qty')?.value)||20;
+  const item=parseInt(document.getElementById('font-item')?.value)||14;
+  const hdr=parseInt(document.getElementById('font-hdr')?.value)||14;
+  kitchenFonts={qty,item,hdr};
+  // Update value labels
+  const qv=document.getElementById('font-qty-val');if(qv)qv.textContent=qty+'pt';
+  const iv=document.getElementById('font-item-val');if(iv)iv.textContent=item+'pt';
+  const hv=document.getElementById('font-hdr-val');if(hv)hv.textContent=hdr+'pt';
+  // Update preview
+  document.querySelectorAll('#kp-qty,#kp-qty2').forEach(el=>{if(el)el.style.fontSize=qty+'pt';});
+  document.querySelectorAll('#kp-item,#kp-item2').forEach(el=>{if(el)el.style.fontSize=item+'pt';});
+  const kph=document.getElementById('kp-hdr');if(kph)kph.style.fontSize=hdr+'pt';
+}
+
+function setKitchenPreset(size){
+  const presets={small:{qty:16,item:11,hdr:12},medium:{qty:20,item:14,hdr:14},large:{qty:26,item:18,hdr:18}};
+  const p=presets[size];if(!p)return;
+  const setSlider=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v;};
+  setSlider('font-qty',p.qty);setSlider('font-item',p.item);setSlider('font-hdr',p.hdr);
+  updateKitchenPreview();
+  showToast('✅ Preset: '+(size==='small'?'58mm':size==='medium'?'80mm':'A4'));
+}
+
+// ════════════════════════════════════════════════════════
+// SOUND NOTIFICATIONS
+// ════════════════════════════════════════════════════════
+let soundEnabled=true;
+
+function playSound(type){
+  if(!soundEnabled)return;
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const osc=ctx.createOscillator();
+    const gain=ctx.createGain();
+    osc.connect(gain);gain.connect(ctx.destination);
+    if(type==='add'){
+      // Short pleasant beep for adding item
+      osc.frequency.setValueAtTime(880,ctx.currentTime);
+      osc.frequency.setValueAtTime(1100,ctx.currentTime+0.08);
+      gain.gain.setValueAtTime(0.15,ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.18);
+      osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.18);
+    } else if(type==='complete'){
+      // Happy melody for order complete
+      const notes=[523,659,784,1047];
+      notes.forEach((freq,i)=>{
+        const o=ctx.createOscillator();const g=ctx.createGain();
+        o.connect(g);g.connect(ctx.destination);
+        o.frequency.value=freq;
+        g.gain.setValueAtTime(0.12,ctx.currentTime+i*0.1);
+        g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.1+0.12);
+        o.start(ctx.currentTime+i*0.1);o.stop(ctx.currentTime+i*0.1+0.12);
+      });
+    }
+  }catch(e){}
+}
+
+// ════════════════════════════════════════════════════════
+// ORDER HISTORY LOG
+// ════════════════════════════════════════════════════════
+let orderHistory=[];
+
+function saveOrderToHistory(){
+  if(!cart.length)return;
+  const now=new Date();
+  const sub=cart.reduce((s,x)=>s+x.p*x.q,0);
+  const del=activeType==='Liefern'?(selCity?getCityFee(selCity):2):0;
+  const order={
+    id:document.getElementById('inv-no').textContent,
+    time:now.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}),
+    date:now.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'}),
+    type:activeType,
+    items:[...cart],
+    sub,del,
+    total:sub+del,
+    note:document.getElementById('gen-note')?.value||'',
+    customer:document.getElementById('ia-name')?.textContent||'',
+    addr:document.getElementById('ia-addr')?.textContent||''
+  };
+  orderHistory.unshift(order);
+  // Keep last 100 orders
+  if(orderHistory.length>100)orderHistory=orderHistory.slice(0,100);
+  // Save to localStorage
+  try{localStorage.setItem('pos_orders',JSON.stringify(orderHistory.slice(0,50)));}catch(e){}
+}
+
+function clearOrderHistory(){
+  if(!confirm('Bestellverlauf leeren?'))return;
+  orderHistory=[];
+  try{localStorage.removeItem('pos_orders');}catch(e){}
+  renderOrderHistory();showToast('🗑 Verlauf geleert');
+}
+
+function loadOrderHistory(){
+  try{
+    const saved=localStorage.getItem('pos_orders');
+    if(saved)orderHistory=JSON.parse(saved);
+  }catch(e){}
+}
+
+function renderOrderHistory(){
+  const el=document.getElementById('order-history-list');
+  if(!el)return;
+  // Update stats
+  const total=orderHistory.reduce((s,o)=>s+o.total,0);
+  const avg=orderHistory.length?total/orderHistory.length:0;
+  const sc=document.getElementById('stat-orders');if(sc)sc.textContent=orderHistory.length;
+  const st=document.getElementById('stat-total');if(st)st.textContent=fmt(total);
+  const sa=document.getElementById('stat-avg');if(sa)sa.textContent=fmt(avg);
+  const hc=document.getElementById('history-count');if(hc)hc.textContent=orderHistory.length+' Einträge';
+  if(!orderHistory.length){
+    el.innerHTML='<div style="padding:24px;text-align:center;color:var(--t3);"><i class="ti ti-receipt" style="font-size:36px;opacity:0.2;display:block;margin-bottom:8px;"></i>Noch keine Bestellungen</div>';
+    return;
+  }
+  el.innerHTML=orderHistory.map((o,i)=>`
+    <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:0.5px solid var(--border);cursor:pointer;transition:background .1s;" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''">
+      <div style="width:40px;height:40px;background:var(--acc-l);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">
+        ${o.type==='Liefern'?'🚴':o.type==='Abholen'?'🛍':o.type==='Hier Essen'?'🍽':'✏️'}
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">
+          <span style="font-size:13px;font-weight:700;color:var(--t1);">#${o.id}</span>
+          <span style="font-size:11px;color:var(--t3);">${o.time}</span>
+          <span style="font-size:11px;background:var(--surface2);padding:1px 7px;border-radius:10px;color:var(--t2);">${o.type}</span>
+        </div>
+        <div style="font-size:12px;color:var(--t2);">${o.items.length} Artikel${o.customer?' · '+o.customer:''}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;">
+        <div style="font-size:15px;font-weight:800;color:var(--acc);">${fmt(o.total)}</div>
+        <button class="btn btn-ghost btn-xs" onclick="reprintOrder(${i})" style="margin-top:3px;"><i class="ti ti-printer"></i>Drucken</button>
+      </div>
+    </div>`).join('');
+}
+
+function reprintOrder(idx){
+  const o=orderHistory[idx];if(!o)return;
+  // Build reprint window
+  const itemsHtml=o.items.map(x=>`<tr><td style="font-size:12pt;font-weight:700;padding:4px 8px;white-space:nowrap;">${x.q}×</td><td style="font-size:11pt;padding:4px 0;">${x.n}</td><td style="font-size:11pt;padding:4px 8px;text-align:right;font-weight:700;">${fmt(x.p*x.q)}</td></tr>`).join('');
+  const win=window.open('','_blank','width=420,height=600');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"/><style>@page{size:105mm 148mm;margin:3mm 4mm;}*{box-sizing:border-box;margin:0;padding:0;}body{font-family:Arial,sans-serif;color:#000;}h2{font-size:12pt;margin:4px 0;}table{width:100%;border-collapse:collapse;}td{border-bottom:0.3px solid #ccc;vertical-align:top;}.total{font-size:14pt;font-weight:900;margin-top:8px;display:flex;justify-content:space-between;border-top:2px solid #000;padding-top:6px;}.meta{font-size:9pt;color:#555;margin:4px 0;}</style></head><body>
+    <div style="background:#000;color:#fff;padding:6px 10px;margin-bottom:6px;display:flex;justify-content:space-between;"><span style="font-size:12pt;font-weight:900;">NACHDRUCK</span><span style="font-size:10pt;border:1px solid #fff;padding:1px 6px;">#${o.id}</span></div>
+    <div class="meta">${o.date} · ${o.time} Uhr · ${o.type}${o.customer?' · '+o.customer:''}</div>
+    <hr style="border:none;border-top:1px solid #000;margin:4px 0;"/>
+    <table>${itemsHtml}</table>
+    <div class="total"><span>Gesamt</span><span>${fmt(o.total)}</span></div>
+    ${o.note?`<div style="border:1px dashed #555;padding:5px 8px;margin-top:6px;font-size:9pt;">📝 ${o.note}</div>`:''}
+    <div style="text-align:center;font-size:7pt;color:#888;margin-top:8px;">— Nachdruck —</div>
+  </body></html>`);
+  win.document.close();win.focus();setTimeout(()=>{win.print();win.close();},400);
+}
+
 
 // KITCHEN PRINT
 function printKitchen(){
@@ -2532,7 +2960,7 @@ document.getElementById('inv-d').textContent=now.toLocaleDateString('de-DE',{day
 document.getElementById('inv-t').textContent=now.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
 document.getElementById('hw-time').textContent=now.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'short'})+' · '+now.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
 document.getElementById('inv-no').textContent=Math.floor(2000+Math.random()*999);
-loadSettings();loadCustomProds();
+loadSettings();loadCustomProds();loadOrderHistory();
 buildCats();
 activeCat=catKeys[0]||'kebap';
 const _fc=MENU[activeCat];if(_fc)document.getElementById('cat-lbl').textContent=_fc.title;
@@ -2879,6 +3307,7 @@ function buildTblGrid(){
 function onTblManual(){document.querySelectorAll('.tbl-btn').forEach(x=>x.classList.remove('on'));const val=document.getElementById('tbl-manual').value;if(val)syncTischToInvoice(val);}
 
 // CART
+function setCartNote(k,v){const it=cart.find(x=>x.k===k);if(it)it.note=v;}
 function changeQty(k,d){const ex=cart.find(x=>x.k===k);if(!ex)return;ex.q+=d;if(ex.q<=0)cart=cart.filter(x=>x.k!==k);renderCart();updateInvoice();}
 function clearCart(){cart=[];renderCart();updateInvoice();}
 function renderCart(){
@@ -2923,7 +3352,7 @@ function incrementInvNo(){
 // CONFIRM / RESET
 let confirmCallback=null;
 function confirmDelete(){openConfirm('🗑️','Bestellung stornieren?','Diese Aktion kann nicht rückgängig gemacht werden.','Stornieren','btn-del',()=>resetAll(true));}
-function confirmNewOrder(){if(!cart.length){resetAll(true);return;}openConfirm('➕','Neue Bestellung?','Der aktuelle Warenkorb wird geleert.','Neue Bestellung','btn-p',()=>{incrementInvNo();resetAll(true);});}
+function confirmNewOrder(){if(!cart.length){resetAll(true);return;}openConfirm('➕','Neue Bestellung?','Der aktuelle Warenkorb wird geleert.','Neue Bestellung','btn-p',()=>{saveOrderToHistory();playSound('complete');incrementInvNo();resetAll(true);});}
 function openConfirm(icon,title,msg,okTxt,okCls,cb){
   document.getElementById('confirm-icon').textContent=icon;document.getElementById('confirm-title').textContent=title;document.getElementById('confirm-msg').textContent=msg;
   const btn=document.getElementById('confirm-ok-btn');btn.textContent=okTxt;btn.className='btn '+okCls;confirmCallback=cb;
@@ -3145,7 +3574,7 @@ function addPartyToCart(){
   const price=calcPartyPrice();const slices=[];
   for(let i=0;i<partyState.sections;i++){const t=PARTY_TYPES.find(x=>x.id===partyState.selections[i]);const exts=Object.entries(partyState.partySectionExtras[i]||{}).filter(([,v])=>v).map(([k])=>PARTY_EXTRAS[k]?.label||k);const removed=Object.entries(partyState.partyRemovedIng[i]||{}).filter(([,v])=>v).map(([k])=>k);const note=(partyState.partySliceNotes||{})[i]||'';slices.push(`${PARTY_LABELS[i]}: ${t?.name||''}${exts.length?' +'+exts.join(','):''}${removed.length?' [ohne:'+removed.join(',')+']':''}${note?' · '+note:''}`);}
   const fullName=`🎉 Party Pizza 60×40 (${partyState.sections} Teil${partyState.sections>1?'e':''}) | ${slices.join(' | ')}${partyState.partyNote?' · '+partyState.partyNote:''}`;
-  cart.push({k:Date.now()+'|party',n:fullName,p:price,q:1});closeModal();renderCart();updateInvoice();
+  cart.push({k:Date.now()+'|party',n:fullName,p:price,q:1});closeModal();renderCart();updateInvoice();playSound('add');
   partyState={sections:1,selections:{},partySectionExtras:{},partyRemovedIng:{},partySliceNotes:{},partyNote:''};showToast('✅ Party Pizza in den Warenkorb!');
 }
 function openPartyModal(){
@@ -3191,6 +3620,7 @@ document.getElementById('inv-t').textContent=now.toLocaleTimeString('de-DE',{hou
 document.getElementById('hw-time').textContent=now.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'short'})+' · '+now.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
 document.getElementById('inv-no').textContent=Math.floor(2000+Math.random()*999);
 loadSettings();loadCustomProds();
+applyTheme(settings.theme||'warm',false);
 buildCats();
 activeCat=catKeys[0]||'kebap';
 const _fc=MENU[activeCat];if(_fc)document.getElementById('cat-lbl').textContent=_fc.title;
