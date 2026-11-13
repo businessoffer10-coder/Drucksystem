@@ -1568,6 +1568,14 @@ html,body{height:100%;width:100%;overflow:hidden;margin:0;padding:0;}
 .cat-dot i{font-size:19px;line-height:1;}
 @media screen and (max-height:520px){.cat-dot i{font-size:16px;}}
 
+
+/* ── Frei Text: Schrift-Optionen ── */
+.ft-opts{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 16px;}
+.ft-opts .addr-mode{width:auto;flex:none;}
+.ft-opts .addr-mode-btn{flex:none;min-width:46px;padding:0 12px;}
+.ft-opts .ft-bold{border:1.5px solid var(--border);background:var(--surface2);border-radius:12px;height:40px;}
+.ft-opts .ft-bold.on{border-color:var(--acc);background:var(--acc-l);color:var(--acc-text);}
+
 /* ═══ PRINT FIXES (must stay last) ═══ */
 @media print{
   html body .ft-inv{display:none!important;}
@@ -1803,6 +1811,16 @@ html,body{height:100%;width:100%;overflow:hidden;margin:0;padding:0;}
           </div>
           <div class="panel-body">
             <textarea class="ft-area" id="ft-area" placeholder="Text einfügen oder tippen…&#10;z.B. kopierte Bestellung aus WhatsApp." oninput="onFT()"></textarea>
+                        <div class="ft-opts">
+              <span class="f-lbl">Schrift</span>
+              <div class="addr-mode" id="ft-size-seg">
+                <button class="addr-mode-btn" data-s="s" onclick="setFtSize('s')">S</button>
+                <button class="addr-mode-btn on" data-s="m" onclick="setFtSize('m')">M</button>
+                <button class="addr-mode-btn" data-s="l" onclick="setFtSize('l')">L</button>
+                <button class="addr-mode-btn" data-s="xl" onclick="setFtSize('xl')">XL</button>
+              </div>
+              <button class="addr-mode-btn ft-bold" id="ft-bold-btn" onclick="toggleFtBold()"><b>B</b>&nbsp;Fett</button>
+            </div>
             <div class="ft-bar">
               <span class="ft-count" id="ft-count">0 Zeichen</span>
               <button class="btn btn-ghost btn-sm" onclick="clearFT()"><i class="ti ti-trash"></i>Leeren</button>
@@ -1823,7 +1841,7 @@ html,body{height:100%;width:100%;overflow:hidden;margin:0;padding:0;}
       <div class="pg0-foot">
         <span class="foot-info">Bestellart: <strong id="sel-lbl">Liefern</strong></span>
         <div style="display:flex;gap:7px;">
-          <button class="btn btn-p" id="go-inv-btn" style="display:none;" onclick="goInv()"><i class="ti ti-printer"></i>Drucken</button>
+          <button class="btn btn-p" id="go-inv-btn" style="display:none;" onclick="printFT()"><i class="ti ti-printer"></i>Drucken</button>
           <button class="btn btn-p" id="go-ord-btn" onclick="go(1,document.querySelectorAll('.sb-btn')[1])"><i class="ti ti-arrow-right"></i>Zu Bestellungen</button>
         </div>
       </div>
@@ -1927,7 +1945,7 @@ html,body{height:100%;width:100%;overflow:hidden;margin:0;padding:0;}
         <div style="flex:1"></div>
         <button class="btn btn-g" onclick="confirmNewOrder()"><i class="ti ti-plus"></i>Neue Bestellung</button>
         <button class="btn btn-ghost" onclick="printKitchen()" title="Küchenbon drucken"><i class="ti ti-tools-kitchen-2"></i>Küche</button>
-        <button class="btn btn-p" onclick="window.print()"><i class="ti ti-printer"></i>Drucken</button>
+        <button class="btn btn-p" onclick="printInvoice()"><i class="ti ti-printer"></i>Drucken</button>
       </div>
     </div>
 
@@ -2766,6 +2784,7 @@ function applySettings(){
     var cards=document.querySelectorAll('.tc');if(cards[m.card])cards[m.card].style.display=on?'':'none';
   });
   setInvMode(settings.invMode||'numeric');
+  applyFtStyle();
   liveUpdateSettings();
 }
 function loadCustomProds(){
@@ -2840,6 +2859,8 @@ function ioSanitizeSettings(raw,W){
   if(raw.invNo!=null)s.invNo=Math.round(ioNum(raw.invNo,1,99999999,1000));
   if(raw.invNoP!=null)s.invNoP=Math.round(ioNum(raw.invNoP,1,99999999,1000));
   if(typeof raw.autoPrint==='boolean')s.autoPrint=raw.autoPrint;
+  if(typeof raw.ftSize==='string'&&FT_SIZES[raw.ftSize])s.ftSize=raw.ftSize;
+  if(typeof raw.ftBold==='boolean')s.ftBold=raw.ftBold;
   if(raw.tischCount!=null)s.tischCount=Math.round(ioNum(raw.tischCount,1,100,30));
   if(typeof raw.theme==='string'&&THEME_DEFS.some(function(t){return t.id===raw.theme;}))s.theme=raw.theme;
   else if(raw.theme!=null)W.skipped++;
@@ -4036,7 +4057,51 @@ function onFT(){
   var v=$('ft-area').value;setText('ft-count',v.length+' Zeichen');setText('ft-prev-txt',v);setText('ft-inv-txt',v);$('ft-prev').classList.toggle('show',!!v.trim());
 }
 function clearFT(){setVal('ft-area','');onFT();}
-function printFT(){goInv();setTimeout(function(){window.print();},250);}
+/* ══════════ FREI TEXT: Nur der eigene Text wird gedruckt (kein Kopf, keine Fußzeile, keine Vorlage) ══════════ */
+var FT_SIZES={s:10,m:13,l:17,xl:22},FT_PREV={s:12,m:14,l:17,xl:21},ftSize='m',ftBold=false;
+function applyFtStyle(){
+  ftSize=(typeof settings!=='undefined'&&FT_SIZES[settings.ftSize])?settings.ftSize:'m';ftBold=!!(typeof settings!=='undefined'&&settings.ftBold);
+  document.querySelectorAll('#ft-size-seg .addr-mode-btn').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-s')===ftSize);});
+  var bb=$('ft-bold-btn');if(bb)bb.classList.toggle('on',ftBold);
+  var pv=$('ft-prev-txt');if(pv){pv.style.fontSize=FT_PREV[ftSize]+'px';pv.style.fontWeight=ftBold?'700':'400';pv.style.whiteSpace='pre-wrap';}
+}
+function setFtSize(s){if(!FT_SIZES[s])return;settings.ftSize=s;applyFtStyle();persistSettings();}
+function toggleFtBold(){settings.ftBold=!settings.ftBold;applyFtStyle();persistSettings();}
+
+/* Druckdokument: jede Zeile = eine Tabellenzeile, damit Kopf-/Fußabstand auf JEDER Seite entsteht und kein Text abgeschnitten wird.
+   @page margin:0 unterdrückt Datum/Titel/Adresse, die der Browser sonst in den Seitenrand druckt. */
+function ftBuildHtml(txt,size,bold){
+  var pt=FT_SIZES[size]||13;
+  var rows=String(txt).split('\n').map(function(l){return '<tr><td class="t">'+(l===''?'&nbsp;':esc(l))+'</td></tr>';}).join('');
+  return '<!DOCTYPE html><html><head><meta charset="UTF-8"><title> </title><style>'+
+    '@page{size:105mm 148mm;margin:0}*{box-sizing:border-box}html,body{margin:0;padding:0;background:#fff}'+
+    'body{font-family:Arial,Helvetica,sans-serif;color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact}'+
+    'table{width:100%;border-collapse:collapse;table-layout:fixed}thead{display:table-header-group}tfoot{display:table-footer-group}.sp{height:5mm;padding:0}'+
+    'td.t{padding:0 5mm;font-size:'+pt+'pt;line-height:1.3;font-weight:'+(bold?'700':'400')+';white-space:pre-wrap;overflow-wrap:anywhere;word-break:normal;vertical-align:top;page-break-inside:avoid;break-inside:avoid}'+
+    '</style></head><body><table><thead><tr><td class="sp"></td></tr></thead><tfoot><tr><td class="sp"></td></tr></tfoot><tbody>'+rows+'</tbody></table></body></html>';
+}
+var ftPrintNow=function(win){win.focus();win.print();};
+function isIOSDevice(){return /iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);}
+function printFT(){
+  var raw=String(($('ft-area')&&$('ft-area').value)||'').replace(/\r\n?/g,'\n').replace(/\s+$/,'').replace(/^\n+/,'');
+  if(!raw.trim()){showToast('⚠️ Bitte zuerst Text eingeben');return;}
+  var html=ftBuildHtml(raw,ftSize,ftBold);
+  if(isIOSDevice()){   /* iOS druckt aus einem versteckten iframe die ganze App → eigenes Fenster */
+    var w=window.open('','_blank');if(!w){showToast('⚠️ Popup blockiert');return;}
+    w.document.open();w.document.write(html);w.document.close();setTimeout(function(){try{ftPrintNow(w);}catch(e){}setTimeout(function(){try{w.close();}catch(e){}},1500);},300);return;
+  }
+  var old=$('ft-print-frame');if(old&&old.parentNode)old.parentNode.removeChild(old);
+  var fr=document.createElement('iframe');fr.id='ft-print-frame';fr.setAttribute('aria-hidden','true');
+  fr.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden;';document.body.appendChild(fr);
+  var d=fr.contentWindow.document;d.open();d.write(html);d.close();
+  setTimeout(function(){
+    try{ftPrintNow(fr.contentWindow);}catch(e){showToast('⚠️ Drucken nicht möglich');}
+    setTimeout(function(){if(fr.parentNode)fr.parentNode.removeChild(fr);},2000);
+  },250);
+}
+/* Rechnungsseite: bei „Frei Text“ ebenfalls nur den Text drucken */
+function printInvoice(){if(activeType==='Frei Text'){printFT();return;}window.print();}
+
 function goInv(){go(2,document.querySelectorAll('.sb-btn')[2]);}
 function buildTblGrid(){
   var tg=$('tbl-grid');if(!tg)return;tg.innerHTML='';
