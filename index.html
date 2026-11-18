@@ -1576,6 +1576,28 @@ html,body{height:100%;width:100%;overflow:hidden;margin:0;padding:0;}
 .ft-opts .ft-bold{border:1.5px solid var(--border);background:var(--surface2);border-radius:12px;height:40px;}
 .ft-opts .ft-bold.on{border-color:var(--acc);background:var(--acc-l);color:var(--acc-text);}
 
+
+/* ── Kategorien in zwei Zeilen ── */
+.cats-scroll{display:block;}
+.cats-rows{display:flex;flex-direction:column;gap:8px;width:max-content;min-width:100%;}
+.cats-row{display:flex;gap:8px;}
+@media screen and (min-width:768px){
+  .cats-scroll{padding-bottom:12px;}
+  .cats-row{gap:6px;}
+  .cat-btn{min-height:42px;padding:4px 12px 4px 4px;gap:7px;}
+  .cat-dot{width:30px;height:30px;}
+}
+/* Mobil hochkant: Titelzeile entfällt (Rechnung über die untere Leiste / den Warenkorb), mehr Platz für Artikel */
+@media screen and (max-width:767px) and (orientation:portrait){
+  .ord-bar{display:none;}
+  .cats-scroll{padding-top:10px;}
+}
+/* niedrige Querformat-Ansicht: wieder eine Zeile (spart Höhe) */
+@media screen and (max-height:520px){
+  .cats-scroll{display:flex;gap:8px;}
+  .cats-rows,.cats-row{display:contents;}
+}
+
 /* ═══ PRINT FIXES (must stay last) ═══ */
 @media print{
   html body .ft-inv{display:none!important;}
@@ -3745,15 +3767,26 @@ var CAT_STYLE={kebap:{c:'#D85A30',t:'#7C2D12',l:'K',i:'ti-meat'},teller:{c:'#256
   veggie:{c:'#16A34A',t:'#14532D',l:'V',i:'ti-leaf'},taschen:{c:'#C026D3',t:'#701A75',l:'Ta',i:'ti-cheese'},schnecken:{c:'#7C3AED',t:'#4C1D95',l:'S',i:'ti-snail'},pommbox:{c:'#D97706',t:'#78350F',l:'Po',i:'ti-package'},
   pasta:{c:'#059669',t:'#064E3B',l:'Pa',i:'ti-bowl-spoon'},salat:{c:'#15803D',t:'#14532D',l:'Sa',i:'ti-salad'},snacks:{c:'#B91C1C',t:'#7F1D1D',l:'Sn',i:'ti-burger'},kids:{c:'#DB2777',t:'#831843',l:'Ki',i:'ti-mood-kid'},
   getraenke:{c:'#6D28D9',t:'#3B0764',l:'G',i:'ti-bottle'},party:{c:'#EA580C',t:'#7C2D12',l:'PP',i:'ti-confetti'}};
+/* Kategorien in zwei Zeilen: erste Hälfte oben, Rest unten (Reihenfolge bleibt), Breite ausgeglichen */
+function catRows(g,btns){
+  var wrap=document.createElement('div');wrap.className='cats-rows';
+  var mk=function(list){var r=document.createElement('div');r.className='cats-row';list.forEach(function(b){r.appendChild(b);});wrap.appendChild(r);};
+  if(btns.length<4){mk(btns);g.appendChild(wrap);return;}
+  var w=btns.map(function(b){var l=b.querySelector('.cat-lbl');return (l?l.textContent.length:8)*7.4+66;});
+  var total=w.reduce(function(a,b){return a+b;},0),acc=0,k=1,best=1e9;
+  for(var i=1;i<btns.length;i++){acc+=w[i-1];var d=Math.abs(acc-(total-acc));if(d<best){best=d;k=i;}}
+  mk(btns.slice(0,k));mk(btns.slice(k));g.appendChild(wrap);
+}
 function buildCats(){
-  var g=$('cats-g'),keepX=g.scrollLeft;g.innerHTML='';
+  var g=$('cats-g'),keepX=g.scrollLeft;g.innerHTML='';var btns=[];
   catKeys.forEach(function(k){
     var cat=MENU[k],st=CAT_STYLE[k]||{c:'#666',t:'#333',l:k.charAt(0).toUpperCase()};
     var b=document.createElement('button');b.className='cat-btn'+(k===activeCat?' on':'');
     b.innerHTML='<div class="cat-dot" style="background:'+st.c+';">'+(st.i?'<i class="ti '+st.i+'"></i>':st.l)+'</div><span class="cat-lbl" style="color:'+st.t+';">'+cat.title+'</span>';
     b.onclick=function(){activeCat=k;setText('cat-lbl',cat.title);if($('prod-search-inp'))$('prod-search-inp').value='';buildCats();buildProducts();};
-    g.appendChild(b);
+    btns.push(b);
   });
+  catRows(g,btns);
   g.scrollLeft=keepX;var on=g.querySelector('.cat-btn.on');if(on&&on.scrollIntoView)on.scrollIntoView({block:'nearest',inline:'nearest'});
 }
 function getExtraPrice(key,isFamilie,spo){
