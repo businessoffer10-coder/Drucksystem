@@ -1598,6 +1598,43 @@ html,body{height:100%;width:100%;overflow:hidden;margin:0;padding:0;}
   .cats-rows,.cats-row{display:contents;}
 }
 
+
+/* ── Tab „Drucken“ ── */
+#stab-8{order:1;}
+#stab-2,#stab-3,#stab-4,#stab-5,#stab-6,#stab-7{order:2;}
+.pt-body{gap:14px;}
+.pt-sec{display:flex;flex-direction:column;gap:12px;padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:16px;}
+.pt-ttl{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;color:var(--t1);}
+.pt-ttl i{font-size:18px;color:var(--acc);}
+.pt-ttl small{margin-left:auto;font-size:11px;font-weight:600;color:var(--t3);text-align:right;}
+.pt-papers{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:8px;}
+.pt-paper{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 6px;border:1.5px solid var(--border);border-radius:12px;background:var(--surface2);cursor:pointer;color:var(--t1);font-family:inherit;transition:all .13s;}
+.pt-paper b{font-size:14px;font-weight:800;}
+.pt-paper span{font-size:11px;color:var(--t3);}
+.pt-paper:hover{border-color:var(--border2);}
+.pt-paper.on{border-color:var(--acc);background:var(--acc-l);}
+.pt-paper.on b{color:var(--acc-text);}
+.pt-custom{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+.pt-custom label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--t1);}
+.pt-custom input{width:86px;height:38px;border:1.5px solid var(--border);border-radius:10px;padding:0 10px;font-size:14px;font-family:inherit;background:var(--surface2);color:var(--t1);outline:none;}
+.pt-custom input:focus{border-color:var(--acc);}
+.pt-custom small{font-size:11px;color:var(--t3);}
+.pt-line,.pt-opt{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.pt-k{font-size:13px;font-weight:600;color:var(--t1);}
+.pt-step{display:flex;align-items:center;gap:8px;}
+.pt-step button{width:38px;height:38px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface2);font-size:18px;font-weight:700;cursor:pointer;color:var(--t1);font-family:inherit;}
+.pt-step button:hover{border-color:var(--acc);}
+.pt-step b{min-width:58px;text-align:center;font-size:14px;}
+.pt-sum{font-size:12px;color:var(--t2);background:var(--surface2);border-radius:10px;padding:9px 12px;line-height:1.5;}
+.pt-sec .addr-mode{width:auto;flex:none;}
+.pt-sec .addr-mode-btn{flex:none;min-width:46px;padding:0 12px;}
+.pt-sec .ft-bold{border:1.5px solid var(--border);background:var(--surface2);border-radius:12px;height:40px;}
+.pt-sec .ft-bold.on{border-color:var(--acc);background:var(--acc-l);color:var(--acc-text);}
+.pt-tests{display:flex;gap:8px;flex-wrap:wrap;}
+.pt-tip{display:flex;gap:10px;padding:12px 14px;border-radius:14px;background:var(--blue-l);color:var(--blue);font-size:12.5px;line-height:1.5;}
+.pt-tip ul{margin:4px 0 0;padding-left:18px;}
+.pt-tip code{background:rgba(0,0,0,.08);padding:0 4px;border-radius:4px;font-size:11.5px;}
+
 /* ═══ PRINT FIXES (must stay last) ═══ */
 @media print{
   html body .ft-inv{display:none!important;}
@@ -1995,6 +2032,7 @@ html,body{height:100%;width:100%;overflow:hidden;margin:0;padding:0;}
           <button class="set-tab" id="stab-5" onclick="selSetTab(5)"><i class="ti ti-circle-plus"></i><span>Extras</span></button>
           <button class="set-tab" id="stab-6" onclick="selSetTab(6)"><i class="ti ti-tools-kitchen-2"></i><span>Produkte</span></button>
           <button class="set-tab" id="stab-7" onclick="selSetTab(7)"><i class="ti ti-palette"></i><span>Design</span></button>
+          <button class="set-tab" id="stab-8" onclick="selSetTab(8)"><i class="ti ti-printer"></i><span>Drucken</span></button>
         </nav>
         <div class="set-content" id="set-content">
 
@@ -2084,32 +2122,6 @@ html,body{height:100%;width:100%;overflow:hidden;margin:0;padding:0;}
               <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
                 <div><div class="sp-lbl">Auf Rechnung erscheint</div><div style="font-size:20px;font-weight:900;">Nr. #<span id="inv-no-preview">1000</span></div></div>
                 <button class="btn btn-ghost btn-sm" onclick="resetInvNo()"><i class="ti ti-refresh"></i>Reset</button>
-              </div>
-              <div class="sp-divider"></div>
-              <div class="sp-row">
-                <div class="sp-row-l"><span class="sp-row-lbl">Automatisch drucken</span><span class="sp-row-dsc">Nach Bestellabschluss</span></div>
-                <div class="tgl" id="tgl-auto-print" onclick="this.classList.toggle('on')"></div>
-              </div>
-              <div class="sp-divider"></div>
-              <div>
-                <span class="sp-lbl">🍳 Küchenbon — Schriftgröße</span>
-                <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px;">
-                  <div style="display:flex;align-items:center;gap:12px;"><div style="flex:1;"><div style="font-size:12px;font-weight:600;color:var(--t2);">Menge</div><input type="range" id="font-qty" min="14" max="36" value="20" step="2" oninput="updateKitchenPreview()" style="width:100%;accent-color:var(--acc);"/></div><div id="font-qty-val" style="font-weight:700;color:var(--acc);min-width:40px;text-align:center;">20pt</div></div>
-                  <div style="display:flex;align-items:center;gap:12px;"><div style="flex:1;"><div style="font-size:12px;font-weight:600;color:var(--t2);">Artikelname</div><input type="range" id="font-item" min="10" max="28" value="14" step="1" oninput="updateKitchenPreview()" style="width:100%;accent-color:var(--acc);"/></div><div id="font-item-val" style="font-weight:700;color:var(--acc);min-width:40px;text-align:center;">14pt</div></div>
-                  <div style="display:flex;align-items:center;gap:12px;"><div style="flex:1;"><div style="font-size:12px;font-weight:600;color:var(--t2);">Überschrift</div><input type="range" id="font-hdr" min="10" max="24" value="14" step="1" oninput="updateKitchenPreview()" style="width:100%;accent-color:var(--acc);"/></div><div id="font-hdr-val" style="font-weight:700;color:var(--acc);min-width:40px;text-align:center;">14pt</div></div>
-                  <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                    <button class="btn btn-ghost btn-xs" onclick="setKitchenPreset('small')">58mm</button>
-                    <button class="btn btn-ghost btn-xs" onclick="setKitchenPreset('medium')">80mm</button>
-                    <button class="btn btn-ghost btn-xs" onclick="setKitchenPreset('large')">A4</button>
-                  </div>
-                  <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:#000;max-width:240px;font-family:Arial,sans-serif;">
-                    <div id="kp-hdr" style="background:#000;color:#fff;padding:5px 8px;margin:-10px -12px 8px;border-radius:8px 8px 0 0;font-weight:900;font-size:14pt;">🍳 KÜCHE</div>
-                    <table style="width:100%;border-collapse:collapse;">
-                      <tr><td id="kp-qty" style="font-size:20pt;font-weight:900;padding:4px 6px 4px 0;vertical-align:top;">2×</td><td id="kp-item" style="font-size:14pt;font-weight:600;">Pizza Kebap (Groß)</td></tr>
-                      <tr><td id="kp-qty2" style="font-size:20pt;font-weight:900;padding:4px 6px 4px 0;vertical-align:top;">1×</td><td id="kp-item2" style="font-size:14pt;font-weight:600;">Party Pizza 60×40</td></tr>
-                    </table>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -2286,6 +2298,116 @@ html,body{height:100%;width:100%;overflow:hidden;margin:0;padding:0;}
               </div>
             </div>
           </div>
+
+          <!-- Tab 8: Drucken -->
+          <div class="set-panel" id="spanel-8">
+            <div class="sp-hdr">🖨 Drucken</div>
+            <div class="sp-body pt-body">
+
+              <section class="pt-sec">
+                <div class="pt-ttl"><i class="ti ti-printer"></i>Papierformat<small>gilt für alle Ausdrucke</small></div>
+                <div class="pt-papers">
+                  <button class="pt-paper" data-pk="paper" data-pv="a6" onclick="ptSet('paper','a6')"><b>A6</b><span>105 × 148 mm</span></button>
+                  <button class="pt-paper" data-pk="paper" data-pv="a5" onclick="ptSet('paper','a5')"><b>A5</b><span>148 × 210 mm</span></button>
+                  <button class="pt-paper" data-pk="paper" data-pv="a4" onclick="ptSet('paper','a4')"><b>A4</b><span>210 × 297 mm</span></button>
+                  <button class="pt-paper" data-pk="paper" data-pv="r80" onclick="ptSet('paper','r80')"><b>Bon 80 mm</b><span>Rolle · Länge auto</span></button>
+                  <button class="pt-paper" data-pk="paper" data-pv="r58" onclick="ptSet('paper','r58')"><b>Bon 58 mm</b><span>Rolle · Länge auto</span></button>
+                  <button class="pt-paper" data-pk="paper" data-pv="custom" onclick="ptSet('paper','custom')"><b>Eigene</b><span>Größe festlegen</span></button>
+                </div>
+                <div class="pt-custom" id="pt-custom" style="display:none;">
+                  <label>Breite <input id="pt-w" type="number" min="40" max="330" step="1" onchange="ptSetNum('w',this.value)"/> mm</label>
+                  <label>Höhe <input id="pt-h" type="number" min="0" max="1000" step="1" onchange="ptSetNum('h',this.value)"/> mm</label>
+                  <small>Höhe 0 = automatisch (Rolle)</small>
+                </div>
+                <div class="pt-line"><span class="pt-k">Rand</span>
+                  <div class="pt-step"><button onclick="ptStep('margin',-1)" aria-label="Weniger">−</button><b><span id="pt-margin-val">4</span> mm</b><button onclick="ptStep('margin',1)" aria-label="Mehr">+</button></div></div>
+                <div class="sp-row"><div class="sp-row-l"><span class="sp-row-lbl">Browser-Kopf-/Fußzeile unterdrücken</span><span class="sp-row-dsc">Kein Datum, Titel oder Adresse am Papierrand</span></div><div class="tgl" data-pk="noHF" onclick="ptToggle('noHF')"></div></div>
+                <div class="pt-sum" id="pt-sum"></div>
+              </section>
+
+              <section class="pt-sec">
+                <div class="pt-ttl"><i class="ti ti-receipt-2"></i>Rechnung<small>was auf dem Beleg steht</small></div>
+                <div class="sp-row"><div class="sp-row-l"><span class="sp-row-lbl">Kopfzeile</span><span class="sp-row-dsc">Restaurantname und Rechnungsnummer</span></div><div class="tgl" data-pk="invHdr" onclick="ptToggle('invHdr')"></div></div>
+                <div class="sp-row"><div class="sp-row-l"><span class="sp-row-lbl">Adresse & Telefon im Kopf</span><span class="sp-row-dsc">Aus den Restaurant-Einstellungen</span></div><div class="tgl" data-pk="invContact" onclick="ptToggle('invContact')"></div></div>
+                <div class="sp-row"><div class="sp-row-l"><span class="sp-row-lbl">Datum, Uhrzeit, Bestellart</span></div><div class="tgl" data-pk="invMeta" onclick="ptToggle('invMeta')"></div></div>
+                <div class="sp-row"><div class="sp-row-l"><span class="sp-row-lbl">Kundendaten & Lieferadresse</span></div><div class="tgl" data-pk="invAddr" onclick="ptToggle('invAddr')"></div></div>
+                <div class="sp-row"><div class="sp-row-l"><span class="sp-row-lbl">Zahlungsart</span></div><div class="tgl" data-pk="invPay" onclick="ptToggle('invPay')"></div></div>
+                <div class="sp-row"><div class="sp-row-l"><span class="sp-row-lbl">Einzelpreis-Spalte</span><span class="sp-row-dsc">Bei sehr schmalem Papier automatisch aus</span></div><div class="tgl" data-pk="invUnit" onclick="ptToggle('invUnit')"></div></div>
+                <div class="sp-row"><div class="sp-row-l"><span class="sp-row-lbl">Anmerkung</span></div><div class="tgl" data-pk="invNote" onclick="ptToggle('invNote')"></div></div>
+                <div class="sp-row"><div class="sp-row-l"><span class="sp-row-lbl">Fußzeile</span><span class="sp-row-dsc">Dankesnachricht aus den Restaurant-Einstellungen</span></div><div class="tgl" data-pk="invFoot" onclick="ptToggle('invFoot')"></div></div>
+                <div class="pt-opt"><span class="pt-k">Schriftgröße</span><div class="addr-mode">
+                  <button class="addr-mode-btn" data-pk="invSize" data-pv="s" onclick="ptSet('invSize','s')">S</button>
+                  <button class="addr-mode-btn" data-pk="invSize" data-pv="m" onclick="ptSet('invSize','m')">M</button>
+                  <button class="addr-mode-btn" data-pk="invSize" data-pv="l" onclick="ptSet('invSize','l')">L</button></div></div>
+                <div class="sp-row">
+                <div class="sp-row-l"><span class="sp-row-lbl">Automatisch drucken</span><span class="sp-row-dsc">Nach Bestellabschluss</span></div>
+                <div class="tgl" id="tgl-auto-print" onclick="this.classList.toggle('on')"></div>
+              </div>
+              </section>
+
+              <section class="pt-sec">
+                <div class="pt-ttl"><i class="ti ti-tools-kitchen-2"></i>Küchenbon<small>Bon für die Küche</small></div>
+                <div class="sp-row"><div class="sp-row-l"><span class="sp-row-lbl">Datum & Uhrzeit</span></div><div class="tgl" data-pk="kitTime" onclick="ptToggle('kitTime')"></div></div>
+                <div class="sp-row"><div class="sp-row-l"><span class="sp-row-lbl">Kunden- & Lieferinfo</span><span class="sp-row-dsc">Name, Adresse, Zeit, Zahlungsart</span></div><div class="tgl" data-pk="kitInfo" onclick="ptToggle('kitInfo')"></div></div>
+                <div class="sp-row"><div class="sp-row-l"><span class="sp-row-lbl">Anmerkung</span></div><div class="tgl" data-pk="kitNote" onclick="ptToggle('kitNote')"></div></div>
+                <div class="sp-row"><div class="sp-row-l"><span class="sp-row-lbl">Beim Bestellabschluss automatisch mitdrucken</span></div><div class="tgl" data-pk="kitAuto" onclick="ptToggle('kitAuto')"></div></div>
+                <div class="pt-opt"><span class="pt-k">Kopien</span><div class="addr-mode">
+                  <button class="addr-mode-btn" data-pk="kitCopies" data-pv="1" onclick="ptSet('kitCopies',1)">1×</button>
+                  <button class="addr-mode-btn" data-pk="kitCopies" data-pv="2" onclick="ptSet('kitCopies',2)">2×</button>
+                  <button class="addr-mode-btn" data-pk="kitCopies" data-pv="3" onclick="ptSet('kitCopies',3)">3×</button></div></div>
+                <div>
+                <span class="sp-lbl">🍳 Küchenbon — Schriftgröße</span>
+                <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px;">
+                  <div style="display:flex;align-items:center;gap:12px;"><div style="flex:1;"><div style="font-size:12px;font-weight:600;color:var(--t2);">Menge</div><input type="range" id="font-qty" min="14" max="36" value="20" step="2" oninput="updateKitchenPreview()" style="width:100%;accent-color:var(--acc);"/></div><div id="font-qty-val" style="font-weight:700;color:var(--acc);min-width:40px;text-align:center;">20pt</div></div>
+                  <div style="display:flex;align-items:center;gap:12px;"><div style="flex:1;"><div style="font-size:12px;font-weight:600;color:var(--t2);">Artikelname</div><input type="range" id="font-item" min="10" max="28" value="14" step="1" oninput="updateKitchenPreview()" style="width:100%;accent-color:var(--acc);"/></div><div id="font-item-val" style="font-weight:700;color:var(--acc);min-width:40px;text-align:center;">14pt</div></div>
+                  <div style="display:flex;align-items:center;gap:12px;"><div style="flex:1;"><div style="font-size:12px;font-weight:600;color:var(--t2);">Überschrift</div><input type="range" id="font-hdr" min="10" max="24" value="14" step="1" oninput="updateKitchenPreview()" style="width:100%;accent-color:var(--acc);"/></div><div id="font-hdr-val" style="font-weight:700;color:var(--acc);min-width:40px;text-align:center;">14pt</div></div>
+                  <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                    <button class="btn btn-ghost btn-xs" onclick="setKitchenPreset('small')">58mm</button>
+                    <button class="btn btn-ghost btn-xs" onclick="setKitchenPreset('medium')">80mm</button>
+                    <button class="btn btn-ghost btn-xs" onclick="setKitchenPreset('large')">A4</button>
+                  </div>
+                  <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:#000;max-width:240px;font-family:Arial,sans-serif;">
+                    <div id="kp-hdr" style="background:#000;color:#fff;padding:5px 8px;margin:-10px -12px 8px;border-radius:8px 8px 0 0;font-weight:900;font-size:14pt;">🍳 KÜCHE</div>
+                    <table style="width:100%;border-collapse:collapse;">
+                      <tr><td id="kp-qty" style="font-size:20pt;font-weight:900;padding:4px 6px 4px 0;vertical-align:top;">2×</td><td id="kp-item" style="font-size:14pt;font-weight:600;">Pizza Kebap (Groß)</td></tr>
+                      <tr><td id="kp-qty2" style="font-size:20pt;font-weight:900;padding:4px 6px 4px 0;vertical-align:top;">1×</td><td id="kp-item2" style="font-size:14pt;font-weight:600;">Party Pizza 60×40</td></tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              </section>
+
+              <section class="pt-sec">
+                <div class="pt-ttl"><i class="ti ti-pencil"></i>Frei Text<small>nur der eigene Text wird gedruckt</small></div>
+                <div class="pt-opt"><span class="pt-k">Schrift</span>
+                  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                    <div class="addr-mode" id="pt-ft-size-seg">
+                      <button class="addr-mode-btn" data-s="s" onclick="setFtSize('s')">S</button>
+                      <button class="addr-mode-btn on" data-s="m" onclick="setFtSize('m')">M</button>
+                      <button class="addr-mode-btn" data-s="l" onclick="setFtSize('l')">L</button>
+                      <button class="addr-mode-btn" data-s="xl" onclick="setFtSize('xl')">XL</button></div>
+                    <button class="addr-mode-btn ft-bold" id="pt-ft-bold-btn" onclick="toggleFtBold()"><b>B</b>&nbsp;Fett</button></div></div>
+              </section>
+
+              <section class="pt-sec">
+                <div class="pt-ttl"><i class="ti ti-printer"></i>Testen<small>mit den aktuellen Einstellungen</small></div>
+                <div class="pt-tests">
+                  <button class="btn btn-ghost btn-sm" onclick="ptTestPage()"><i class="ti ti-printer"></i>Testseite</button>
+                  <button class="btn btn-ghost btn-sm" onclick="ptTestInvoice()"><i class="ti ti-receipt-2"></i>Beispiel-Rechnung</button>
+                  <button class="btn btn-ghost btn-sm" onclick="ptTestKitchen()"><i class="ti ti-tools-kitchen-2"></i>Beispiel-Küchenbon</button>
+                </div>
+              </section>
+
+              <div class="pt-tip"><i class="ti ti-info-circle" style="font-size:20px;flex-shrink:0;"></i><div><b>Hinweise</b><ul>
+                <li>Druck ohne Dialog: Chrome mit dem Startparameter <code>--kiosk-printing</code> starten.</li>
+                <li>Bon-Rollen (58/80 mm): Die Länge wird vor dem Druck nach dem Inhalt gesetzt.</li>
+                <li>iPad/iPhone: Popups für diese Seite erlauben, der Ausdruck öffnet sich in einem eigenen Fenster.</li>
+                <li>Im Druckdialog „Skalierung: 100 %“ wählen.</li></ul></div></div>
+
+            </div>
+          </div>
+
+
 
         </div>
       </div>
@@ -2807,6 +2929,7 @@ function applySettings(){
   });
   setInvMode(settings.invMode||'numeric');
   applyFtStyle();
+  ptRenderUi();
   liveUpdateSettings();
 }
 function loadCustomProds(){
@@ -2883,6 +3006,12 @@ function ioSanitizeSettings(raw,W){
   if(typeof raw.autoPrint==='boolean')s.autoPrint=raw.autoPrint;
   if(typeof raw.ftSize==='string'&&FT_SIZES[raw.ftSize])s.ftSize=raw.ftSize;
   if(typeof raw.ftBold==='boolean')s.ftBold=raw.ftBold;
+  if(ioObj(raw.print)){var pp={};Object.keys(PT_DEF).forEach(function(k){var v=raw.print[k],d=PT_DEF[k];
+    if(typeof d==='boolean'){if(typeof v==='boolean')pp[k]=v;}
+    else if(k==='paper'){if(typeof v==='string'&&(PT_PAPERS[v]||v==='custom'))pp[k]=v;}
+    else if(k==='invSize'){if(['s','m','l'].indexOf(v)>=0)pp[k]=v;}
+    else if(typeof d==='number'){var lim={w:[40,330],h:[0,1000],margin:[0,20],kitCopies:[1,3]}[k],n=ioNum(v,lim[0],lim[1],null);if(n!==null)pp[k]=Math.round(n);}});
+    s.print=pp;}
   if(raw.tischCount!=null)s.tischCount=Math.round(ioNum(raw.tischCount,1,100,30));
   if(typeof raw.theme==='string'&&THEME_DEFS.some(function(t){return t.id===raw.theme;}))s.theme=raw.theme;
   else if(raw.theme!=null)W.skipped++;
@@ -3070,6 +3199,7 @@ function selSetTab(n){
   if(n===7)renderThemeGrid();
   if(n===5)xtRenderAll();
   if(n===4)ctRenderAll();
+  if(n===8)ptRenderUi();
 }
 
 /* ══════════ THEMES ══════════ */
@@ -3158,35 +3288,6 @@ function setKitchenPreset(size){
   var p={small:{qty:16,item:11,hdr:12},medium:{qty:20,item:14,hdr:14},large:{qty:26,item:18,hdr:18}}[size];if(!p)return;
   setVal('font-qty',p.qty);setVal('font-item',p.item);setVal('font-hdr',p.hdr);updateKitchenPreview();
 }
-function printKitchen(){
-  if(!cart.length){showToast('⚠️ Warenkorb ist leer');return;}
-  var n=new Date(),time=n.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}),date=n.toLocaleDateString('de-DE');
-  var invNo=($('inv-no')&&$('inv-no').textContent)||'',typeLabel=($('ia-type-lbl')&&$('ia-type-lbl').textContent)||activeType;
-  var info=[];
-  ['ia-name','ia-addr','ia-time'].forEach(function(id){var e=$(id),row=e&&e.parentElement;if(e&&e.textContent&&row&&row.style.display!=='none')info.push(e.textContent);});
-  var te=$('ia-tisch');if(te&&te.offsetParent!==null&&te.textContent)info.push(te.textContent);
-  if(activeType==='Liefern')info.push(liefPayment);
-  var rows=cart.map(function(x){
-    var nm=x.n.replace(/^#\S+\s+/,'');
-    return '<tr><td class="qty-cell">'+x.q+'×</td><td class="item-cell">'+nm+(x.note?'<div style="font-size:0.8em;font-weight:400;">→ '+x.note+'</div>':'')+'</td></tr>';
-  }).join('');
-  var note=($('gen-note')&&$('gen-note').value.trim())||'';
-  var q=kitchenFonts.qty+'pt',it=kitchenFonts.item+'pt',h=kitchenFonts.hdr+'pt';
-  var css='@page{size:105mm auto;margin:4mm;}*{box-sizing:border-box;margin:0;padding:0;}body{font-family:Arial,sans-serif;color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'+
-    '.k-hdr{background:#000;color:#fff;padding:5px 9px;display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}.k-hdr-title{font-size:'+h+';font-weight:900;}.k-hdr-num{font-size:10pt;font-weight:700;border:1.5px solid #fff;padding:2px 8px;}'+
-    '.k-meta{background:#f2f2f2;border:.5px solid #ccc;padding:5px 8px;margin-bottom:6px;font-size:9pt;}.k-type{font-size:10pt;font-weight:900;background:#FFD600;padding:3px 10px;display:inline-block;margin-bottom:6px;}'+
-    '.k-div{border:none;border-top:2px solid #000;margin:5px 0;}.k-table{width:100%;border-collapse:collapse;}.k-table td{border-bottom:.5px solid #ddd;padding:4px 2px;vertical-align:top;}'+
-    '.qty-cell{font-size:'+q+';font-weight:900;white-space:nowrap;padding-right:6px;}.item-cell{font-size:'+it+';font-weight:600;line-height:1.35;}'+
-    '.k-note{border:1.5px dashed #555;padding:5px 8px;margin-top:5px;font-size:'+it+';font-weight:600;}.k-footer{text-align:center;font-size:7.5pt;color:#888;margin-top:6px;border-top:.5px solid #ccc;padding-top:4px;}';
-  var html='<!DOCTYPE html><html><head><meta charset="UTF-8"/><style>'+css+'</style></head><body>'+
-    '<div class="k-hdr"><span class="k-hdr-title">KÜCHE</span><span class="k-hdr-num">#'+invNo+'</span></div>'+
-    '<div class="k-meta"><strong>'+time+'</strong> Uhr · '+date+(info.length?'<br>'+info.join(' · '):'')+'</div>'+
-    '<div class="k-type">'+typeLabel+'</div><hr class="k-div"/><table class="k-table">'+rows+'</table>'+
-    (note?'<div class="k-note">📝 '+note+'</div>':'')+'<div class="k-footer">Bon #'+invNo+' · '+time+'</div></body></html>';
-  var w=window.open('','_blank','width=420,height=600');
-  if(!w){showToast('⚠️ Popup blockiert');return;}
-  w.document.write(html);w.document.close();w.focus();setTimeout(function(){w.print();w.close();},400);
-}
 
 /* ══════════ SOUND ══════════ */
 var soundEnabled=true;
@@ -3234,18 +3335,6 @@ function renderOrderHistory(){
       '<div style="text-align:right;flex-shrink:0;"><div style="font-size:15px;font-weight:800;color:var(--acc);">'+fmt(o.total)+'</div>'+
       '<button class="btn btn-ghost btn-xs" onclick="reprintOrder('+i+')" style="margin-top:3px;"><i class="ti ti-printer"></i>Drucken</button></div></div>';
   }).join('');
-}
-function reprintOrder(idx){
-  var o=orderHistory[idx];if(!o)return;
-  var rows=o.items.map(function(x){return '<tr><td style="font-size:12pt;font-weight:700;padding:4px 8px;white-space:nowrap;">'+x.q+'×</td><td style="font-size:10.5pt;padding:4px 0;">'+x.n+(x.note?' <i>('+x.note+')</i>':'')+'</td><td style="font-size:10.5pt;padding:4px 8px;text-align:right;font-weight:700;">'+fmt(x.p*x.q)+'</td></tr>';}).join('');
-  var html='<!DOCTYPE html><html><head><meta charset="UTF-8"/><style>@page{size:105mm auto;margin:4mm;}*{box-sizing:border-box;margin:0;padding:0;}body{font-family:Arial,sans-serif;color:#000;}table{width:100%;border-collapse:collapse;}td{border-bottom:.3px solid #ccc;vertical-align:top;}.total{font-size:14pt;font-weight:900;margin-top:8px;display:flex;justify-content:space-between;border-top:2px solid #000;padding-top:6px;}.meta{font-size:9pt;color:#555;margin:4px 0;}</style></head><body>'+
-    '<div style="background:#000;color:#fff;padding:6px 10px;margin-bottom:6px;display:flex;justify-content:space-between;"><b>NACHDRUCK</b><span>#'+o.id+'</span></div>'+
-    '<div class="meta">'+o.date+' · '+o.time+' Uhr · '+o.type+(o.customer?' · '+o.customer:'')+(o.payment?' · '+o.payment:'')+'</div><table>'+rows+'</table>'+
-    (o.del>0?'<div class="meta" style="text-align:right;">Liefergebühr '+fmt(o.del)+'</div>':'')+'<div class="total"><span>Gesamt</span><span>'+fmt(o.total)+'</span></div>'+
-    (o.note?'<div style="border:1px dashed #555;padding:5px 8px;margin-top:6px;font-size:9pt;">📝 '+o.note+'</div>':'')+
-    '<div style="text-align:center;font-size:7pt;color:#888;margin-top:8px;">— Nachdruck —</div></body></html>';
-  var w=window.open('','_blank','width=420,height=600');if(!w){showToast('⚠️ Popup blockiert');return;}
-  w.document.write(html);w.document.close();w.focus();setTimeout(function(){w.print();w.close();},400);
 }
 
 /* ══════════ CITIES & STREETS ══════════
@@ -4090,50 +4179,189 @@ function onFT(){
   var v=$('ft-area').value;setText('ft-count',v.length+' Zeichen');setText('ft-prev-txt',v);setText('ft-inv-txt',v);$('ft-prev').classList.toggle('show',!!v.trim());
 }
 function clearFT(){setVal('ft-area','');onFT();}
-/* ══════════ FREI TEXT: Nur der eigene Text wird gedruckt (kein Kopf, keine Fußzeile, keine Vorlage) ══════════ */
+/* ══════════ DRUCKEN: Papier, Inhalt, Küchenbon, Test ══════════
+   Alle Ausdrucke (Rechnung, Küchenbon, Frei Text, Nachdruck, Testseite) entstehen aus einem gemeinsamen Dokument-Gerüst.
+   Chrome versteht „@page size:80mm auto“ nicht → bei Bon-Rollen wird die Höhe vor dem Drucken gemessen und gesetzt. */
+var PT_PAPERS={a6:{w:105,h:148},a5:{w:148,h:210},a4:{w:210,h:297},r80:{w:80,h:0},r58:{w:58,h:0}};
+var PT_DEF={paper:'a6',w:105,h:148,margin:4,noHF:true,
+  invHdr:true,invContact:false,invMeta:true,invAddr:true,invPay:true,invNote:true,invFoot:true,invUnit:true,invSize:'m',
+  kitTime:true,kitInfo:true,kitNote:true,kitCopies:1,kitAuto:false};
+var ptFrameN=0;
+function ptCfg(){var c={},s=(typeof settings!=='undefined'&&settings.print)||{},k;for(k in PT_DEF)c[k]=PT_DEF[k];for(k in s)if(k in PT_DEF)c[k]=s[k];return c;}
+function ptNum(v,min,max,def){var n=Number(v);if(v===''||v===null||v===undefined||isNaN(n))return def;return Math.min(max,Math.max(min,n));}
+function ptGeom(){
+  var c=ptCfg(),p=PT_PAPERS[c.paper],w=p?p.w:ptNum(c.w,40,330,105),h=p?p.h:ptNum(c.h,0,1000,148),m=ptNum(c.margin,0,20,4);
+  if(h&&h<60)h=60;if(w-2*m<20)m=Math.max(0,(w-20)/2);
+  return {w:w,h:h,m:m,noHF:!!c.noHF,auto:!h,paper:c.paper};
+}
+function ptCw(g){return Math.max(20,g.w-2*g.m);}
+function ptPageRule(g,h){return '@page{size:'+g.w+'mm '+h+'mm;margin:'+(g.noHF?'0':g.m+'mm')+'}';}
+function ptPaperName(g){var n={a6:'A6',a5:'A5',a4:'A4',r80:'Bon 80 mm',r58:'Bon 58 mm'}[g.paper]||'Eigene Größe';return n;}
+function ptSummary(){var g=ptGeom();return ptPaperName(g)+' · '+g.w+' × '+(g.auto?'Höhe automatisch':g.h)+(g.auto?'':' mm')+' · Rand '+g.m+' mm · Druckbreite '+ptCw(g)+' mm';}
+
+/* Gerüst: jede Kopie = eine Tabelle, jede Zeile = eine Tabellenzeile (Seitenumbruch nur zwischen Zeilen, Ränder auf jeder Seite) */
+function ptDoc(copies,css,g){
+  var cw=g.noHF?g.w:ptCw(g),pad=g.noHF?g.m:0;
+  var tables=copies.map(function(rows,i){return '<table class="w'+(i?' brk':'')+'"><thead><tr><td class="sp"></td></tr></thead><tfoot><tr><td class="sp"></td></tr></tfoot><tbody>'+
+    rows.map(function(r){return '<tr><td class="c">'+r+'</td></tr>';}).join('')+'</tbody></table>';}).join('');
+  return '<!DOCTYPE html><html><head><meta charset="UTF-8"><title> </title><style id="pgsize">'+ptPageRule(g,g.auto?297:g.h)+'</style><style>'+
+    '*{box-sizing:border-box}html,body{margin:0;padding:0;background:#fff}body{font-family:Arial,Helvetica,sans-serif;color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact}'+
+    'table.w{width:'+cw+'mm;border-collapse:collapse;table-layout:fixed}table.w.brk{page-break-before:always;break-before:page}thead{display:table-header-group}tfoot{display:table-footer-group}'+
+    '.sp{height:'+(g.noHF?g.m:0)+'mm;padding:0}td.c{padding:0 '+pad+'mm;vertical-align:top;overflow-wrap:anywhere;page-break-inside:avoid;break-inside:avoid}'+css+
+    '</style></head><body>'+tables+'</body></html>';
+}
+function ptFit(win,g){
+  if(!g.auto)return;
+  try{var d=win.document,t=d.querySelector('table.w'),px=t.getBoundingClientRect().height;
+    var mm=Math.ceil(px*25.4/96+(g.noHF?0:2*g.m))+2;mm=Math.min(1000,Math.max(30,mm));d.getElementById('pgsize').textContent=ptPageRule(g,mm);}catch(e){}
+}
+var ftPrintNow=function(win){win.focus();win.print();};
+function isIOSDevice(){return /iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);}
+function ptPrint(html,g){
+  g=g||ptGeom();
+  var run=function(win){ptFit(win,g);try{ftPrintNow(win);}catch(e){showToast('⚠️ Drucken nicht möglich');}};
+  if(isIOSDevice()){   /* iOS druckt aus einem versteckten iframe die ganze App → eigenes Fenster */
+    var w=window.open('','_blank');if(!w){showToast('⚠️ Popup blockiert');return;}
+    w.document.open();w.document.write(html);w.document.close();setTimeout(function(){run(w);setTimeout(function(){try{w.close();}catch(e){}},1500);},300);return;
+  }
+  var fr=document.createElement('iframe');fr.id='ft-print-frame-'+(++ptFrameN);fr.className='pt-frame';fr.setAttribute('aria-hidden','true');
+  fr.style.cssText='position:fixed;left:-10000px;top:0;width:'+g.w+'mm;height:1200px;border:0;opacity:0;pointer-events:none;';document.body.appendChild(fr);
+  var d=fr.contentWindow.document;d.open();d.write(html);d.close();
+  setTimeout(function(){run(fr.contentWindow);setTimeout(function(){if(fr.parentNode)fr.parentNode.removeChild(fr);},2000);},250);
+}
+
+/* ── Rechnung ── */
+function ptInvData(){
+  var show=function(id){var e=$(id);return !!(e&&e.style.display!=='none');},txt=function(id){var e=$(id);return e?e.textContent.trim():'';},val=function(id,def){var e=$(id);return (e&&e.value)||def||'';};
+  var cust=[];
+  if(show('ia-name-r')&&txt('ia-name'))cust.push(txt('ia-name'));if(show('ia-phone-r')&&txt('ia-phone'))cust.push(txt('ia-phone'));
+  if(show('ia-addr-r')&&txt('ia-addr'))cust.push(txt('ia-addr'));if(show('ia-tisch-r')&&txt('ia-tisch'))cust.push(txt('ia-tisch'));if(txt('ia-time'))cust.push(txt('ia-time'));
+  var sub=cart.reduce(function(s,x){return s+x.p*x.q;},0),del=activeType==='Liefern'?(selCity?getCityFee(selCity):2):0;
+  return {name:val('set-name',settings.name),logo:val('set-logo',settings.logo),addr:val('set-addr',settings.addr),phone:val('set-phone',settings.phone),foot:val('set-footer-msg',settings.footerMsg),
+    no:txt('inv-no'),date:txt('inv-d'),time:txt('inv-t'),type:activeType,typeLbl:txt('ia-type-lbl')||activeType,cust:cust,pay:show('ia-pay-row')?txt('ia-pay'):'',
+    items:cart.map(function(x){return {n:x.n,q:x.q,p:x.p,note:x.note||''};}),sub:sub,del:del,delLbl:'Liefergebühr'+(selCity?' ('+selCity+')':''),total:sub+del,note:val('gen-note','').trim(),reprint:false};
+}
+function ptInvDoc(d){
+  var c=ptCfg(),g=ptGeom(),e=esc,cw=ptCw(g);
+  var u=({s:7.5,m:9,l:11}[c.invSize]||9)*Math.min(1.6,Math.max(1,g.w/105)),unit=c.invUnit&&cw>=62;
+  var css='body{--u:'+u+'}.hd{background:#000;color:#fff;padding:2.2mm 3mm;display:flex;justify-content:space-between;align-items:center;gap:3mm;font-weight:700;font-size:calc(var(--u)*1.25pt)}'+
+    '.hd .nr{border:.3mm solid #fff;border-radius:3mm;padding:.3mm 2mm;font-size:calc(var(--u)*.95pt);white-space:nowrap}.rp{text-align:center;font-weight:700;font-size:calc(var(--u)*.9pt);letter-spacing:.3mm;border:.3mm dashed #000;padding:.8mm;margin:1.2mm 0}'+
+    '.ct{text-align:center;font-size:calc(var(--u)*.85pt);color:#333;padding:1mm 0}.mt{display:flex;background:#eee;border-bottom:.2mm solid #bbb}.mt div{flex:1;padding:1.2mm 2mm;font-size:calc(var(--u)*.95pt);font-weight:700}'+
+    '.mt b{display:block;font-size:calc(var(--u)*.65pt);text-transform:uppercase;color:#555}.ad{border:.25mm solid #aaa;background:#f5f5f5;padding:1.5mm 2.5mm;margin-bottom:2mm;font-size:calc(var(--u)*.95pt);line-height:1.35}'+
+    '.ad .ty{font-weight:800;text-transform:uppercase;font-size:calc(var(--u)*.7pt);color:#444;margin-bottom:.8mm}.th,.it{display:flex;align-items:flex-start;gap:1.5mm}'+
+    '.th{background:#e8e8e8;padding:1.2mm 2mm;border-bottom:.3mm solid #999;font-size:calc(var(--u)*.7pt);font-weight:800;color:#333}.it{padding:1.2mm 2mm;border-bottom:.15mm solid #ddd;font-size:calc(var(--u)*.95pt)}'+
+    '.a{flex:1;min-width:0}.q{width:9mm;text-align:center}.p{width:15mm;text-align:right}.s{width:16mm;text-align:right}.it .s{font-weight:700}.it i{display:block;font-style:normal;font-size:calc(var(--u)*.8pt);color:#555}'+
+    '.tt{padding:1.5mm 2.5mm;font-size:calc(var(--u)*.95pt)}.tt div{display:flex;justify-content:space-between;padding:.4mm 0}.tt .g{border-top:.4mm solid #000;margin-top:1mm;padding-top:1.5mm;font-size:calc(var(--u)*1.35pt);font-weight:800}'+
+    '.nt{border:.25mm dashed #666;padding:1.5mm 2.5mm;margin-top:1mm;font-size:calc(var(--u)*.95pt)}.nt b{display:block;font-size:calc(var(--u)*.65pt);color:#555}'+
+    '.ft{text-align:center;font-style:italic;color:#666;font-size:calc(var(--u)*.85pt);padding-top:2mm;border-top:.2mm solid #ccc;margin-top:2mm}';
+  var rows=[];
+  if(c.invAddr&&(d.cust.length||(c.invPay&&d.pay)))rows.push('<div class="ad"><div class="ty">'+e(d.typeLbl)+'</div>'+d.cust.map(function(l){return '<div>'+e(l)+'</div>';}).join('')+(c.invPay&&d.pay?'<div>'+e(d.pay)+'</div>':'')+'</div>');
+  else if(!c.invAddr&&c.invPay&&d.pay)rows.push('<div class="ad"><div>'+e(d.pay)+'</div></div>');
+  if(c.invHdr)rows.push('<div class="hd"><span>'+e((d.logo?d.logo+' ':'')+d.name)+'</span><span class="nr">Nr. #'+e(d.no)+'</span></div>'+(d.reprint?'<div class="rp">NACHDRUCK</div>':'')+(c.invContact&&(d.addr||d.phone)?'<div class="ct">'+e([d.addr,d.phone].filter(Boolean).join(' · '))+'</div>':''));
+  else if(d.reprint)rows.push('<div class="rp">NACHDRUCK · #'+e(d.no)+'</div>');
+  if(c.invMeta)rows.push('<div class="mt"><div><b>Datum</b>'+e(d.date)+'</div><div><b>Uhrzeit</b>'+e(d.time)+'</div><div><b>Bestellart</b>'+e(d.type)+'</div></div>');
+  rows.push('<div class="th"><span class="a">ARTIKEL</span><span class="q">MENGE</span>'+(unit?'<span class="p">EINZELPREIS</span>':'')+'<span class="s">GESAMT</span></div>');
+  d.items.forEach(function(x){rows.push('<div class="it"><span class="a">'+e(x.n)+(x.note?'<i>→ '+e(x.note)+'</i>':'')+'</span><span class="q"><b>'+x.q+'</b></span>'+(unit?'<span class="p">'+fmt(x.p)+'</span>':'')+'<span class="s">'+fmt(x.p*x.q)+'</span></div>');});
+  rows.push('<div class="tt"><div><span>Zwischensumme</span><span>'+fmt(d.sub)+'</span></div>'+(d.del>0?'<div><span>'+e(d.delLbl)+'</span><span>'+fmt(d.del)+'</span></div>':'')+'<div class="g"><span>Gesamtbetrag</span><span>'+fmt(d.total)+'</span></div></div>');
+  if(c.invNote&&d.note)rows.push('<div class="nt"><b>ANMERKUNG</b>'+e(d.note)+'</div>');
+  if(c.invFoot&&d.foot)rows.push('<div class="ft">'+e(d.foot)+'</div>');
+  return ptDoc([rows],css,g);
+}
+function printInvoiceDoc(){if(!cart.length){showToast('⚠️ Warenkorb ist leer');return;}ptPrint(ptInvDoc(ptInvData()));}
+/* Rechnungsseite: Frei Text → nur Text, sonst die Rechnung */
+function printInvoice(){if(activeType==='Frei Text'){printFT();return;}printInvoiceDoc();}
+
+/* ── Küchenbon ── */
+function ptKitData(){
+  var n=new Date(),time=n.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}),date=n.toLocaleDateString('de-DE'),info=[];
+  ['ia-name','ia-addr','ia-time'].forEach(function(id){var e=$(id),row=e&&e.parentElement;if(e&&e.textContent&&row&&row.style.display!=='none')info.push(e.textContent);});
+  var te=$('ia-tisch');if(te&&te.offsetParent!==null&&te.textContent)info.push(te.textContent);if(activeType==='Liefern')info.push(liefPayment);
+  return {no:($('inv-no')&&$('inv-no').textContent)||'',typeLabel:($('ia-type-lbl')&&$('ia-type-lbl').textContent)||activeType,time:time,date:date,info:info,
+    items:cart.map(function(x){return {q:x.q,n:x.n,note:x.note||''};}),note:($('gen-note')&&$('gen-note').value.trim())||''};
+}
+function ptKitDoc(d){
+  var c=ptCfg(),g=ptGeom(),e=esc,q=kitchenFonts.qty,it=kitchenFonts.item,h=kitchenFonts.hdr,N=Math.max(1,Math.min(3,Number(c.kitCopies)||1));
+  var css='.kh{background:#000;color:#fff;padding:1.8mm 3mm;display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5mm;font-weight:900;font-size:'+h+'pt}.kh .kn{font-size:10pt;font-weight:700;border:.4mm solid #fff;padding:.4mm 2mm}'+
+    '.km{background:#f2f2f2;border:.15mm solid #ccc;padding:1.5mm 2.5mm;margin-bottom:2mm;font-size:9pt}.kt{display:inline-block;background:#FFD600;font-size:10pt;font-weight:900;padding:.8mm 3mm;margin-bottom:1.5mm}'+
+    '.kd{border-top:.7mm solid #000;margin:1.2mm 0}.ki{display:flex;gap:2mm;border-bottom:.15mm solid #ddd;padding:1.2mm 0}.kq{font-size:'+q+'pt;font-weight:900;white-space:nowrap;line-height:1.1}.kx{flex:1;min-width:0;font-size:'+it+'pt;font-weight:600;line-height:1.35}.kx i{display:block;font-style:normal;font-size:.8em;font-weight:400}'+
+    '.kno{border:.4mm dashed #555;padding:1.5mm 2.5mm;margin-top:1.5mm;font-size:'+it+'pt;font-weight:600}.kf{text-align:center;font-size:7.5pt;color:#888;border-top:.15mm solid #ccc;margin-top:2mm;padding-top:1mm}';
+  var copies=[];
+  for(var i=1;i<=N;i++){
+    var rows=['<div class="kh"><span>KÜCHE'+(N>1?' · '+i+'/'+N:'')+'</span><span class="kn">#'+e(d.no)+'</span></div>'],meta=[];
+    if(c.kitTime)meta.push('<b>'+e(d.time)+'</b> Uhr · '+e(d.date));if(c.kitInfo&&d.info.length)meta.push(d.info.map(e).join(' · '));
+    if(meta.length)rows.push('<div class="km">'+meta.join('<br>')+'</div>');
+    rows.push('<div class="kt">'+e(d.typeLabel)+'</div><div class="kd"></div>');
+    d.items.forEach(function(x){rows.push('<div class="ki"><span class="kq">'+x.q+'×</span><span class="kx">'+e(String(x.n).replace(/^#\S+\s+/,''))+(x.note?'<i>→ '+e(x.note)+'</i>':'')+'</span></div>');});
+    if(c.kitNote&&d.note)rows.push('<div class="kno">📝 '+e(d.note)+'</div>');
+    if(c.kitTime)rows.push('<div class="kf">Bon #'+e(d.no)+' · '+e(d.time)+'</div>');
+    copies.push(rows);
+  }
+  return ptDoc(copies,css,g);
+}
+function printKitchen(){if(!cart.length){showToast('⚠️ Warenkorb ist leer');return;}ptPrint(ptKitDoc(ptKitData()));}
+
+/* ── Nachdruck aus dem Verlauf ── */
+function reprintOrder(idx){
+  var o=orderHistory[idx];if(!o)return;
+  var d={name:($('set-name')&&$('set-name').value)||settings.name,logo:($('set-logo')&&$('set-logo').value)||settings.logo||'',addr:($('set-addr')&&$('set-addr').value)||'',phone:($('set-phone')&&$('set-phone').value)||'',foot:($('set-footer-msg')&&$('set-footer-msg').value)||'',
+    no:String(o.id),date:o.date,time:o.time,type:o.type,typeLbl:o.type,cust:o.customer?[o.customer]:[],pay:o.payment||'',items:o.items.map(function(x){return {n:x.n,q:x.q,p:x.p,note:x.note||''};}),
+    sub:o.sub,del:o.del||0,delLbl:'Liefergebühr',total:o.total,note:o.note||'',reprint:true};
+  ptPrint(ptInvDoc(d));
+}
+
+/* ── Frei Text (nur der eigene Text) ── */
 var FT_SIZES={s:10,m:13,l:17,xl:22},FT_PREV={s:12,m:14,l:17,xl:21},ftSize='m',ftBold=false;
 function applyFtStyle(){
   ftSize=(typeof settings!=='undefined'&&FT_SIZES[settings.ftSize])?settings.ftSize:'m';ftBold=!!(typeof settings!=='undefined'&&settings.ftBold);
-  document.querySelectorAll('#ft-size-seg .addr-mode-btn').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-s')===ftSize);});
-  var bb=$('ft-bold-btn');if(bb)bb.classList.toggle('on',ftBold);
+  document.querySelectorAll('#ft-size-seg .addr-mode-btn,#pt-ft-size-seg .addr-mode-btn').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-s')===ftSize);});
+  ['ft-bold-btn','pt-ft-bold-btn'].forEach(function(id){var bb=$(id);if(bb)bb.classList.toggle('on',ftBold);});
   var pv=$('ft-prev-txt');if(pv){pv.style.fontSize=FT_PREV[ftSize]+'px';pv.style.fontWeight=ftBold?'700':'400';pv.style.whiteSpace='pre-wrap';}
 }
 function setFtSize(s){if(!FT_SIZES[s])return;settings.ftSize=s;applyFtStyle();persistSettings();}
 function toggleFtBold(){settings.ftBold=!settings.ftBold;applyFtStyle();persistSettings();}
-
-/* Druckdokument: jede Zeile = eine Tabellenzeile, damit Kopf-/Fußabstand auf JEDER Seite entsteht und kein Text abgeschnitten wird.
-   @page margin:0 unterdrückt Datum/Titel/Adresse, die der Browser sonst in den Seitenrand druckt. */
 function ftBuildHtml(txt,size,bold){
-  var pt=FT_SIZES[size]||13;
-  var rows=String(txt).split('\n').map(function(l){return '<tr><td class="t">'+(l===''?'&nbsp;':esc(l))+'</td></tr>';}).join('');
-  return '<!DOCTYPE html><html><head><meta charset="UTF-8"><title> </title><style>'+
-    '@page{size:105mm 148mm;margin:0}*{box-sizing:border-box}html,body{margin:0;padding:0;background:#fff}'+
-    'body{font-family:Arial,Helvetica,sans-serif;color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact}'+
-    'table{width:100%;border-collapse:collapse;table-layout:fixed}thead{display:table-header-group}tfoot{display:table-footer-group}.sp{height:5mm;padding:0}'+
-    'td.t{padding:0 5mm;font-size:'+pt+'pt;line-height:1.3;font-weight:'+(bold?'700':'400')+';white-space:pre-wrap;overflow-wrap:anywhere;word-break:normal;vertical-align:top;page-break-inside:avoid;break-inside:avoid}'+
-    '</style></head><body><table><thead><tr><td class="sp"></td></tr></thead><tfoot><tr><td class="sp"></td></tr></tfoot><tbody>'+rows+'</tbody></table></body></html>';
+  var g=ptGeom(),css='.fl{font-size:'+(FT_SIZES[size]||13)+'pt;line-height:1.3;font-weight:'+(bold?'700':'400')+';white-space:pre-wrap;overflow-wrap:anywhere}';
+  return ptDoc([String(txt).split('\n').map(function(l){return '<div class="fl">'+(l===''?'&nbsp;':esc(l))+'</div>';})],css,g);
 }
-var ftPrintNow=function(win){win.focus();win.print();};
-function isIOSDevice(){return /iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);}
 function printFT(){
   var raw=String(($('ft-area')&&$('ft-area').value)||'').replace(/\r\n?/g,'\n').replace(/\s+$/,'').replace(/^\n+/,'');
   if(!raw.trim()){showToast('⚠️ Bitte zuerst Text eingeben');return;}
-  var html=ftBuildHtml(raw,ftSize,ftBold);
-  if(isIOSDevice()){   /* iOS druckt aus einem versteckten iframe die ganze App → eigenes Fenster */
-    var w=window.open('','_blank');if(!w){showToast('⚠️ Popup blockiert');return;}
-    w.document.open();w.document.write(html);w.document.close();setTimeout(function(){try{ftPrintNow(w);}catch(e){}setTimeout(function(){try{w.close();}catch(e){}},1500);},300);return;
-  }
-  var old=$('ft-print-frame');if(old&&old.parentNode)old.parentNode.removeChild(old);
-  var fr=document.createElement('iframe');fr.id='ft-print-frame';fr.setAttribute('aria-hidden','true');
-  fr.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden;';document.body.appendChild(fr);
-  var d=fr.contentWindow.document;d.open();d.write(html);d.close();
-  setTimeout(function(){
-    try{ftPrintNow(fr.contentWindow);}catch(e){showToast('⚠️ Drucken nicht möglich');}
-    setTimeout(function(){if(fr.parentNode)fr.parentNode.removeChild(fr);},2000);
-  },250);
+  ptPrint(ftBuildHtml(raw,ftSize,ftBold));
 }
-/* Rechnungsseite: bei „Frei Text“ ebenfalls nur den Text drucken */
-function printInvoice(){if(activeType==='Frei Text'){printFT();return;}window.print();}
+
+/* ── Testseiten ── */
+function ptTestDoc(){
+  var g=ptGeom(),cw=ptCw(g),n=Math.floor(cw/10),ticks='';for(var i=1;i<=n;i++)ticks+='<span style="display:inline-block;width:10mm;text-align:left">'+i+'</span>';
+  var css='.tp{font-weight:900;font-size:13pt;border-bottom:.5mm solid #000;padding-bottom:1mm;margin-bottom:2mm}.ln{font-size:9pt;line-height:1.5}.ru{height:4mm;margin-top:3mm;background:repeating-linear-gradient(90deg,#000 0,#000 .25mm,transparent .25mm,transparent 10mm);border-bottom:.25mm solid #000}'+
+    '.rl{font-size:7pt;white-space:nowrap;overflow:hidden}.bx{border:.5mm solid #000;height:22mm;margin:3mm 0;display:flex;align-items:center;justify-content:center;font-size:8pt}.sz{margin:0}';
+  var rows=['<div class="tp">TESTDRUCK</div>','<div class="ln"><b>Papier:</b> '+esc(ptPaperName(g))+' · '+g.w+' × '+(g.auto?'automatisch':g.h+' mm')+'</div>',
+    '<div class="ln"><b>Rand:</b> '+g.m+' mm · <b>Druckbreite:</b> '+cw+' mm</div>','<div class="ln"><b>Browser-Kopf/Fußzeile:</b> '+(g.noHF?'unterdrückt':'nach Druckdialog')+'</div>',
+    '<div class="ln" style="font-size:7pt;margin-top:2mm">Lineal in cm</div><div class="ru"></div><div class="rl">'+ticks+'</div>','<div class="bx">Druckbereich (Rahmen darf nicht abgeschnitten sein)</div>',
+    '<div class="sz" style="font-size:8pt">Text 8 pt – Äöü ß € 0123456789</div>','<div class="sz" style="font-size:11pt">Text 11 pt – Äöü ß € 0123456789</div>','<div class="sz" style="font-size:15pt">Text 15 pt – Äöü ß €</div>'];
+  return ptDoc([rows],css,g);
+}
+function ptTestPage(){ptPrint(ptTestDoc());}
+function ptSampleInv(){return {name:($('set-name')&&$('set-name').value)||settings.name,logo:($('set-logo')&&$('set-logo').value)||'',addr:($('set-addr')&&$('set-addr').value)||'Hauptstraße 1',phone:($('set-phone')&&$('set-phone').value)||'+49 123',foot:($('set-footer-msg')&&$('set-footer-msg').value)||'Vielen Dank!',
+  no:'0000',date:new Date().toLocaleDateString('de-DE'),time:new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}),type:'Liefern',typeLbl:'🚴 Liefern',cust:['Max Mustermann','+49 170 1234567','Hauptstraße 12, 49824 Emlichheim','Sofort'],pay:'💵 Bargeld',
+  items:[{n:'#19 Hähnchen Pizza (Familie) + Extra Käse',q:1,p:24,note:'gut durchgebacken'},{n:'#01 Kebap (Klein) · Tzatziki',q:2,p:8,note:''},{n:'Cola 0,5 l',q:2,p:2.5,note:''}],sub:45,del:2,delLbl:'Liefergebühr (Emlichheim)',total:47,note:'Bitte klingeln',reprint:false};}
+function ptTestInvoice(){ptPrint(ptInvDoc(ptSampleInv()));}
+function ptTestKitchen(){ptPrint(ptKitDoc({no:'0000',typeLabel:'🚴 Liefern',time:new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}),date:new Date().toLocaleDateString('de-DE'),info:['Max Mustermann','Hauptstraße 12','💵 Bargeld'],
+  items:[{q:1,n:'#19 Hähnchen Pizza (Familie) + Extra Käse',note:'gut durchgebacken'},{q:2,n:'#01 Kebap (Klein) · Tzatziki',note:''}],note:'Bitte klingeln'}));}
+
+/* ── Einstellungen (Tab „Drucken“) ── */
+function ptSet(k,v){var c=ptCfg();c[k]=v;settings.print=c;persistSettings();ptRenderUi();}
+function ptToggle(k){ptSet(k,!ptCfg()[k]);}
+function ptSetNum(k,v){var lim={w:[40,330,105],h:[0,1000,148],margin:[0,20,4]}[k];if(!lim)return;ptSet(k,ptNum(v,lim[0],lim[1],lim[2]));}
+function ptStep(k,d){var c=ptCfg();ptSetNum(k,(Number(c[k])||0)+d);}
+function ptRenderUi(){
+  var c=ptCfg();
+  document.querySelectorAll('[data-pk]').forEach(function(el){var k=el.getAttribute('data-pk'),v=c[k];
+    if(el.hasAttribute('data-pv'))el.classList.toggle('on',String(v)===el.getAttribute('data-pv'));else el.classList.toggle('on',!!v);});
+  var cu=$('pt-custom');if(cu)cu.style.display=c.paper==='custom'?'flex':'none';
+  [['pt-w','w'],['pt-h','h'],['pt-margin','margin']].forEach(function(p){var e=$(p[0]);if(e&&document.activeElement!==e)e.value=c[p[1]];});
+  setText('pt-margin-val',c.margin);setText('pt-sum',ptSummary());
+}
+
 
 function goInv(){go(2,document.querySelectorAll('.sb-btn')[2]);}
 function buildTblGrid(){
@@ -4200,7 +4428,8 @@ function confirmNewOrder(){
   if(!cart.length){resetAll(true);return;}
   openConfirm('➕','Neue Bestellung?','Der aktuelle Warenkorb wird geleert.','Neue Bestellung','btn-p',function(){
     saveOrderToHistory();playSound('complete');
-    if($('tgl-auto-print')&&$('tgl-auto-print').classList.contains('on'))window.print();
+    if($('tgl-auto-print')&&$('tgl-auto-print').classList.contains('on'))printInvoiceDoc();
+    if(ptCfg().kitAuto)printKitchen();
     incrementInvNo();resetAll(true);
   });
 }
