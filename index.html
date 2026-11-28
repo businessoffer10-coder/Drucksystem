@@ -1635,6 +1635,42 @@ html,body{height:100%;width:100%;overflow:hidden;margin:0;padding:0;}
 .pt-tip ul{margin:4px 0 0;padding-left:18px;}
 .pt-tip code{background:rgba(0,0,0,.08);padding:0 4px;border-radius:4px;font-size:11.5px;}
 
+
+/* ── Straßen online laden ── */
+.osm-modes .addr-mode{width:auto;display:inline-flex;}
+.osm-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;}
+.osm-cands{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:12px;overflow:hidden;max-height:220px;overflow-y:auto;}
+.osm-cand{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-bottom:1px solid var(--border);cursor:pointer;background:var(--surface);}
+.osm-cand:last-child{border-bottom:none;}
+.osm-cand:hover{background:var(--acc-ll);}
+.osm-cand.on{background:var(--acc-l);}
+.osm-cand b{display:block;font-size:13px;color:var(--t1);}
+.osm-cand small{display:block;font-size:11px;color:var(--t3);margin-top:2px;line-height:1.35;}
+.osm-radio{flex-shrink:0;width:18px;height:18px;margin-top:1px;border-radius:50%;border:2px solid var(--border2);background:var(--surface);}
+.osm-cand.on .osm-radio{border-color:var(--acc);background:radial-gradient(circle,var(--acc) 0 4px,var(--surface) 5px);}
+.osm-gps{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:12px 14px;border:1px solid var(--border);border-radius:12px;background:var(--surface2);}
+.osm-gpsinfo{display:flex;flex-direction:column;gap:2px;font-size:13px;}
+.osm-gpsinfo i{color:var(--acc);font-size:18px;}
+.osm-gpsinfo small{color:var(--t3);font-size:11.5px;}
+.osm-load{align-self:flex-start;}
+.osm-status{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--t2);}
+.osm-spin{animation:osmspin 1s linear infinite;font-size:18px;color:var(--acc);}
+@keyframes osmspin{to{transform:rotate(360deg);}}
+.osm-sum{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:13px;color:var(--t2);}
+.osm-sum b{color:var(--t1);}
+.osm-all{margin-left:auto;display:inline-flex;gap:6px;}
+.osm-list{border:1px solid var(--border);border-radius:12px;max-height:280px;overflow-y:auto;background:var(--surface);}
+.osm-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--border);font-size:13px;cursor:pointer;}
+.osm-item:hover{background:var(--acc-ll);}
+.osm-more{padding:12px;font-size:12px;color:var(--t3);text-align:center;}
+.osm-attr{font-size:11px;color:var(--t3);max-width:48%;line-height:1.4;}
+.st-badge.osm{background:var(--blue-l);color:var(--blue);}
+.st-head .btn{flex-shrink:0;}
+
+#osm-body>*{flex-shrink:0;}
+.osm-modes .addr-mode-btn{white-space:nowrap;padding:0 12px;}
+.osm-attr2{font-size:11px;color:var(--t3);line-height:1.4;padding-top:2px;}
+
 /* ═══ PRINT FIXES (must stay last) ═══ */
 @media print{
   html body .ft-inv{display:none!important;}
@@ -2181,7 +2217,7 @@ html,body{height:100%;width:100%;overflow:hidden;margin:0;padding:0;}
                     <div class="xt-field"><span class="xt-lbl">Gebühr €</span><input class="xt-inp" id="new-city-fee" type="number" min="0" step="0.5" placeholder="2"/></div>
                     <div class="xt-field"><span class="xt-lbl">Min. €</span><input class="xt-inp" id="new-city-min" type="number" min="0" step="1" placeholder="0"/></div>
                   </div>
-                  <button class="btn btn-p btn-sm" style="margin-top:10px;" onclick="addCity()"><i class="ti ti-plus"></i>Stadt hinzufügen</button>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;"><button class="btn btn-p btn-sm" onclick="addCity()"><i class="ti ti-plus"></i>Stadt hinzufügen</button><button class="btn btn-ghost btn-sm" onclick="osmDetectCity()" title="Ort und PLZ per GPS ermitteln"><i class="ti ti-map-pin"></i>Standort verwenden</button></div>
                 </div>
               </div>
 
@@ -2534,6 +2570,24 @@ html,body{height:100%;width:100%;overflow:hidden;margin:0;padding:0;}
       <div style="display:flex;gap:8px;">
         <button class="btn" onclick="ioClose()">Abbrechen</button>
         <button class="btn btn-p" id="io-go" onclick="ioApply()"><i class="ti ti-upload"></i>Wiederherstellen</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ STRASSEN ONLINE LADEN (OpenStreetMap) ══ -->
+<div class="modal-ov" id="osmOverlay" onclick="if(event.target===this)osmClose()" style="z-index:99995;">
+  <div class="modal-box" style="max-width:640px;">
+    <div class="modal-hdr">
+      <div class="modal-info"><span class="modal-name">Straßen online laden</span><span class="modal-desc" id="osm-sub"></span></div>
+      <button class="modal-close" onclick="osmClose()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body" id="osm-body"></div>
+    <div class="modal-ftr">
+      <div></div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn" onclick="osmClose()">Abbrechen</button>
+        <button class="btn btn-p" id="osm-go" onclick="osmApply()" disabled><i class="ti ti-check"></i><span id="osm-go-txt">Übernehmen</span></button>
       </div>
     </div>
   </div>
@@ -3040,6 +3094,8 @@ function ioSanitizeSettings(raw,W){
     });
     s.streets=st;
   }
+  if(ioObj(raw.osm)){var vc={};(s.cities||Object.keys(BASE_ADDR).map(function(n){return {name:n};})).forEach(function(c){vc[c.name]=1;});var om={};
+    Object.keys(raw.osm).forEach(function(k){if(IO_BAD_KEYS[k]||!vc[k]||!Array.isArray(raw.osm[k]))return;var l=raw.osm[k].slice(0,5000).map(function(x){return ioStr(x,60);}).filter(Boolean);if(l.length)om[k]=l;});s.osm=om;}
 
   /* Produkte */
   if(ioObj(raw.customProds)){
@@ -3402,7 +3458,7 @@ function renameCity(i,v){
   var c=CITIES_DATA[i],old=c.name,nn=normStreet(v);
   if(!nn||nn===old){ctRenderCities();return;}
   if(CITIES_DATA.some(function(x,k){return k!==i&&x.name.toLowerCase()===nn.toLowerCase();})){showToast('⚠️ Diese Stadt gibt es schon');ctRenderCities();return;}
-  ADDR_DATA[nn]=ADDR_DATA[old]||[];delete ADDR_DATA[old];PLZ[nn]=PLZ[old]||c.plz||'';delete PLZ[old];c.name=nn;
+  ADDR_DATA[nn]=ADDR_DATA[old]||[];delete ADDR_DATA[old];PLZ[nn]=PLZ[old]||c.plz||'';delete PLZ[old];c.name=nn;if(settings.osm&&settings.osm[old]){settings.osm[nn]=settings.osm[old];delete settings.osm[old];}
   if(stCity===old)stCity=nn;
   if(selCity===old){selCity=nn;setText('chip-city-name',nn+' ('+(PLZ[nn]||'')+')');updateLiefSum();}
   persistSettings();ctRenderAll();showToast('✅ Stadt umbenannt');
@@ -3410,7 +3466,7 @@ function renameCity(i,v){
 function deleteCity(i){
   if(CITIES_DATA.length<=1)return;var c=CITIES_DATA[i],n=(ADDR_DATA[c.name]||[]).length;
   openConfirm('🗑️','Stadt löschen?','„'+c.name+'“ und ihre '+n+' Straßen werden entfernt.','Löschen','btn-del',function(){
-    CITIES_DATA.splice(i,1);delete ADDR_DATA[c.name];delete PLZ[c.name];
+    CITIES_DATA.splice(i,1);delete ADDR_DATA[c.name];delete PLZ[c.name];if(settings.osm)delete settings.osm[c.name];
     if(selCity===c.name)clearCity();if(stCity===c.name)stCity=null;
     persistSettings();ctRenderAll();showToast('🗑 Stadt gelöscht');
   });
@@ -3439,35 +3495,37 @@ function stRenderCityChips(){
   }).join('');
 }
 function stCustomCount(){
-  var base=baseListFor(stCity);if(!base)return 0;var set={};base.forEach(function(s){set[s]=1;});
-  return (ADDR_DATA[stCity]||[]).filter(function(s){return !set[s];}).length;
+  var base=baseListFor(stCity);if(!base)return 0;var set={},o=osmSet(stCity);base.forEach(function(s){set[s]=1;});
+  return (ADDR_DATA[stCity]||[]).filter(function(s){return !set[s]&&!o[s];}).length;
 }
 function stIsModified(){
   var base=baseListFor(stCity);if(!base)return false;
   var a=base.slice(),b=(ADDR_DATA[stCity]||[]).slice();stSort(a);stSort(b);return JSON.stringify(a)!==JSON.stringify(b);
 }
 function stRenderHead(){
-  var el=$('st-head');if(!el||!stCity)return;var c=cityObj(stCity),n=(ADDR_DATA[stCity]||[]).length,cu=stCustomCount();
+  var el=$('st-head');if(!el||!stCity)return;var c=cityObj(stCity),n=(ADDR_DATA[stCity]||[]).length,cu=stCustomCount(),oc=osmCount(stCity);
   el.innerHTML='<div class="st-title"><b>'+esc(stCity)+'</b><span>'+esc((c&&c.plz)||'')+'</span>'+
-    '<div class="st-stats">'+n+' Straßen'+(baseListFor(stCity)?' · '+cu+' eigene':'')+'</div></div>'+
+    '<div class="st-stats">'+n+' Straßen'+(baseListFor(stCity)?' · '+cu+' eigene':'')+(oc?' · '+oc+' aus OSM':'')+'</div></div>'+
+    '<button class="btn btn-ghost btn-sm" onclick="osmOpen()" title="Straßen aus OpenStreetMap laden"><i class="ti ti-download"></i>Online laden</button>'+
     (stIsModified()?'<button class="btn btn-ghost btn-sm" onclick="stReset()"><i class="ti ti-restore"></i>Standardliste</button>':'');
 }
 function stRenderFilter(){
-  var el=$('st-filter');if(!el)return;
-  if(!baseListFor(stCity)){el.innerHTML='';return;}
+  var el=$('st-filter');if(!el)return;var oc=osmCount(stCity);
+  if(!baseListFor(stCity)&&!oc){el.innerHTML='';return;}
   el.innerHTML='<button class="xt-chip'+(stFilter==='all'?' on':'')+'" onclick="stSetFilter(\'all\')">Alle</button>'+
-    '<button class="xt-chip'+(stFilter==='custom'?' on':'')+'" onclick="stSetFilter(\'custom\')">Eigene <small>'+stCustomCount()+'</small></button>';
+    (baseListFor(stCity)?'<button class="xt-chip'+(stFilter==='custom'?' on':'')+'" onclick="stSetFilter(\'custom\')">Eigene <small>'+stCustomCount()+'</small></button>':'')+
+    (oc?'<button class="xt-chip'+(stFilter==='osm'?' on':'')+'" onclick="stSetFilter(\'osm\')">OSM <small>'+oc+'</small></button>':'');
 }
 function stRenderList(){
   var el=$('st-list');if(!el)return;stEnsureCity();
   var all=(ADDR_DATA[stCity]||[]).slice();stSort(all);
   var q=(($('st-search')&&$('st-search').value)||'').toLowerCase().trim(),base=baseListFor(stCity),baseSet={};
   if(base)base.forEach(function(s){baseSet[s]=1;});
-  var rows=all.filter(function(s){return (!q||s.toLowerCase().indexOf(q)>=0)&&(stFilter==='all'||!baseSet[s]);});
+  var osmM=osmSet(stCity),rows=all.filter(function(s){return (!q||s.toLowerCase().indexOf(q)>=0)&&(stFilter==='all'||(stFilter==='osm'?!!osmM[s]:(!baseSet[s]&&!osmM[s])));});
   stView=rows;
   if(!rows.length){
-    if(!all.length)el.innerHTML='<div class="st-empty">Noch keine Straßen in <b>'+esc(stCity)+'</b>.<br>Oben die erste eingeben oder mit „Mehrere“ eine ganze Liste einfügen.</div>';
-    else if(stFilter==='custom'&&!q)el.innerHTML='<div class="st-empty">Noch keine eigenen Straßen hinzugefügt.</div>';
+    if(!all.length)el.innerHTML='<div class="st-empty">Noch keine Straßen in <b>'+esc(stCity)+'</b>.<br>Oben die erste eingeben, mit „Mehrere“ eine Liste einfügen oder <a href="#" onclick="osmOpen();return false;">online laden</a>.</div>';
+    else if((stFilter==='custom'||stFilter==='osm')&&!q)el.innerHTML='<div class="st-empty">'+(stFilter==='osm'?'Noch keine Straßen aus OpenStreetMap geladen.':'Noch keine eigenen Straßen hinzugefügt.')+'</div>';
     else el.innerHTML='<div class="st-empty">Keine Treffer für „'+esc(q)+'“.<br><button class="btn btn-ghost btn-xs" style="margin-top:8px;" onclick="stAddFromSearch()"><i class="ti ti-plus"></i>„'+esc(capFirst(normStreet(q)))+'“ hinzufügen</button></div>';
     return;
   }
@@ -3480,7 +3538,7 @@ function stRenderList(){
         '<button class="xt-mini" onclick="stEditCancel()" title="Abbrechen"><i class="ti ti-x"></i></button></div>';
     } else {
       h+='<div class="st-row'+(stFlash===s?' flash':'')+'"><i class="ti ti-road"></i><span class="st-name">'+esc(s)+'</span>'+
-        (base&&!baseSet[s]?'<span class="st-badge">Eigene</span>':'')+
+        (osmM[s]?'<span class="st-badge osm">OSM</span>':(base&&!baseSet[s]?'<span class="st-badge">Eigene</span>':''))+
         '<button class="xt-mini" onclick="stEdit('+i+')" title="Bearbeiten"><i class="ti ti-pencil"></i></button>'+
         '<button class="xt-mini" onclick="stDelete('+i+')" title="Löschen"><i class="ti ti-trash"></i></button></div>';
     }
@@ -3506,18 +3564,18 @@ function stEditSave(i){
   if(val===old){stEditCancel();return;}
   if(stHas(stCity,val,old)){showToast('⚠️ „'+val+'“ gibt es schon');return;}
   var arr=ADDR_DATA[stCity],k=arr.indexOf(old);if(k<0){stEditCancel();return;}
-  arr[k]=val;stSort(arr);stEditing=null;stFlash=val;persistSettings();stRenderAll();showToast('✅ Straße geändert');
+  arr[k]=val;osmRemove(stCity,old);stSort(arr);stEditing=null;stFlash=val;persistSettings();stRenderAll();showToast('✅ Straße geändert');
 }
 function stDelete(i){
   var s=stView[i],city=stCity;if(s==null)return;
   openConfirm('🗑️','Straße löschen?','„'+s+'“ wird aus '+city+' entfernt.','Löschen','btn-del',function(){
-    var arr=ADDR_DATA[city],k=arr.indexOf(s);if(k>=0)arr.splice(k,1);persistSettings();stRenderAll();showToast('🗑 Straße gelöscht');
+    var arr=ADDR_DATA[city],k=arr.indexOf(s);if(k>=0)arr.splice(k,1);osmRemove(city,s);persistSettings();stRenderAll();showToast('🗑 Straße gelöscht');
   });
 }
 function stReset(){
   var base=baseListFor(stCity);if(!base)return;var city=stCity;
   openConfirm('↩️','Standardliste wiederherstellen?','Eigene Änderungen an den Straßen von '+city+' gehen verloren.','Wiederherstellen','btn-p',function(){
-    ADDR_DATA[city]=base.slice();persistSettings();stRenderAll();showToast('↩️ Standardliste wiederhergestellt');
+    ADDR_DATA[city]=base.slice();if(settings.osm)delete settings.osm[city];persistSettings();stRenderAll();showToast('↩️ Standardliste wiederhergestellt');
   });
 }
 
@@ -3547,6 +3605,158 @@ function pickNewStreet(){
   if(existing)name=existing;
   else{ADDR_DATA[selCity].push(name);stSort(ADDR_DATA[selCity]);persistSettings();showToast('✅ „'+name+'“ in '+selCity+' gespeichert');}
   closeAllDD();selectStreet(name);
+}
+
+/* ══════════ STRASSEN ONLINE LADEN (OpenStreetMap) ══════════
+   Quelle: © OpenStreetMap-Mitwirkende (ODbL). Nominatim sucht die Stadt, Overpass liefert die Straßennamen.
+   Es wird nur geladen, wenn der Benutzer es auslöst; danach liegen die Straßen lokal (offline nutzbar). */
+var OSM={nominatim:'https://nominatim.openstreetmap.org',
+  overpass:['https://overpass-api.de/api/interpreter','https://overpass.kumi.systems/api/interpreter','https://overpass.private.coffee/api/interpreter'],
+  hw:{residential:1,living_street:1,unclassified:1,tertiary:1,secondary:1,primary:1,trunk:1,road:1,pedestrian:1}};
+var OSM_HW_RE='^(residential|living_street|unclassified|tertiary|secondary|primary|trunk|road|pedestrian)$';
+var osmSt={city:null,mode:'city',qName:'',qPlz:'',cands:[],sel:-1,gps:null,radius:2,found:null,pick:{},busy:'',err:''};
+
+function osmFetch(url,opt,ms){
+  var ctl=(typeof AbortController!=='undefined')?new AbortController():null,timer=null;opt=opt||{};if(ctl)opt.signal=ctl.signal;
+  var p=fetch(url,opt).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();});
+  var to=new Promise(function(_,rej){timer=setTimeout(function(){if(ctl)try{ctl.abort();}catch(e){}rej(new Error('Zeitüberschreitung'));},ms||20000);});
+  return Promise.race([p,to]).then(function(v){clearTimeout(timer);return v;},function(e){clearTimeout(timer);throw e;});
+}
+/* Overpass: mehrere Server nacheinander probieren (öffentliche Server sind manchmal überlastet) */
+function osmOverpass(q){
+  function at(i,last){
+    if(i>=OSM.overpass.length)return Promise.reject(last||new Error('Kein Server erreichbar'));
+    return osmFetch(OSM.overpass[i],{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body:'data='+encodeURIComponent(q)},90000).then(function(j){
+      if(!j||!Array.isArray(j.elements))throw new Error('Unerwartete Antwort');
+      if(j.remark&&/error|timed out|out of memory/i.test(j.remark))throw new Error(String(j.remark).slice(0,120));return j;
+    }).catch(function(e){return at(i+1,e);});
+  }
+  return at(0,null);
+}
+function osmQ(s){return String(s).replace(/\\/g,'\\\\').replace(/"/g,'\\"');}
+function osmNames(j){
+  var seen={},out=[];
+  (j.elements||[]).forEach(function(el){var t=el&&el.tags;if(!t||!t.name)return;if(t.highway&&!OSM.hw[t.highway])return;
+    var n=normStreet(t.name);if(n.length<2||n.length>60||/^[\d\s.,\-]+$/.test(n)||/[<>]/.test(n))return;var k=n.toLowerCase();if(seen[k])return;seen[k]=1;out.push(n);});
+  out.sort(function(a,b){return a.localeCompare(b,'de');});return out;
+}
+function osmCand(r){
+  if(!r||r.lat==null||r.lon==null)return null;
+  var a=r.address||{},label=String(r.display_name||''),cat=r.category||r['class']||'';
+  var nm=r.name||a.city||a.town||a.village||a.municipality||a.hamlet||label.split(',')[0]||'';
+  var t=String(r.osm_type||'').toLowerCase().charAt(0),isRel=t==='r';
+  return {osmType:t,osmId:Number(r.osm_id)||0,lat:Number(r.lat),lon:Number(r.lon),name:String(nm).trim(),label:label||nm,plz:a.postcode||'',rank:(isRel?4:0)+(cat==='boundary'?2:0)+(a.postcode?1:0)};
+}
+function osmGeocode(name,plz){
+  var base=OSM.nominatim+'/search?format=jsonv2&addressdetails=1&limit=8&countrycodes=de&accept-language=de';
+  return osmFetch(base+'&city='+encodeURIComponent(name)+(plz?'&postalcode='+encodeURIComponent(plz):''),{headers:{'Accept':'application/json'}},20000).then(function(a){
+    if(Array.isArray(a)&&a.length)return a;
+    return osmFetch(base+'&q='+encodeURIComponent(name+(plz?' '+plz:'')),{headers:{'Accept':'application/json'}},20000);
+  }).then(function(a){return (Array.isArray(a)?a:[]).map(osmCand).filter(function(x){return x&&x.name;}).sort(function(x,y){return y.rank-x.rank;});});
+}
+/* Grenze der Gemeinde: Relation → Overpass-Gebiet (3600000000 + id); sonst Gebiet am Punkt mit gleichem Namen */
+function osmStreetsFor(c){
+  var q=(c.osmType==='r'&&c.osmId)
+    ?'[out:json][timeout:90];area('+(3600000000+c.osmId)+')->.a;way(area.a)["highway"~"'+OSM_HW_RE+'"]["name"];out tags;'
+    :'[out:json][timeout:90];is_in('+c.lat+','+c.lon+')->.i;area.i["boundary"="administrative"]["admin_level"~"^(8|9|10)$"]["name"="'+osmQ(c.name)+'"]->.a;way(area.a)["highway"~"'+OSM_HW_RE+'"]["name"];out tags;';
+  return osmOverpass(q).then(osmNames);
+}
+function osmStreetsAround(lat,lon,m){return osmOverpass('[out:json][timeout:90];way(around:'+Math.round(m)+','+lat+','+lon+')["highway"~"'+OSM_HW_RE+'"]["name"];out tags;').then(osmNames);}
+function osmReverse(lat,lon){
+  return osmFetch(OSM.nominatim+'/reverse?format=jsonv2&addressdetails=1&zoom=14&accept-language=de&lat='+lat+'&lon='+lon,{headers:{'Accept':'application/json'}},20000).then(function(r){
+    var a=(r&&r.address)||{};return {name:a.city||a.town||a.village||a.municipality||a.hamlet||'',plz:a.postcode||'',label:(r&&r.display_name)||''};});
+}
+function osmGps(){
+  return new Promise(function(res,rej){
+    if(typeof navigator==='undefined'||!navigator.geolocation){rej(new Error('Dieses Gerät oder dieser Browser unterstützt keine Standortbestimmung'));return;}
+    navigator.geolocation.getCurrentPosition(function(p){res({lat:+Number(p.coords.latitude).toFixed(6),lon:+Number(p.coords.longitude).toFixed(6),acc:Math.round(p.coords.accuracy||0)});},
+      function(e){rej(new Error(e&&e.code===1?'Standortzugriff nicht erlaubt (Browser-Berechtigung prüfen)':e&&e.code===3?'Standort wurde nicht rechtzeitig ermittelt':'Standort nicht verfügbar (HTTPS nötig?)'));},
+      {enableHighAccuracy:true,timeout:20000,maximumAge:60000});
+  });
+}
+function osmSet(city){var m={};((settings.osm&&settings.osm[city])||[]).forEach(function(n){m[n]=1;});return m;}
+function osmRemove(city,name){if(!settings.osm||!settings.osm[city])return;settings.osm[city]=settings.osm[city].filter(function(n){return n!==name;});if(!settings.osm[city].length)delete settings.osm[city];}
+function osmCount(city){return ((settings.osm&&settings.osm[city])||[]).filter(function(n){return (ADDR_DATA[city]||[]).indexOf(n)>=0;}).length;}
+
+/* Neue Stadt per GPS: Ort + PLZ eintragen */
+function osmDetectCity(){
+  showToast('📍 Standort wird ermittelt …');
+  osmGps().then(function(g){return osmReverse(g.lat,g.lon);}).then(function(r){
+    if(!r.name){showToast('⚠️ Kein Ort an diesem Standort gefunden');return;}
+    setVal('new-city-name',r.name);setVal('new-city-plz',r.plz||'');showToast('✅ '+r.name+(r.plz?' ('+r.plz+')':'')+' erkannt');
+  }).catch(function(e){showToast('⚠️ '+e.message);});
+}
+
+/* ── Dialog ── */
+function osmOpen(city){
+  city=city||stCity;if(!city)return;var c=cityObj(city);
+  osmSt={city:city,mode:'city',qName:city,qPlz:(c&&c.plz)||'',cands:[],sel:-1,gps:null,radius:2,found:null,pick:{},busy:'',err:''};
+  setText('osm-sub',city);$('osmOverlay').classList.add('open');osmRender();
+}
+function osmClose(){var o=$('osmOverlay');if(o)o.classList.remove('open');}
+function osmSetMode(m){osmSt.mode=m;osmSt.found=null;osmSt.err='';osmRender();}
+function osmIn(k,v){osmSt[k]=v;}
+function osmPickCand(i){osmSt.sel=i;osmSt.found=null;osmRender();}
+function osmSetRadius(r){osmSt.radius=r;osmSt.found=null;osmRender();}
+function osmSearch(){
+  var name=normStreet(osmSt.qName);if(!name){osmSt.err='Bitte einen Ortsnamen eingeben';osmRender();return;}
+  osmSt.busy='Suche läuft …';osmSt.err='';osmSt.cands=[];osmSt.sel=-1;osmSt.found=null;osmRender();
+  return osmGeocode(name,normStreet(osmSt.qPlz)).then(function(list){
+    osmSt.busy='';osmSt.cands=list;osmSt.sel=list.length?0:-1;if(!list.length)osmSt.err='Kein Ort gefunden — Schreibweise/PLZ prüfen oder „Umkreis (GPS)“ nutzen';osmRender();
+  }).catch(function(e){osmSt.busy='';osmSt.err='Ortssuche fehlgeschlagen: '+e.message+' (Internetverbindung prüfen)';osmRender();});
+}
+function osmLocate(){
+  osmSt.busy='Standort wird ermittelt …';osmSt.err='';osmRender();
+  return osmGps().then(function(g){osmSt.busy='';osmSt.gps=g;osmRender();}).catch(function(e){osmSt.busy='';osmSt.err=e.message;osmRender();});
+}
+function osmLoad(){
+  var p;
+  if(osmSt.mode==='city'){var c=osmSt.cands[osmSt.sel];if(!c){osmSt.err='Bitte zuerst einen Ort suchen und auswählen';osmRender();return;}p=osmStreetsFor(c);}
+  else{if(!osmSt.gps){osmSt.err='Bitte zuerst den Standort ermitteln';osmRender();return;}p=osmStreetsAround(osmSt.gps.lat,osmSt.gps.lon,osmSt.radius*1000);}
+  osmSt.busy='Straßen werden geladen … (kann bis zu einer Minute dauern)';osmSt.err='';osmSt.found=null;osmRender();
+  return p.then(function(names){
+    osmSt.busy='';osmSt.found=names;osmSt.pick={};var have=(ADDR_DATA[osmSt.city]||[]).map(function(s){return s.toLowerCase();});
+    names.forEach(function(n){if(have.indexOf(n.toLowerCase())<0)osmSt.pick[n]=true;});
+    if(!names.length)osmSt.err='Keine Straßen gefunden — anderen Ort wählen oder „Umkreis (GPS)“ nutzen';osmRender();
+  }).catch(function(e){osmSt.busy='';osmSt.err='Laden fehlgeschlagen: '+e.message+' — später erneut versuchen (öffentliche Server sind manchmal überlastet)';osmRender();});
+}
+function osmTogglePick(i){var n=osmNewList()[i];if(n==null)return;if(osmSt.pick[n])delete osmSt.pick[n];else osmSt.pick[n]=true;osmRender();}
+function osmPickAll(on){osmSt.pick={};if(on)osmNewList().forEach(function(n){osmSt.pick[n]=true;});osmRender();}
+function osmNewList(){var have=(ADDR_DATA[osmSt.city]||[]).map(function(s){return s.toLowerCase();});return (osmSt.found||[]).filter(function(n){return have.indexOf(n.toLowerCase())<0;});}
+function osmApply(){
+  var city=osmSt.city,add=osmNewList().filter(function(n){return osmSt.pick[n];});if(!city||!add.length)return;
+  var arr=ADDR_DATA[city]=ADDR_DATA[city]||[];add.forEach(function(n){if(!stHas(city,n))arr.push(n);});stSort(arr);
+  settings.osm=settings.osm||{};var cur=settings.osm[city]||[];add.forEach(function(n){if(cur.indexOf(n)<0)cur.push(n);});settings.osm[city]=cur;
+  persistSettings();osmClose();if(typeof stRenderAll==='function')stRenderAll();showToast('✅ '+add.length+' Straßen aus OpenStreetMap hinzugefügt');
+}
+function osmRender(){
+  var s=osmSt,b=$('osm-body');if(!b)return;var e=esc,h='';
+  h+='<div class="osm-modes"><div class="addr-mode"><button class="addr-mode-btn'+(s.mode==='city'?' on':'')+'" onclick="osmSetMode(\'city\')"><i class="ti ti-search"></i>Stadt / Gemeinde</button>'+
+     '<button class="addr-mode-btn'+(s.mode==='gps'?' on':'')+'" onclick="osmSetMode(\'gps\')"><i class="ti ti-map-pin"></i>Umkreis (GPS)</button></div></div>';
+  if(s.mode==='city'){
+    h+='<div class="osm-row"><div class="xt-field" style="flex:1;"><span class="xt-lbl">Ort</span><input class="xt-inp" id="osm-name" value="'+e(s.qName)+'" oninput="osmIn(\'qName\',this.value)" onkeydown="if(event.key===\'Enter\')osmSearch()"/></div>'+
+       '<div class="xt-field" style="width:110px;"><span class="xt-lbl">PLZ</span><input class="xt-inp" id="osm-plz" value="'+e(s.qPlz)+'" oninput="osmIn(\'qPlz\',this.value)" onkeydown="if(event.key===\'Enter\')osmSearch()"/></div>'+
+       '<button class="btn btn-p" onclick="osmSearch()"'+(s.busy?' disabled':'')+'><i class="ti ti-search"></i>Suchen</button></div>';
+    if(s.cands.length){h+='<div class="osm-cands">'+s.cands.map(function(c,i){return '<div class="osm-cand'+(i===s.sel?' on':'')+'" onclick="osmPickCand('+i+')"><span class="osm-radio"></span><div><b>'+e(c.name)+(c.plz?' · '+e(c.plz):'')+'</b><small>'+e(c.label)+'</small></div></div>';}).join('')+'</div>';}
+  } else {
+    h+='<div class="osm-gps"><div class="osm-gpsinfo">'+(s.gps?'<i class="ti ti-map-pin"></i><b>'+s.gps.lat+', '+s.gps.lon+'</b><small>Genauigkeit ca. '+s.gps.acc+' m</small>':'<small>Der aktuelle Standort dieses Geräts wird verwendet (am besten im Restaurant).</small>')+'</div>'+
+       '<button class="btn btn-ghost" onclick="osmLocate()"'+(s.busy?' disabled':'')+'><i class="ti ti-map-pin"></i>'+(s.gps?'Neu ermitteln':'Standort ermitteln')+'</button></div>'+
+       '<div class="pt-opt"><span class="pt-k">Radius</span><div class="addr-mode">'+[1,2,3,5].map(function(r){return '<button class="addr-mode-btn'+(s.radius===r?' on':'')+'" onclick="osmSetRadius('+r+')">'+r+' km</button>';}).join('')+'</div></div>';
+  }
+  var ready=s.mode==='city'?s.sel>=0:!!s.gps;
+  h+='<button class="btn btn-p osm-load" onclick="osmLoad()"'+((!ready||s.busy)?' disabled':'')+'><i class="ti ti-download"></i>Straßen laden</button>';
+  if(s.busy)h+='<div class="osm-status"><i class="ti ti-loader-2 osm-spin"></i>'+e(s.busy)+'</div>';
+  if(s.err)h+='<div class="io-warn"><i class="ti ti-alert-triangle" style="font-size:18px;"></i><div>'+e(s.err)+'</div></div>';
+  if(s.found&&s.found.length){
+    var nw=osmNewList(),cnt=nw.filter(function(n){return s.pick[n];}).length,have=s.found.length-nw.length;
+    h+='<div class="osm-sum"><b>'+s.found.length+' Straßen gefunden</b> · '+nw.length+' neu · '+have+' bereits vorhanden'+
+       (nw.length?'<span class="osm-all"><button class="btn btn-ghost btn-xs" onclick="osmPickAll(true)">Alle</button><button class="btn btn-ghost btn-xs" onclick="osmPickAll(false)">Keine</button></span>':'')+'</div>';
+    h+='<div class="osm-list">'+(nw.length?nw.slice(0,600).map(function(n,i){return '<div class="osm-item" onclick="osmTogglePick('+i+')"><span class="xt-cb '+(s.pick[n]?'on':'')+'">'+(s.pick[n]?'✓':'')+'</span><span>'+e(n)+'</span></div>';}).join('')+(nw.length>600?'<div class="osm-more">… und '+(nw.length-600)+' weitere (Auswahl „Alle“ übernimmt alle)</div>':''):'<div class="osm-more">Alle gefundenen Straßen sind schon in der Liste.</div>')+'</div>';
+    $('osm-go-txt').textContent=cnt?'Übernehmen ('+cnt+')':'Übernehmen';$('osm-go').disabled=!cnt;
+  } else {$('osm-go-txt').textContent='Übernehmen';$('osm-go').disabled=true;}
+  h+='<div class="osm-attr2">Straßendaten © OpenStreetMap-Mitwirkende (ODbL) · www.openstreetmap.org/copyright</div>';
+  var keep=document.activeElement&&document.activeElement.id,pos=document.activeElement&&document.activeElement.selectionStart;
+  b.innerHTML=h;if(keep&&$(keep)&&$(keep).tagName==='INPUT'){try{$(keep).focus();if(pos!=null)$(keep).setSelectionRange(pos,pos);}catch(x){}}
 }
 
 /* ══════════ EXTRAS MANAGER ══════════
